@@ -474,3 +474,370 @@ def extract_from_dwg(file_path: str) -> List[Dict]:
         'source': 'no_extraction',
         'note': 'Install AutoCAD or ODA File Converter for accurate extraction'
     }]
+
+
+def extract_raw_data_from_dwg(file_path: str) -> Dict:
+    """
+    Extract RAW data from DWG file for AI processing.
+
+    Unlike extract_from_dwg() which returns processed materials,
+    this function returns all raw data extracted from AutoCAD
+    for the AI to analyze and create an Israeli BOQ.
+
+    Args:
+        file_path: Path to the DWG file
+
+    Returns:
+        Dict with raw extraction data:
+        - blocks: All block references with names, attributes, positions
+        - text: All text entities
+        - dimensions: All dimension values
+        - layers: Layer names and entity counts
+        - geometry: Line lengths, areas, polylines
+        - metadata: File info, extraction method
+    """
+    raw_data = {
+        "file_path": file_path,
+        "filename": os.path.basename(file_path),
+        "extraction_method": None,
+        "extraction_success": False,
+        "blocks": [],
+        "text_entities": [],
+        "dimensions": [],
+        "layers": {},
+        "geometry": {
+            "total_line_length": 0.0,
+            "total_area": 0.0,
+            "polyline_count": 0,
+            "circle_count": 0,
+            "arc_count": 0
+        },
+        "attributes": [],
+        "errors": []
+    }
+
+    # Strategy 1: AutoCAD COM (most complete data)
+    if HAS_WIN32COM:
+        logger.info("Extracting raw data via AutoCAD COM...")
+        extractor = AutoCADExtractor()
+
+        if extractor.connect():
+            if extractor.open_drawing(file_path):
+                try:
+                    raw_data = _extract_raw_autocad_data(extractor.doc, file_path)
+                    raw_data["extraction_method"] = "autocad_com"
+                    raw_data["extraction_success"] = True
+                except Exception as e:
+                    raw_data["errors"].append(f"AutoCAD extraction error: {e}")
+                finally:
+                    extractor.close()
+
+                if raw_data["extraction_success"]:
+                    return raw_data
+            extractor.close()
+
+    # Strategy 2: ODA + ezdxf
+    logger.info("Extracting raw data via ODA/ezdxf...")
+    dxf_path = convert_dwg_to_dxf(file_path)
+
+    if dxf_path:
+        try:
+            raw_data = _extract_raw_dxf_data(dxf_path)
+            raw_data["extraction_method"] = "oda_converter"
+            raw_data["extraction_success"] = True
+            raw_data["file_path"] = file_path
+            raw_data["filename"] = os.path.basename(file_path)
+
+            # Cleanup
+            try:
+                os.remove(dxf_path)
+                os.rmdir(os.path.dirname(dxf_path))
+            except:
+                pass
+
+            return raw_data
+        except Exception as e:
+            raw_data["errors"].append(f"ODA/DXF extraction error: {e}")
+
+    # Strategy 3: Direct ezdxf (last resort)
+    try:
+        raw_data = _extract_raw_dxf_data(file_path)
+        raw_data["extraction_method"] = "ezdxf_direct"
+        raw_data["extraction_success"] = True
+        return raw_data
+    except Exception as e:
+        raw_data["errors"].append(f"Direct ezdxf failed: {e}")
+
+    raw_data["extraction_method"] = "failed"
+    return raw_data
+
+
+def _extract_raw_autocad_data(doc, file_path: str) -> Dict:
+    """Extract comprehensive raw data from AutoCAD document"""
+    raw_data = {
+        "file_path": file_path,
+        "filename": os.path.basename(file_path),
+        "extraction_method": "autocad_com",
+        "extraction_success": True,
+        "blocks": [],
+        "text_entities": [],
+        "dimensions": [],
+        "layers": {},
+        "geometry": {
+            "total_line_length": 0.0,
+            "total_area": 0.0,
+            "polyline_count": 0,
+            "circle_count": 0,
+            "arc_count": 0
+        },
+        "attributes": [],
+        "errors": []
+    }
+
+    try:
+        model_space = doc.ModelSpace
+
+        for i in range(model_space.Count):
+            try:
+                entity = model_space.Item(i)
+                entity_type = entity.ObjectName
+                layer_name = entity.Layer
+
+                # Count by layer
+                raw_data["layers"][layer_name] = raw_data["layers"].get(layer_name, 0) + 1
+
+                # Blocks
+                if entity_type == "AcDbBlockReference":
+                    block_info = {
+                        "name": entity.Name,
+                        "layer": layer_name,
+                        "position": {
+                            "x": entity.InsertionPoint[0],
+                            "y": entity.InsertionPoint[1],
+                            "z": entity.InsertionPoint[2] if len(entity.InsertionPoint) > 2 else 0
+                        },
+                        "rotation": entity.Rotation if hasattr(entity, 'Rotation') else 0,
+                        "scale": {
+                            "x": entity.XScaleFactor if hasattr(entity, 'XScaleFactor') else 1,
+                            "y": entity.YScaleFactor if hasattr(entity, 'YScaleFactor') else 1
+                        },
+                        "attributes": []
+                    }
+
+                    # Extract block attributes
+                    if entity.HasAttributes:
+                        for attr in entity.GetAttributes():
+                            block_info["attributes"].append({
+                                "tag": attr.TagString,
+                                "value": attr.TextString
+                            })
+                            raw_data["attributes"].append({
+                                "block": entity.Name,
+                                "tag": attr.TagString,
+                                "value": attr.TextString
+                            })
+
+                    raw_data["blocks"].append(block_info)
+
+                # Text
+                elif entity_type in ("AcDbText", "AcDbMText"):
+                    raw_data["text_entities"].append({
+                        "type": entity_type,
+                        "text": entity.TextString,
+                        "layer": layer_name,
+                        "height": entity.Height if hasattr(entity, 'Height') else 0,
+                        "position": {
+                            "x": entity.InsertionPoint[0],
+                            "y": entity.InsertionPoint[1]
+                        }
+                    })
+
+                # Dimensions
+                elif entity_type == "AcDbDimension":
+                    try:
+                        raw_data["dimensions"].append({
+                            "type": "dimension",
+                            "measurement": entity.Measurement,
+                            "text_override": entity.TextOverride if hasattr(entity, 'TextOverride') else "",
+                            "layer": layer_name
+                        })
+                    except:
+                        pass
+
+                # Geometry - Lines
+                elif entity_type == "AcDbLine":
+                    try:
+                        length = entity.Length
+                        raw_data["geometry"]["total_line_length"] += length
+                    except:
+                        pass
+
+                # Geometry - Polylines
+                elif entity_type in ("AcDbPolyline", "AcDbLWPolyline", "AcDb2dPolyline"):
+                    raw_data["geometry"]["polyline_count"] += 1
+                    try:
+                        raw_data["geometry"]["total_line_length"] += entity.Length
+                    except:
+                        pass
+                    try:
+                        if entity.Closed:
+                            raw_data["geometry"]["total_area"] += entity.Area
+                    except:
+                        pass
+
+                # Geometry - Circles
+                elif entity_type == "AcDbCircle":
+                    raw_data["geometry"]["circle_count"] += 1
+                    try:
+                        raw_data["geometry"]["total_area"] += entity.Area
+                    except:
+                        pass
+
+                # Geometry - Arcs
+                elif entity_type == "AcDbArc":
+                    raw_data["geometry"]["arc_count"] += 1
+                    try:
+                        raw_data["geometry"]["total_line_length"] += entity.ArcLength
+                    except:
+                        pass
+
+                # Hatches (areas)
+                elif entity_type == "AcDbHatch":
+                    try:
+                        raw_data["geometry"]["total_area"] += entity.Area
+                    except:
+                        pass
+
+            except Exception as e:
+                raw_data["errors"].append(f"Error processing entity {i}: {e}")
+
+    except Exception as e:
+        raw_data["errors"].append(f"Model space iteration error: {e}")
+
+    return raw_data
+
+
+def _extract_raw_dxf_data(file_path: str) -> Dict:
+    """Extract raw data from DXF file using ezdxf"""
+    import ezdxf
+
+    raw_data = {
+        "file_path": file_path,
+        "filename": os.path.basename(file_path),
+        "extraction_method": "ezdxf",
+        "extraction_success": True,
+        "blocks": [],
+        "text_entities": [],
+        "dimensions": [],
+        "layers": {},
+        "geometry": {
+            "total_line_length": 0.0,
+            "total_area": 0.0,
+            "polyline_count": 0,
+            "circle_count": 0,
+            "arc_count": 0
+        },
+        "attributes": [],
+        "errors": []
+    }
+
+    try:
+        doc = ezdxf.readfile(file_path)
+        msp = doc.modelspace()
+
+        for entity in msp:
+            entity_type = entity.dxftype()
+            layer_name = entity.dxf.layer if hasattr(entity.dxf, 'layer') else "0"
+
+            # Count by layer
+            raw_data["layers"][layer_name] = raw_data["layers"].get(layer_name, 0) + 1
+
+            # Blocks (INSERT entities)
+            if entity_type == "INSERT":
+                block_info = {
+                    "name": entity.dxf.name,
+                    "layer": layer_name,
+                    "position": {
+                        "x": entity.dxf.insert.x,
+                        "y": entity.dxf.insert.y,
+                        "z": entity.dxf.insert.z if hasattr(entity.dxf.insert, 'z') else 0
+                    },
+                    "rotation": entity.dxf.rotation if hasattr(entity.dxf, 'rotation') else 0,
+                    "scale": {
+                        "x": entity.dxf.xscale if hasattr(entity.dxf, 'xscale') else 1,
+                        "y": entity.dxf.yscale if hasattr(entity.dxf, 'yscale') else 1
+                    },
+                    "attributes": []
+                }
+
+                # Extract attributes
+                if hasattr(entity, 'attribs'):
+                    for attrib in entity.attribs:
+                        block_info["attributes"].append({
+                            "tag": attrib.dxf.tag,
+                            "value": attrib.dxf.text
+                        })
+                        raw_data["attributes"].append({
+                            "block": entity.dxf.name,
+                            "tag": attrib.dxf.tag,
+                            "value": attrib.dxf.text
+                        })
+
+                raw_data["blocks"].append(block_info)
+
+            # Text
+            elif entity_type in ("TEXT", "MTEXT"):
+                text_value = entity.dxf.text if entity_type == "TEXT" else entity.text
+                raw_data["text_entities"].append({
+                    "type": entity_type,
+                    "text": text_value,
+                    "layer": layer_name
+                })
+
+            # Dimensions
+            elif entity_type == "DIMENSION":
+                try:
+                    raw_data["dimensions"].append({
+                        "type": "dimension",
+                        "text": entity.dxf.text if hasattr(entity.dxf, 'text') else "",
+                        "layer": layer_name
+                    })
+                except:
+                    pass
+
+            # Lines
+            elif entity_type == "LINE":
+                try:
+                    start = entity.dxf.start
+                    end = entity.dxf.end
+                    length = ((end.x - start.x)**2 + (end.y - start.y)**2)**0.5
+                    raw_data["geometry"]["total_line_length"] += length
+                except:
+                    pass
+
+            # Polylines
+            elif entity_type == "LWPOLYLINE":
+                raw_data["geometry"]["polyline_count"] += 1
+                try:
+                    raw_data["geometry"]["total_line_length"] += entity.length
+                except:
+                    pass
+
+            # Circles
+            elif entity_type == "CIRCLE":
+                raw_data["geometry"]["circle_count"] += 1
+                try:
+                    import math
+                    raw_data["geometry"]["total_area"] += math.pi * entity.dxf.radius**2
+                except:
+                    pass
+
+            # Arcs
+            elif entity_type == "ARC":
+                raw_data["geometry"]["arc_count"] += 1
+
+    except Exception as e:
+        raw_data["errors"].append(f"DXF parsing error: {e}")
+        raw_data["extraction_success"] = False
+
+    return raw_data
