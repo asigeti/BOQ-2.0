@@ -13,7 +13,7 @@ import logging
 from typing import List, Dict
 from sqlalchemy.orm import Session
 from app import models
-from app.services.extraction import extract_from_pdf, extract_from_dxf, extract_from_ifc
+from app.services.extraction import extract_from_pdf, extract_from_dxf, extract_from_ifc, extract_from_dwg
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 EXTRACTORS = {
     '.pdf': extract_from_pdf,
     '.dxf': extract_from_dxf,
-    '.dwg': extract_from_dxf,  # DWG routes to DXF extractor
+    '.dwg': extract_from_dwg,  # DWG uses dedicated extractor with AutoCAD/ODA support
     '.ifc': extract_from_ifc,
     # Image formats - route to PDF extractor which handles images via Vision API
     '.png': extract_from_pdf,
