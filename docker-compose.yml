@@ -6,19 +6,19 @@ services:
       POSTGRES_PASSWORD: boq_password
       POSTGRES_DB: boq_db
     ports:
-      - "6432:5432"
+      - "7432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
   redis:
     image: redis:7
     ports:
-      - "6379:6379"
+      - "7379:6379"
 
   backend:
     build: ./backend
     ports:
-      - "6000:6000"
+      - "7000:7000"
     environment:
       DATABASE_URL: postgresql://boq_user:boq_password@db:5432/boq_db
       REDIS_URL: redis://redis:6379
@@ -31,9 +31,9 @@ services:
   frontend:
     build: ./frontend
     ports:
-      - "6001:3000"
+      - "7001:3000"
     environment:
-      NEXT_PUBLIC_API_URL: http://localhost:6000
+      NEXT_PUBLIC_API_URL: http://localhost:7000
     depends_on:
       - backend
     volumes:

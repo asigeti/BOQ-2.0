@@ -12,11 +12,11 @@ class Settings(BaseSettings):
     # AI
     OPENAI_API_KEY: str = ""
     
-    # Database - Docker exposes PostgreSQL on localhost:6432
-    DATABASE_URL: str = "postgresql://boq_user:boq_password@localhost:6432/boq_db"
+    # Database - Docker exposes PostgreSQL on localhost:7432
+    DATABASE_URL: str = "postgresql://boq_user:boq_password@localhost:7432/boq_db"
 
     # CORS
-    BACKEND_CORS_ORIGINS: list = ["http://localhost:6001", "http://localhost:6000"]
+    BACKEND_CORS_ORIGINS: list = ["http://localhost:7001", "http://localhost:7000"]
     
     class Config:
         case_sensitive = True
