@@ -30,16 +30,16 @@ timeout /t 5 /nobreak >nul
 echo [OK] Database ready
 echo.
 
-echo [3/4] Starting Backend (Port 8000)...
-start "BOQ Backend" cmd /k "cd /d %~dp0backend && uvicorn app.main:app --reload --host 0.0.0.0 --port 8000"
+echo [3/4] Starting Backend (Port 6000)...
+start "BOQ Backend" cmd /k "cd /d %~dp0backend && uvicorn app.main:app --reload --host 0.0.0.0 --port 6000"
 echo [OK] Backend starting...
 echo.
 
 REM Wait for backend to initialize
 timeout /t 3 /nobreak >nul
 
-echo [4/4] Starting Frontend (Port 5001)...
-start "BOQ Frontend" cmd /k "cd /d %~dp0frontend && npm run dev -- -p 5001"
+echo [4/4] Starting Frontend (Port 6001)...
+start "BOQ Frontend" cmd /k "cd /d %~dp0frontend && npm run dev -- -p 6001"
 echo [OK] Frontend starting...
 echo.
 
@@ -47,14 +47,14 @@ echo ========================================
 echo   All services started successfully!
 echo ========================================
 echo.
-echo Backend:  http://localhost:8000
-echo Frontend: http://localhost:5001
-echo API Docs: http://localhost:8000/docs
+echo Backend:  http://localhost:6000
+echo Frontend: http://localhost:6001
+echo API Docs: http://localhost:6000/docs
 echo.
 echo Press any key to open the application in your browser...
 pause >nul
 
-start http://localhost:5001
+start http://localhost:6001
 
 echo.
 echo To stop all services:

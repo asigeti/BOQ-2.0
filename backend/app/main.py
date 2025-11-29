@@ -13,10 +13,10 @@ app = FastAPI(
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
 )
 
-# Configure CORS - Allow frontend on port 3001
+# Configure CORS - Allow frontend on port 6001
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3001", "http://localhost:3000", "http://localhost:5001"],
+    allow_origins=["http://localhost:6001", "http://localhost:6000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
