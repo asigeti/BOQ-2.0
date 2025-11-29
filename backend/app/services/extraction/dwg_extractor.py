@@ -15,6 +15,7 @@ import sqlite3
 import subprocess
 import tempfile
 import json
+import time
 from typing import List, Dict, Optional, Tuple
 from pathlib import Path
 
@@ -23,6 +24,7 @@ logger = logging.getLogger(__name__)
 # AutoCAD COM interface (Windows only)
 try:
     import win32com.client
+    import pythoncom
     HAS_WIN32COM = True
 except ImportError:
     HAS_WIN32COM = False
@@ -52,33 +54,48 @@ class AutoCADExtractor:
             return False
 
         try:
-            # Try to connect to existing AutoCAD instance
-            self.acad = win32com.client.GetActiveObject("AutoCAD.Application")
-            logger.info("Connected to existing AutoCAD instance")
-            return True
+            # Initialize COM for this thread
+            pythoncom.CoInitialize()
         except:
-            try:
-                # Start new AutoCAD instance
-                self.acad = win32com.client.Dispatch("AutoCAD.Application")
-                self.acad.Visible = False  # Run in background
-                logger.info("Started new AutoCAD instance")
-                return True
-            except Exception as e:
-                logger.warning(f"Could not connect to AutoCAD: {e}")
-                return False
+            pass  # Already initialized
+
+        try:
+            # Try to connect to existing AutoCAD instance
+            self.acad = win32com.client.Dispatch("AutoCAD.Application")
+            self.acad.Visible = True  # Keep visible for stability
+            logger.info("Connected to AutoCAD instance")
+            time.sleep(2)  # Wait for AutoCAD to be ready
+            return True
+        except Exception as e:
+            logger.warning(f"Could not connect to AutoCAD: {e}")
+            return False
 
     def open_drawing(self, file_path: str) -> bool:
-        """Open a DWG file in AutoCAD"""
+        """Open a DWG file in AutoCAD with proper timing"""
         if not self.acad:
             return False
 
         try:
             self.doc = self.acad.Documents.Open(file_path)
             logger.info(f"Opened drawing: {file_path}")
+            # Wait for document to fully load
+            time.sleep(3)
             return True
         except Exception as e:
             logger.error(f"Failed to open drawing: {e}")
             return False
+
+    def _get_model_space_with_retry(self, max_retries: int = 5):
+        """Get ModelSpace with retry logic for timing issues"""
+        for attempt in range(max_retries):
+            try:
+                time.sleep(1)
+                msp = self.doc.ModelSpace
+                return msp
+            except Exception as e:
+                logger.warning(f"ModelSpace access attempt {attempt + 1} failed: {e}")
+                time.sleep(2)
+        return None
 
     def scan_elements(self) -> List[Dict]:
         """
@@ -91,7 +108,14 @@ class AutoCADExtractor:
         elements = []
 
         try:
-            model_space = self.doc.ModelSpace
+            # Get model space with retry logic
+            model_space = self._get_model_space_with_retry()
+            if model_space is None:
+                logger.error("Could not access ModelSpace after retries")
+                return []
+
+            entity_count = model_space.Count
+            logger.info(f"Processing {entity_count} entities...")
 
             # Track statistics for BOQ
             stats = {
@@ -103,10 +127,13 @@ class AutoCADExtractor:
                 'total_area': 0.0,
             }
 
-            for i in range(model_space.Count):
-                entity = model_space.Item(i)
-                entity_type = entity.ObjectName
-                layer_name = entity.Layer
+            for i in range(entity_count):
+                try:
+                    entity = model_space.Item(i)
+                    entity_type = entity.ObjectName
+                    layer_name = entity.Layer
+                except Exception as e:
+                    continue  # Skip problematic entities
 
                 # Count by layer
                 stats['layers'][layer_name] = stats['layers'].get(layer_name, 0) + 1

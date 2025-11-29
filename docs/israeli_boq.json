@@ -1,0 +1,94 @@
+{
+  "project_name": "DCRC Water Park Project",
+  "filename": "DCRC-WP-PLG.dwg",
+  "date": "תאריך",
+  "chapters": [
+    {
+      "chapter_code": "01",
+      "chapter_name_he": "עבודות עפר",
+      "chapter_name_en": "Earthworks",
+      "items": [
+        {
+          "item_code": "01.01.01",
+          "dekel_code": "01.01.01",
+          "description_he": "חפירה בקרקע רגילה",
+          "description_en": "Regular soil excavation",
+          "quantity": 1000.0,
+          "unit": "מ\"ק",
+          "unit_price": 45.0,
+          "total_price": 45000.0,
+          "confidence": 0.8,
+          "notes": "הערכה על בסיס שטח כולל"
+        },
+        {
+          "item_code": "01.02.01",
+          "dekel_code": "01.02.01",
+          "description_he": "מילוי חול",
+          "description_en": "Sand fill",
+          "quantity": 500.0,
+          "unit": "מ\"ק",
+          "unit_price": 85.0,
+          "total_price": 42500.0,
+          "confidence": 0.7,
+          "notes": "הערכה על בסיס שטח כולל"
+        }
+      ],
+      "chapter_total": 87500.0
+    },
+    {
+      "chapter_code": "02",
+      "chapter_name_he": "בטון",
+      "chapter_name_en": "Concrete",
+      "items": [
+        {
+          "item_code": "02.01.01",
+          "dekel_code": "02.01.01",
+          "description_he": "בטון יסודות B30",
+          "description_en": "Foundation concrete B30",
+          "quantity": 200.0,
+          "unit": "מ\"ק",
+          "unit_price": 850.0,
+          "total_price": 170000.0,
+          "confidence": 0.9,
+          "notes": "מבוסס על בלוקים ופרטים"
+        }
+      ],
+      "chapter_total": 170000.0
+    },
+    {
+      "chapter_code": "03",
+      "chapter_name_he": "בניה",
+      "chapter_name_en": "Construction",
+      "items": [
+        {
+          "item_code": "03.01.01",
+          "dekel_code": "03.01.01",
+          "description_he": "קיר בלוקים 20 ס\"מ",
+          "description_en": "Block wall 20cm",
+          "quantity": 300.0,
+          "unit": "מ\"ר",
+          "unit_price": 185.0,
+          "total_price": 55500.0,
+          "confidence": 0.85,
+          "notes": "מבוסס על בלוקים ופרטים"
+        }
+      ],
+      "chapter_total": 55500.0
+    }
+  ],
+  "summary": {
+    "subtotal": 312000.0,
+    "vat_rate": 0.17,
+    "vat_amount": 53040.0,
+    "grand_total": 365040.0
+  },
+  "notes": [
+    "הכמויות והמחירים מבוססים על הערכות כלליות מתוך הנתונים שסופקו.",
+    "חלק מהפריטים דורשים בדיקה נוספת בשטח."
+  ],
+  "metadata": {
+    "extraction_method": "autocad_com_gpt4",
+    "processing_time_seconds": 11.70829,
+    "generated_at": "2025-11-29T17:17:16.443027"
+  }
+}
