@@ -2,28 +2,17 @@
 
 import { Provider } from 'react-redux';
 import { store } from '../store/store';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-
-const theme = createTheme({
-    palette: {
-        mode: 'light',
-        primary: {
-            main: '#1976d2',
-        },
-        secondary: {
-            main: '#dc004e',
-        },
-    },
-});
+import { lightTheme } from '../theme/theme';
 
 export function Providers({ children }: { children: React.ReactNode }) {
-    return (
-        <Provider store={store}>
-            <ThemeProvider theme={theme}>
-                <CssBaseline />
-                {children}
-            </ThemeProvider>
-        </Provider>
-    );
+  return (
+    <Provider store={store}>
+      <ThemeProvider theme={lightTheme}>
+        <CssBaseline />
+        {children}
+      </ThemeProvider>
+    </Provider>
+  );
 }
