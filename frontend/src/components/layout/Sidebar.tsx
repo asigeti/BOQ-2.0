@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import {
   Box,
-  Drawer,
   List,
   ListItem,
   ListItemButton,
@@ -21,15 +20,14 @@ import {
   Description as DescriptionIcon,
   CloudUpload as UploadIcon,
   Assessment as AssessmentIcon,
-  Settings as SettingsIcon,
   ChevronRight as ChevronRightIcon,
   ChevronLeft as ChevronLeftIcon,
   Layers as LayersIcon,
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const DRAWER_WIDTH = 280;
-const COLLAPSED_WIDTH = 80;
+export const DRAWER_WIDTH = 260;
+export const COLLAPSED_WIDTH = 72;
 
 interface NavItem {
   title: string;
@@ -65,63 +63,70 @@ const navItems: NavItem[] = [
   },
 ];
 
-export default function Sidebar() {
-  const [collapsed, setCollapsed] = useState(false);
+interface SidebarProps {
+  collapsed: boolean;
+  onToggle: () => void;
+}
+
+export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
 
   const drawerWidth = collapsed ? COLLAPSED_WIDTH : DRAWER_WIDTH;
 
   return (
-    <Drawer
-      variant="permanent"
+    <Box
+      component="nav"
       sx={{
         width: drawerWidth,
         flexShrink: 0,
-        '& .MuiDrawer-paper': {
-          width: drawerWidth,
-          boxSizing: 'border-box',
-          borderLeft: 'none',
-          borderRight: '1px solid',
-          borderColor: 'divider',
-          background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)',
-          transition: 'width 0.3s ease-in-out',
-          overflowX: 'hidden',
-        },
+        height: '100vh',
+        position: 'sticky',
+        top: 0,
+        borderLeft: '1px solid',
+        borderColor: 'divider',
+        background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)',
+        transition: 'width 0.3s ease-in-out',
+        overflowX: 'hidden',
+        overflowY: 'auto',
+        display: 'flex',
+        flexDirection: 'column',
       }}
     >
       {/* Logo Section */}
       <Box
         sx={{
-          p: 3,
+          p: 2,
           display: 'flex',
           alignItems: 'center',
           justifyContent: collapsed ? 'center' : 'flex-start',
           gap: 2,
-          minHeight: 80,
+          minHeight: 72,
         }}
       >
         <Box
           sx={{
-            width: 44,
-            height: 44,
+            width: 40,
+            height: 40,
             borderRadius: 2,
             background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             boxShadow: '0 4px 14px 0 rgba(99, 102, 241, 0.4)',
+            flexShrink: 0,
           }}
         >
-          <LayersIcon sx={{ color: 'white', fontSize: 24 }} />
+          <LayersIcon sx={{ color: 'white', fontSize: 22 }} />
         </Box>
         <AnimatePresence>
           {!collapsed && (
             <motion.div
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -10 }}
+              initial={{ opacity: 0, width: 0 }}
+              animate={{ opacity: 1, width: 'auto' }}
+              exit={{ opacity: 0, width: 0 }}
               transition={{ duration: 0.2 }}
+              style={{ overflow: 'hidden', whiteSpace: 'nowrap' }}
             >
               <Typography
                 variant="h6"
@@ -132,6 +137,7 @@ export default function Sidebar() {
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   whiteSpace: 'nowrap',
+                  fontSize: '1.1rem',
                 }}
               >
                 BOQ Pro
@@ -150,14 +156,14 @@ export default function Sidebar() {
       <Divider sx={{ mx: 2 }} />
 
       {/* Navigation Items */}
-      <List sx={{ px: 2, py: 3, flex: 1 }}>
+      <List sx={{ px: 1.5, py: 2, flex: 1 }}>
         {navItems.map((item, index) => {
           const isActive = pathname === item.path || pathname?.startsWith(item.path + '/');
 
           return (
             <motion.div
               key={item.path}
-              initial={{ opacity: 0, x: -20 }}
+              initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.05 }}
             >
@@ -166,18 +172,18 @@ export default function Sidebar() {
                 placement="left"
                 arrow
               >
-                <ListItem disablePadding sx={{ mb: 1 }}>
+                <ListItem disablePadding sx={{ mb: 0.5 }}>
                   <ListItemButton
                     onClick={() => router.push(item.path)}
                     sx={{
                       borderRadius: 2,
-                      minHeight: 48,
+                      minHeight: 44,
                       justifyContent: collapsed ? 'center' : 'flex-start',
-                      px: collapsed ? 2 : 2.5,
+                      px: collapsed ? 1.5 : 2,
                       backgroundColor: isActive
                         ? alpha('#6366f1', 0.1)
                         : 'transparent',
-                      borderLeft: isActive ? '3px solid #6366f1' : '3px solid transparent',
+                      borderRight: isActive ? '3px solid #6366f1' : '3px solid transparent',
                       '&:hover': {
                         backgroundColor: alpha('#6366f1', 0.08),
                       },
@@ -187,7 +193,7 @@ export default function Sidebar() {
                     <ListItemIcon
                       sx={{
                         minWidth: 0,
-                        mr: collapsed ? 0 : 2,
+                        ml: collapsed ? 0 : 2,
                         justifyContent: 'center',
                         color: isActive ? 'primary.main' : 'text.secondary',
                       }}
@@ -197,17 +203,19 @@ export default function Sidebar() {
                     <AnimatePresence>
                       {!collapsed && (
                         <motion.div
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
+                          initial={{ opacity: 0, width: 0 }}
+                          animate={{ opacity: 1, width: 'auto' }}
+                          exit={{ opacity: 0, width: 0 }}
                           transition={{ duration: 0.2 }}
+                          style={{ overflow: 'hidden' }}
                         >
                           <ListItemText
                             primary={item.title}
                             primaryTypographyProps={{
-                              fontSize: '0.9375rem',
+                              fontSize: '0.875rem',
                               fontWeight: isActive ? 600 : 500,
                               color: isActive ? 'primary.main' : 'text.primary',
+                              whiteSpace: 'nowrap',
                             }}
                           />
                         </motion.div>
@@ -222,16 +230,17 @@ export default function Sidebar() {
       </List>
 
       {/* Collapse Button */}
-      <Box sx={{ p: 2 }}>
-        <Divider sx={{ mb: 2 }} />
+      <Box sx={{ p: 1.5 }}>
+        <Divider sx={{ mb: 1.5 }} />
         <Box
           sx={{
             display: 'flex',
-            justifyContent: collapsed ? 'center' : 'flex-end',
+            justifyContent: 'center',
           }}
         >
           <IconButton
-            onClick={() => setCollapsed(!collapsed)}
+            onClick={onToggle}
+            size="small"
             sx={{
               backgroundColor: alpha('#6366f1', 0.1),
               '&:hover': {
@@ -243,6 +252,6 @@ export default function Sidebar() {
           </IconButton>
         </Box>
       </Box>
-    </Drawer>
+    </Box>
   );
 }
