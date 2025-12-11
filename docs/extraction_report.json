@@ -1,0 +1,24 @@
+{
+  "status": "completed",
+  "filename": "DCRC-WP-PLG.dwg",
+  "processed_at": "2025-11-29T17:10:46.060428",
+  "processing_time_seconds": 5.19,
+  "extraction_method": "Fallback/Manual Review",
+  "summary": {
+    "total_materials": 1,
+    "average_confidence": 10.0,
+    "extraction_sources": {
+      "no_extraction": 1
+    }
+  },
+  "materials": [
+    {
+      "material_name": "DWG File - Manual Review Required",
+      "quantity": 1,
+      "unit": "file",
+      "confidence_score": 0.1,
+      "source": "no_extraction",
+      "note": "Install AutoCAD or ODA File Converter for accurate extraction"
+    }
+  ]
+}

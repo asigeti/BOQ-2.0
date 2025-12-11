@@ -1,0 +1,7720 @@
+{
+  "file_path": "C:\\Users\\asige\\OneDrive\\Documents\\GitHub\\BOQ-2.0\\docs\\DCRC-WP-PLG.dwg",
+  "filename": "DCRC-WP-PLG.dwg",
+  "extraction_method": "autocad_com",
+  "extraction_success": true,
+  "blocks": [
+    {
+      "name": "10547-1",
+      "layer": "xref",
+      "position": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotation": 0.0,
+      "scale": {
+        "x": 100.0,
+        "y": 100.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "North",
+      "layer": "2",
+      "position": {
+        "x": 21991595.212695617,
+        "y": 63568911.0302469,
+        "z": 0.0
+      },
+      "rotation": 0.038611533603263824,
+      "scale": {
+        "x": 1.5,
+        "y": 1.5
+      },
+      "attributes": []
+    },
+    {
+      "name": "arrow",
+      "layer": "1",
+      "position": {
+        "x": 21992587.93331077,
+        "y": 63567978.97938337,
+        "z": 0.0
+      },
+      "rotation": 3.0774946047698823,
+      "scale": {
+        "x": -0.5,
+        "y": 0.5
+      },
+      "attributes": []
+    },
+    {
+      "name": "5118-ramot-kantri-02",
+      "layer": "road",
+      "position": {
+        "x": 19.999652694910765,
+        "y": -1.4452470168471336,
+        "z": 0.0
+      },
+      "rotation": 0.0,
+      "scale": {
+        "x": 100.0,
+        "y": 100.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "A$C7BCB6AFE",
+      "layer": "shazap",
+      "position": {
+        "x": 21995689.660794396,
+        "y": 63568556.64891329,
+        "z": 0.0
+      },
+      "rotation": 0.0,
+      "scale": {
+        "x": 100.0,
+        "y": 100.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "A$C7BCB6AFE",
+      "layer": "shazap",
+      "position": {
+        "x": 21985710.19656117,
+        "y": 63569197.190572925,
+        "z": 0.0
+      },
+      "rotation": 0.0,
+      "scale": {
+        "x": 100.0,
+        "y": 100.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "130",
+      "layer": "2",
+      "position": {
+        "x": 21995038.666768357,
+        "y": 63568409.822682984,
+        "z": 0.0
+      },
+      "rotation": 4.6482909316369385,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "centerline",
+      "layer": "AXES",
+      "position": {
+        "x": 21998307.498570483,
+        "y": 63586123.471226834,
+        "z": 0.0
+      },
+      "rotation": 6.2190872584544445,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21998452.45237317,
+        "y": 63586079.502630286,
+        "z": 0.0
+      },
+      "rotation": 6.2190872584544445,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "%%p0.00"
+        }
+      ]
+    },
+    {
+      "name": "level-front",
+      "layer": "TEXT",
+      "position": {
+        "x": 21998937.28211027,
+        "y": 63586028.62856767,
+        "z": 0.0
+      },
+      "rotation": 6.2190872584544445,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": [
+        {
+          "tag": "N1",
+          "value": "+1.00"
+        }
+      ]
+    },
+    {
+      "name": "NUM",
+      "layer": "TEXT",
+      "position": {
+        "x": 21997926.67305452,
+        "y": 63586126.76928409,
+        "z": 0.0
+      },
+      "rotation": 6.2190872584544445,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": [
+        {
+          "tag": "00",
+          "value": "00"
+        }
+      ]
+    },
+    {
+      "name": "profile-o-empty",
+      "layer": "TEXT",
+      "position": {
+        "x": 21997834.932706323,
+        "y": 63585461.15457688,
+        "z": 0.0
+      },
+      "rotation": 6.2190872584544445,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "profile-",
+      "layer": "TEXT",
+      "position": {
+        "x": 21997832.254048422,
+        "y": 63585461.326509155,
+        "z": 0.0
+      },
+      "rotation": 6.2190872584544445,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "profile-o-full",
+      "layer": "TEXT",
+      "position": {
+        "x": 21997824.27580548,
+        "y": 63585461.96331998,
+        "z": 0.0
+      },
+      "rotation": 6.2190872584544445,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "profile-U",
+      "layer": "TEXT",
+      "position": {
+        "x": 21997816.55651269,
+        "y": 63585462.329316005,
+        "z": 0.0
+      },
+      "rotation": 6.2190872584544445,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "profile-#-full",
+      "layer": "TEXT",
+      "position": {
+        "x": 21997819.17917898,
+        "y": 63585462.16097761,
+        "z": 0.0
+      },
+      "rotation": 6.2190872584544445,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "profile-#-empty",
+      "layer": "TEXT",
+      "position": {
+        "x": 21997820.93054894,
+        "y": 63585462.04856422,
+        "z": 0.0
+      },
+      "rotation": 6.2190872584544445,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "1X1",
+      "layer": "VP",
+      "position": {
+        "x": 21997817.94538631,
+        "y": 63585449.27596118,
+        "z": 0.0
+      },
+      "rotation": 6.2190872584544445,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "8X8",
+      "layer": "VP",
+      "position": {
+        "x": 21997818.030391652,
+        "y": 63585450.60032123,
+        "z": 0.0
+      },
+      "rotation": 6.2190872584544445,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "profile-L",
+      "layer": "TEXT",
+      "position": {
+        "x": 21997827.635254275,
+        "y": 63585461.61821616,
+        "z": 0.0
+      },
+      "rotation": 6.2190872584544445,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "L50X50",
+      "layer": "TEXT",
+      "position": {
+        "x": 21997825.380675633,
+        "y": 63585448.375533,
+        "z": 0.0
+      },
+      "rotation": 6.2190872584544445,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "L40X40",
+      "layer": "TEXT",
+      "position": {
+        "x": 21997830.366415963,
+        "y": 63585448.05551839,
+        "z": 0.0
+      },
+      "rotation": 6.2190872584544445,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "L30X30",
+      "layer": "TEXT",
+      "position": {
+        "x": 21997834.355207816,
+        "y": 63585447.79949389,
+        "z": 0.0
+      },
+      "rotation": 6.2190872584544445,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "L20X20",
+      "layer": "TEXT",
+      "position": {
+        "x": 21997837.32788703,
+        "y": 63585447.60868957,
+        "z": 0.0
+      },
+      "rotation": 6.2190872584544445,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "L10X10",
+      "layer": "TEXT",
+      "position": {
+        "x": 21997839.32278193,
+        "y": 63585447.48064529,
+        "z": 0.0
+      },
+      "rotation": 6.2190872584544445,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "5X5",
+      "layer": "DIM",
+      "position": {
+        "x": 21997818.122529157,
+        "y": 63585452.03579845,
+        "z": 0.0
+      },
+      "rotation": 6.2190872584544445,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "profile-T",
+      "layer": "TEXT",
+      "position": {
+        "x": 21997830.09312995,
+        "y": 63585461.46045501,
+        "z": 0.0
+      },
+      "rotation": 6.2190872584544445,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "idkun",
+      "layer": "_IDKUN",
+      "position": {
+        "x": 21997504.60117132,
+        "y": 63586135.55829643,
+        "z": 0.0
+      },
+      "rotation": 6.2190872584544445,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": [
+        {
+          "tag": "00",
+          "value": "00"
+        }
+      ]
+    },
+    {
+      "name": "level-sec",
+      "layer": "PRATIM",
+      "position": {
+        "x": 21998029.143704265,
+        "y": 63586074.69379148,
+        "z": 0.0
+      },
+      "rotation": 6.2190872584544445,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": [
+        {
+          "tag": "SECTION",
+          "value": "%%p0.00"
+        }
+      ]
+    },
+    {
+      "name": "North",
+      "layer": "TEXT",
+      "position": {
+        "x": 21997322.96634469,
+        "y": 63586146.22833721,
+        "z": 0.0
+      },
+      "rotation": 6.2190872584544445,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "ELEVATION",
+      "layer": "TEXT",
+      "position": {
+        "x": 21997624.06852016,
+        "y": 63586121.57014206,
+        "z": 0.0
+      },
+      "rotation": 6.2190872584544445,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": [
+        {
+          "tag": "00",
+          "value": "3"
+        }
+      ]
+    },
+    {
+      "name": "PRAT-100",
+      "layer": "PRATIM",
+      "position": {
+        "x": 21998564.883380935,
+        "y": 63586072.28613623,
+        "z": 0.0
+      },
+      "rotation": 6.2190872584544445,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": [
+        {
+          "tag": "0000",
+          "value": "00"
+        },
+        {
+          "tag": "ADTE",
+          "value": "DT0-00"
+        }
+      ]
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21994238.253126044,
+        "y": 63568308.01666669,
+        "z": 0.0
+      },
+      "rotation": 3.0774941991566993,
+      "scale": {
+        "x": -0.6999999999999995,
+        "y": 0.7
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "-0.02=661.98"
+        }
+      ]
+    },
+    {
+      "name": "arrow",
+      "layer": "1",
+      "position": {
+        "x": 21992443.488904964,
+        "y": 63566353.254816346,
+        "z": 0.0
+      },
+      "rotation": 3.0774946047698823,
+      "scale": {
+        "x": -0.5,
+        "y": 0.5
+      },
+      "attributes": []
+    },
+    {
+      "name": "arrow",
+      "layer": "1",
+      "position": {
+        "x": 21993269.373449232,
+        "y": 63565368.70806862,
+        "z": 0.0
+      },
+      "rotation": 4.64829093160913,
+      "scale": {
+        "x": -0.49999999999999994,
+        "y": 0.5
+      },
+      "attributes": []
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21995194.92349152,
+        "y": 63566779.78224334,
+        "z": 0.0
+      },
+      "rotation": 3.0774941991566993,
+      "scale": {
+        "x": -0.6999999999999995,
+        "y": 0.7
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "-0.02=661.98"
+        }
+      ]
+    },
+    {
+      "name": "arrow",
+      "layer": "1",
+      "position": {
+        "x": 21995194.002243694,
+        "y": 63566638.65836113,
+        "z": 0.0
+      },
+      "rotation": 3.077494604059955,
+      "scale": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "attributes": []
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21995182.488691576,
+        "y": 63567323.77350472,
+        "z": 0.0
+      },
+      "rotation": 3.0774941991566993,
+      "scale": {
+        "x": -0.6999999999999995,
+        "y": 0.7
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "-0.02=661.98"
+        }
+      ]
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21995440.766183637,
+        "y": 63568243.185065344,
+        "z": 0.0
+      },
+      "rotation": 3.0774941991566993,
+      "scale": {
+        "x": -0.6999999999999995,
+        "y": 0.7
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "-0.20=661.80"
+        }
+      ]
+    },
+    {
+      "name": "120",
+      "layer": "door",
+      "position": {
+        "x": 21994941.35806141,
+        "y": 63566269.43422005,
+        "z": 0.0
+      },
+      "rotation": 3.077494605128278,
+      "scale": {
+        "x": -1.0,
+        "y": 1.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "T-p9",
+      "layer": "TREE",
+      "position": {
+        "x": 21995511.533246428,
+        "y": 63568445.24773401,
+        "z": 0.0
+      },
+      "rotation": 1.1975058123736682,
+      "scale": {
+        "x": 1.0483199929815885,
+        "y": 1.0483199929815885
+      },
+      "attributes": []
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21995063.254512742,
+        "y": 63565397.67084169,
+        "z": 0.0
+      },
+      "rotation": 3.0774941991566993,
+      "scale": {
+        "x": -0.6999999999999994,
+        "y": 0.7
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "-0.02=661.98"
+        }
+      ]
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21993126.291351832,
+        "y": 63565157.29265633,
+        "z": 0.0
+      },
+      "rotation": 3.0774941991566993,
+      "scale": {
+        "x": -0.6999999999999994,
+        "y": 0.7
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "-0.02=661.98"
+        }
+      ]
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21992173.721430566,
+        "y": 63567023.00783067,
+        "z": 0.0
+      },
+      "rotation": 3.0774941991566993,
+      "scale": {
+        "x": -0.6999999999999994,
+        "y": 0.7
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "-0.02=661.98"
+        }
+      ]
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21992198.30213268,
+        "y": 63567553.96649195,
+        "z": 0.0
+      },
+      "rotation": 3.0774941991566993,
+      "scale": {
+        "x": -0.6999999999999994,
+        "y": 0.7
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "-0.02=661.98"
+        }
+      ]
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21993423.91028859,
+        "y": 63568398.98938452,
+        "z": 0.0
+      },
+      "rotation": 3.0774941991566993,
+      "scale": {
+        "x": -0.6999999999999994,
+        "y": 0.7
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "-0.02=661.98"
+        }
+      ]
+    },
+    {
+      "name": "galgilon",
+      "layer": "1",
+      "position": {
+        "x": 21992525.775702722,
+        "y": 63565643.72158017,
+        "z": 0.0
+      },
+      "rotation": 1.6348960384824769,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "galgilon",
+      "layer": "1",
+      "position": {
+        "x": 21992691.711063158,
+        "y": 63568242.968241446,
+        "z": 0.0
+      },
+      "rotation": 1.6348960384824769,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21993788.684429985,
+        "y": 63568258.22587303,
+        "z": 0.0
+      },
+      "rotation": 3.0774941991566993,
+      "scale": {
+        "x": -0.6999999999999994,
+        "y": 0.7
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "+2.00"
+        }
+      ]
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21994766.85766331,
+        "y": 63568500.53093386,
+        "z": 19965.0
+      },
+      "rotation": 3.0774941991566993,
+      "scale": {
+        "x": -0.48999999999999955,
+        "y": 0.48999999999999994
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "+0.11"
+        }
+      ]
+    },
+    {
+      "name": "KAV_BIN_MIG",
+      "layer": "0",
+      "position": {
+        "x": 21995317.88710314,
+        "y": 63564862.43435722,
+        "z": 0.0
+      },
+      "rotation": 6.2190872584544445,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21992261.55486807,
+        "y": 63568626.81643556,
+        "z": 0.0
+      },
+      "rotation": 6.219798962699571,
+      "scale": {
+        "x": 0.7000000000000001,
+        "y": 0.7000000000000001
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "675.28"
+        }
+      ]
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21994121.58843058,
+        "y": 63568592.5623427,
+        "z": 0.0
+      },
+      "rotation": 6.219798962699571,
+      "scale": {
+        "x": 0.7000000000000001,
+        "y": 0.7000000000000001
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "666.51"
+        }
+      ]
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21994700.71419283,
+        "y": 63568589.773635425,
+        "z": 0.0
+      },
+      "rotation": 6.219798962699571,
+      "scale": {
+        "x": 0.7000000000000001,
+        "y": 0.7000000000000001
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "664.56"
+        }
+      ]
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21995591.087625902,
+        "y": 63568557.411019966,
+        "z": 0.0
+      },
+      "rotation": 6.219798962699571,
+      "scale": {
+        "x": 0.7000000000000001,
+        "y": 0.7000000000000001
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "663.58"
+        }
+      ]
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21994413.795340102,
+        "y": 63568587.19137913,
+        "z": 0.0
+      },
+      "rotation": 6.219798962699571,
+      "scale": {
+        "x": 0.7000000000000001,
+        "y": 0.7000000000000001
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "665.42"
+        }
+      ]
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21993519.88909661,
+        "y": 63568609.15530845,
+        "z": 0.0
+      },
+      "rotation": 6.219798962699571,
+      "scale": {
+        "x": 0.7000000000000001,
+        "y": 0.7000000000000001
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "667.51"
+        }
+      ]
+    },
+    {
+      "name": "120",
+      "layer": "door",
+      "position": {
+        "x": 21991713.64203108,
+        "y": 63567287.39326107,
+        "z": 0.0
+      },
+      "rotation": 6.2190872584544445,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "120",
+      "layer": "door",
+      "position": {
+        "x": 21991635.28420186,
+        "y": 63565964.72965719,
+        "z": 0.0
+      },
+      "rotation": 6.2190872584544445,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "galgilon",
+      "layer": "1",
+      "position": {
+        "x": 21992625.579411004,
+        "y": 63567080.00048926,
+        "z": 0.0
+      },
+      "rotation": 1.6348960384824769,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21994362.82371089,
+        "y": 63568542.4555576,
+        "z": 0.0
+      },
+      "rotation": 6.2197989626995716,
+      "scale": {
+        "x": 0.7,
+        "y": 0.7
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "665.61"
+        }
+      ]
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21991730.029427838,
+        "y": 63568405.83625548,
+        "z": 66949.99999999999
+      },
+      "rotation": 6.2197989626995716,
+      "scale": {
+        "x": 0.7,
+        "y": 0.7
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "669.86"
+        }
+      ]
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21991574.140086547,
+        "y": 63565757.540172055,
+        "z": 0.0
+      },
+      "rotation": 6.2197989626995716,
+      "scale": {
+        "x": 0.7,
+        "y": 0.7
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "667.11"
+        }
+      ]
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21991564.9374668,
+        "y": 63565073.241628274,
+        "z": 0.0
+      },
+      "rotation": 6.2197989626995716,
+      "scale": {
+        "x": 0.7,
+        "y": 0.7
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "666.36"
+        }
+      ]
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21992232.126883607,
+        "y": 63565042.88987471,
+        "z": 0.0
+      },
+      "rotation": 6.2197989626995716,
+      "scale": {
+        "x": 0.7,
+        "y": 0.7
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "665.11"
+        }
+      ]
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21994676.518177517,
+        "y": 63568536.47124579,
+        "z": 0.0
+      },
+      "rotation": 6.2197989626995716,
+      "scale": {
+        "x": 0.7,
+        "y": 0.7
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "664.61"
+        }
+      ]
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21994100.96523729,
+        "y": 63568546.9005031,
+        "z": 66549.99999999999
+      },
+      "rotation": 6.2197989626995716,
+      "scale": {
+        "x": 0.7,
+        "y": 0.7
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "666.61"
+        }
+      ]
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21993505.60614873,
+        "y": 63568522.43311365,
+        "z": 66549.99999999999
+      },
+      "rotation": 6.2197989626995716,
+      "scale": {
+        "x": 0.7,
+        "y": 0.7
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "667.86"
+        }
+      ]
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21991675.94395577,
+        "y": 63567366.468890384,
+        "z": 0.0
+      },
+      "rotation": 6.2197989626995716,
+      "scale": {
+        "x": 0.7,
+        "y": 0.7
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "668.86"
+        }
+      ]
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21994564.163980775,
+        "y": 63564917.93504968,
+        "z": -66449.99999999999
+      },
+      "rotation": 6.2197989626995716,
+      "scale": {
+        "x": 0.7,
+        "y": 0.7
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "662.11"
+        }
+      ]
+    },
+    {
+      "name": "sections",
+      "layer": "0",
+      "position": {
+        "x": 21995317.887103144,
+        "y": 63564862.43435721,
+        "z": 0.0
+      },
+      "rotation": 6.2190872584544445,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "T-p9",
+      "layer": "TREE",
+      "position": {
+        "x": 21994118.22787531,
+        "y": 63565115.61922974,
+        "z": 0.0
+      },
+      "rotation": 1.1975058123736677,
+      "scale": {
+        "x": 1.0483199929815885,
+        "y": 1.0483199929815885
+      },
+      "attributes": []
+    },
+    {
+      "name": "120",
+      "layer": "door",
+      "position": {
+        "x": 21993939.55070861,
+        "y": 63565431.51098303,
+        "z": 0.0
+      },
+      "rotation": 1.5066982783703666,
+      "scale": {
+        "x": -1.0,
+        "y": 1.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "120",
+      "layer": "door",
+      "position": {
+        "x": 21994714.8360911,
+        "y": 63565381.59339531,
+        "z": 0.0
+      },
+      "rotation": 1.5066982783703666,
+      "scale": {
+        "x": -1.0,
+        "y": 1.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "arrow",
+      "layer": "1",
+      "position": {
+        "x": 21995556.610674754,
+        "y": 63566632.615484476,
+        "z": 0.0
+      },
+      "rotation": 3.077494604059955,
+      "scale": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "attributes": []
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21995131.55360247,
+        "y": 63567517.95488806,
+        "z": 0.0
+      },
+      "rotation": 3.0774941991566993,
+      "scale": {
+        "x": -0.6999999999999994,
+        "y": 0.7
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "+4.91"
+        }
+      ]
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21994901.66083358,
+        "y": 63567344.38041269,
+        "z": 0.0
+      },
+      "rotation": 3.0774941991566993,
+      "scale": {
+        "x": -0.6999999999999994,
+        "y": 0.7
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "+4.91"
+        }
+      ]
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21994577.563426882,
+        "y": 63568101.03372151,
+        "z": 0.0
+      },
+      "rotation": 3.0774941991566993,
+      "scale": {
+        "x": -0.6999999999999994,
+        "y": 0.7
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "+4.91"
+        }
+      ]
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21993276.9129155,
+        "y": 63568182.14479577,
+        "z": 0.0
+      },
+      "rotation": 3.0774941991566993,
+      "scale": {
+        "x": -0.6999999999999994,
+        "y": 0.7
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "+4.16"
+        }
+      ]
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21992651.063352704,
+        "y": 63567111.652044006,
+        "z": 0.0
+      },
+      "rotation": 3.0774941991566993,
+      "scale": {
+        "x": -0.6999999999999994,
+        "y": 0.7
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "+4.16"
+        }
+      ]
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21993614.979205545,
+        "y": 63565494.73888492,
+        "z": 0.0
+      },
+      "rotation": 3.0774941991566993,
+      "scale": {
+        "x": -0.6999999999999994,
+        "y": 0.7
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "+4.16"
+        }
+      ]
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21994787.700887468,
+        "y": 63566059.01258723,
+        "z": 0.0
+      },
+      "rotation": 3.0774941991566993,
+      "scale": {
+        "x": -0.6999999999999994,
+        "y": 0.7
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "+4.16"
+        }
+      ]
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21994853.045770258,
+        "y": 63567139.31970515,
+        "z": 0.0
+      },
+      "rotation": 3.0774941991566993,
+      "scale": {
+        "x": -0.6999999999999994,
+        "y": 0.7
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "+4.16"
+        }
+      ]
+    },
+    {
+      "name": "120",
+      "layer": "door",
+      "position": {
+        "x": 21992846.14277713,
+        "y": 63568489.95055474,
+        "z": 0.0
+      },
+      "rotation": 4.648290931673946,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "A$C0A93269E",
+      "layer": "pituah",
+      "position": {
+        "x": 21994434.514566373,
+        "y": 63568391.96968798,
+        "z": 0.0
+      },
+      "rotation": 4.648290931537408,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "M",
+      "layer": "MASGERUT",
+      "position": {
+        "x": 21992564.321332913,
+        "y": 63567591.39169971,
+        "z": 0.0
+      },
+      "rotation": 6.219088676577384,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": [
+        {
+          "tag": "0000-0",
+          "value": "26"
+        },
+        {
+          "tag": "TYPE",
+          "value": "M-10"
+        },
+        {
+          "tag": "MASHKUF",
+          "value": "-"
+        },
+        {
+          "tag": "EMG",
+          "value": "-"
+        },
+        {
+          "tag": "MIDOT",
+          "value": "40/180"
+        },
+        {
+          "tag": "GMAR",
+          "value": "-"
+        },
+        {
+          "tag": "INFO",
+          "value": "-"
+        },
+        {
+          "tag": "ZIRIM",
+          "value": "-"
+        },
+        {
+          "tag": "MAHAZIR",
+          "value": "-"
+        },
+        {
+          "tag": "YADIT",
+          "value": "-"
+        },
+        {
+          "tag": "MANUL",
+          "value": "-"
+        },
+        {
+          "tag": "MAAZUR",
+          "value": "-"
+        }
+      ]
+    },
+    {
+      "name": "M",
+      "layer": "MASGERUT",
+      "position": {
+        "x": 21992497.247701064,
+        "y": 63566546.402822,
+        "z": 0.0
+      },
+      "rotation": 6.219088676577384,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": [
+        {
+          "tag": "0000-0",
+          "value": "26"
+        },
+        {
+          "tag": "TYPE",
+          "value": "M-10"
+        },
+        {
+          "tag": "MASHKUF",
+          "value": "-"
+        },
+        {
+          "tag": "EMG",
+          "value": "-"
+        },
+        {
+          "tag": "MIDOT",
+          "value": "40/180"
+        },
+        {
+          "tag": "GMAR",
+          "value": "-"
+        },
+        {
+          "tag": "INFO",
+          "value": "-"
+        },
+        {
+          "tag": "ZIRIM",
+          "value": "-"
+        },
+        {
+          "tag": "MAHAZIR",
+          "value": "-"
+        },
+        {
+          "tag": "YADIT",
+          "value": "-"
+        },
+        {
+          "tag": "MANUL",
+          "value": "-"
+        },
+        {
+          "tag": "MAAZUR",
+          "value": "-"
+        }
+      ]
+    },
+    {
+      "name": "M",
+      "layer": "MASGERUT",
+      "position": {
+        "x": 21993373.65946984,
+        "y": 63565399.17577815,
+        "z": 0.0
+      },
+      "rotation": 6.219088676577384,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": [
+        {
+          "tag": "0000-0",
+          "value": "26"
+        },
+        {
+          "tag": "TYPE",
+          "value": "M-10"
+        },
+        {
+          "tag": "MASHKUF",
+          "value": "-"
+        },
+        {
+          "tag": "EMG",
+          "value": "-"
+        },
+        {
+          "tag": "MIDOT",
+          "value": "40/180"
+        },
+        {
+          "tag": "GMAR",
+          "value": "-"
+        },
+        {
+          "tag": "INFO",
+          "value": "-"
+        },
+        {
+          "tag": "ZIRIM",
+          "value": "-"
+        },
+        {
+          "tag": "MAHAZIR",
+          "value": "-"
+        },
+        {
+          "tag": "YADIT",
+          "value": "-"
+        },
+        {
+          "tag": "MANUL",
+          "value": "-"
+        },
+        {
+          "tag": "MAAZUR",
+          "value": "-"
+        }
+      ]
+    },
+    {
+      "name": "M",
+      "layer": "MASGERUT",
+      "position": {
+        "x": 21994508.96675512,
+        "y": 63565328.80940762,
+        "z": 0.0
+      },
+      "rotation": 6.219088676577384,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": [
+        {
+          "tag": "0000-0",
+          "value": "26"
+        },
+        {
+          "tag": "TYPE",
+          "value": "M-10"
+        },
+        {
+          "tag": "MASHKUF",
+          "value": "-"
+        },
+        {
+          "tag": "EMG",
+          "value": "-"
+        },
+        {
+          "tag": "MIDOT",
+          "value": "40/180"
+        },
+        {
+          "tag": "GMAR",
+          "value": "-"
+        },
+        {
+          "tag": "INFO",
+          "value": "-"
+        },
+        {
+          "tag": "ZIRIM",
+          "value": "-"
+        },
+        {
+          "tag": "MAHAZIR",
+          "value": "-"
+        },
+        {
+          "tag": "YADIT",
+          "value": "-"
+        },
+        {
+          "tag": "MANUL",
+          "value": "-"
+        },
+        {
+          "tag": "MAAZUR",
+          "value": "-"
+        }
+      ]
+    },
+    {
+      "name": "M",
+      "layer": "MASGERUT",
+      "position": {
+        "x": 21994893.86391001,
+        "y": 63566027.4626937,
+        "z": 0.0
+      },
+      "rotation": 6.219088676577384,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": [
+        {
+          "tag": "0000-0",
+          "value": "26"
+        },
+        {
+          "tag": "TYPE",
+          "value": "M-10"
+        },
+        {
+          "tag": "MASHKUF",
+          "value": "-"
+        },
+        {
+          "tag": "EMG",
+          "value": "-"
+        },
+        {
+          "tag": "MIDOT",
+          "value": "40/180"
+        },
+        {
+          "tag": "GMAR",
+          "value": "-"
+        },
+        {
+          "tag": "INFO",
+          "value": "-"
+        },
+        {
+          "tag": "ZIRIM",
+          "value": "-"
+        },
+        {
+          "tag": "MAHAZIR",
+          "value": "-"
+        },
+        {
+          "tag": "YADIT",
+          "value": "-"
+        },
+        {
+          "tag": "MANUL",
+          "value": "-"
+        },
+        {
+          "tag": "MAAZUR",
+          "value": "-"
+        }
+      ]
+    },
+    {
+      "name": "M",
+      "layer": "MASGERUT",
+      "position": {
+        "x": 21994962.97704469,
+        "y": 63567106.465533346,
+        "z": 0.0
+      },
+      "rotation": 6.219088676577384,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": [
+        {
+          "tag": "0000-0",
+          "value": "26"
+        },
+        {
+          "tag": "TYPE",
+          "value": "M-10"
+        },
+        {
+          "tag": "MASHKUF",
+          "value": "-"
+        },
+        {
+          "tag": "EMG",
+          "value": "-"
+        },
+        {
+          "tag": "MIDOT",
+          "value": "40/180"
+        },
+        {
+          "tag": "GMAR",
+          "value": "-"
+        },
+        {
+          "tag": "INFO",
+          "value": "-"
+        },
+        {
+          "tag": "ZIRIM",
+          "value": "-"
+        },
+        {
+          "tag": "MAHAZIR",
+          "value": "-"
+        },
+        {
+          "tag": "YADIT",
+          "value": "-"
+        },
+        {
+          "tag": "MANUL",
+          "value": "-"
+        },
+        {
+          "tag": "MAAZUR",
+          "value": "-"
+        }
+      ]
+    },
+    {
+      "name": "PRAT-100",
+      "layer": "PRATIM",
+      "position": {
+        "x": 21992697.226987593,
+        "y": 63567742.891344294,
+        "z": 0.0
+      },
+      "rotation": 6.219087892908477,
+      "scale": {
+        "x": 0.49999999999999956,
+        "y": 0.49999999999999956
+      },
+      "attributes": [
+        {
+          "tag": "0000",
+          "value": "08,08A"
+        },
+        {
+          "tag": "ADTE",
+          "value": "DT1-00"
+        }
+      ]
+    },
+    {
+      "name": "PRAT-100",
+      "layer": "PRATIM",
+      "position": {
+        "x": 21992618.095398962,
+        "y": 63567928.46782331,
+        "z": 0.0
+      },
+      "rotation": 6.219088744215237,
+      "scale": {
+        "x": -0.49999999999999917,
+        "y": 0.4999999999999994
+      },
+      "attributes": [
+        {
+          "tag": "0000",
+          "value": "11"
+        },
+        {
+          "tag": "ADTE",
+          "value": "DT1-01"
+        }
+      ]
+    },
+    {
+      "name": "PRAT-100",
+      "layer": "PRATIM",
+      "position": {
+        "x": 21992607.643377244,
+        "y": 63567786.859722756,
+        "z": 0.0
+      },
+      "rotation": 6.219088744215237,
+      "scale": {
+        "x": -0.49999999999999917,
+        "y": 0.4999999999999994
+      },
+      "attributes": [
+        {
+          "tag": "0000",
+          "value": "11,A,B,C"
+        },
+        {
+          "tag": "ADTE",
+          "value": "DT1-01"
+        }
+      ]
+    },
+    {
+      "name": "PRAT-100",
+      "layer": "PRATIM",
+      "position": {
+        "x": 21992604.59634546,
+        "y": 63566372.88828654,
+        "z": 0.0
+      },
+      "rotation": 6.219087892908477,
+      "scale": {
+        "x": 0.49999999999999956,
+        "y": 0.49999999999999956
+      },
+      "attributes": [
+        {
+          "tag": "0000",
+          "value": "08,08A"
+        },
+        {
+          "tag": "ADTE",
+          "value": "DT1-00"
+        }
+      ]
+    },
+    {
+      "name": "PRAT-100",
+      "layer": "PRATIM",
+      "position": {
+        "x": 21992558.20475778,
+        "y": 63566995.38797965,
+        "z": 0.0
+      },
+      "rotation": 6.219088744215237,
+      "scale": {
+        "x": -0.49999999999999917,
+        "y": 0.4999999999999994
+      },
+      "attributes": [
+        {
+          "tag": "0000",
+          "value": "11"
+        },
+        {
+          "tag": "ADTE",
+          "value": "DT1-01"
+        }
+      ]
+    },
+    {
+      "name": "PRAT-100",
+      "layer": "PRATIM",
+      "position": {
+        "x": 21992547.75273606,
+        "y": 63566853.77987909,
+        "z": 0.0
+      },
+      "rotation": 6.219088744215237,
+      "scale": {
+        "x": -0.49999999999999917,
+        "y": 0.4999999999999994
+      },
+      "attributes": [
+        {
+          "tag": "0000",
+          "value": "11,A,B,C"
+        },
+        {
+          "tag": "ADTE",
+          "value": "DT1-01"
+        }
+      ]
+    },
+    {
+      "name": "PRAT-100",
+      "layer": "PRATIM",
+      "position": {
+        "x": 21992614.32279069,
+        "y": 63565622.67350429,
+        "z": 0.0
+      },
+      "rotation": 6.219087892908477,
+      "scale": {
+        "x": 0.49999999999999956,
+        "y": 0.49999999999999956
+      },
+      "attributes": [
+        {
+          "tag": "0000",
+          "value": "08,08A"
+        },
+        {
+          "tag": "ADTE",
+          "value": "DT1-00"
+        }
+      ]
+    },
+    {
+      "name": "PRAT-100",
+      "layer": "PRATIM",
+      "position": {
+        "x": 21992885.74575619,
+        "y": 63565439.434624866,
+        "z": 0.0
+      },
+      "rotation": 6.219088744215237,
+      "scale": {
+        "x": -0.49999999999999917,
+        "y": 0.4999999999999994
+      },
+      "attributes": [
+        {
+          "tag": "0000",
+          "value": "11"
+        },
+        {
+          "tag": "ADTE",
+          "value": "DT1-01"
+        }
+      ]
+    },
+    {
+      "name": "PRAT-100",
+      "layer": "PRATIM",
+      "position": {
+        "x": 21993115.421107825,
+        "y": 63565402.67374812,
+        "z": 0.0
+      },
+      "rotation": 6.219088744215237,
+      "scale": {
+        "x": -0.49999999999999917,
+        "y": 0.4999999999999994
+      },
+      "attributes": [
+        {
+          "tag": "0000",
+          "value": "11,A,B,C"
+        },
+        {
+          "tag": "ADTE",
+          "value": "DT1-01"
+        }
+      ]
+    },
+    {
+      "name": "PRAT-100",
+      "layer": "PRATIM",
+      "position": {
+        "x": 21994602.869282786,
+        "y": 63566487.94514518,
+        "z": 0.0
+      },
+      "rotation": 6.219087892908477,
+      "scale": {
+        "x": 0.49999999999999956,
+        "y": 0.49999999999999956
+      },
+      "attributes": [
+        {
+          "tag": "0000",
+          "value": "08,08A"
+        },
+        {
+          "tag": "ADTE",
+          "value": "DT1-00"
+        }
+      ]
+    },
+    {
+      "name": "PRAT-100",
+      "layer": "PRATIM",
+      "position": {
+        "x": 21994434.5101047,
+        "y": 63565370.90509978,
+        "z": 0.0
+      },
+      "rotation": 6.219088744215237,
+      "scale": {
+        "x": -0.49999999999999917,
+        "y": 0.4999999999999994
+      },
+      "attributes": [
+        {
+          "tag": "0000",
+          "value": "11"
+        },
+        {
+          "tag": "ADTE",
+          "value": "DT1-01"
+        }
+      ]
+    },
+    {
+      "name": "PRAT-100",
+      "layer": "PRATIM",
+      "position": {
+        "x": 21995018.46545183,
+        "y": 63566202.05105305,
+        "z": 0.0
+      },
+      "rotation": 6.219088744215237,
+      "scale": {
+        "x": -0.49999999999999917,
+        "y": 0.4999999999999994
+      },
+      "attributes": [
+        {
+          "tag": "0000",
+          "value": "11C"
+        },
+        {
+          "tag": "ADTE",
+          "value": "DT1-01"
+        }
+      ]
+    },
+    {
+      "name": "PRAT-100",
+      "layer": "PRATIM",
+      "position": {
+        "x": 21994946.378139276,
+        "y": 63567801.76263413,
+        "z": 0.0
+      },
+      "rotation": 6.219087892908477,
+      "scale": {
+        "x": 0.49999999999999956,
+        "y": 0.49999999999999956
+      },
+      "attributes": [
+        {
+          "tag": "0000",
+          "value": "08,08A"
+        },
+        {
+          "tag": "ADTE",
+          "value": "DT1-00"
+        }
+      ]
+    },
+    {
+      "name": "PRAT-100",
+      "layer": "PRATIM",
+      "position": {
+        "x": 21993407.315756373,
+        "y": 63568116.019296385,
+        "z": 0.0
+      },
+      "rotation": 6.219087892908477,
+      "scale": {
+        "x": 0.49999999999999956,
+        "y": 0.49999999999999956
+      },
+      "attributes": [
+        {
+          "tag": "0000",
+          "value": "08,08A"
+        },
+        {
+          "tag": "ADTE",
+          "value": "DT1-00"
+        }
+      ]
+    },
+    {
+      "name": "PRAT-100",
+      "layer": "PRATIM",
+      "position": {
+        "x": 21995057.750021238,
+        "y": 63566814.093922526,
+        "z": 0.0
+      },
+      "rotation": 6.219088744215237,
+      "scale": {
+        "x": -0.49999999999999917,
+        "y": 0.4999999999999994
+      },
+      "attributes": [
+        {
+          "tag": "0000",
+          "value": "05A"
+        },
+        {
+          "tag": "ADTE",
+          "value": "DT1-00"
+        }
+      ]
+    },
+    {
+      "name": "130",
+      "layer": "2",
+      "position": {
+        "x": 21995264.497191347,
+        "y": 63568039.38257633,
+        "z": 0.0
+      },
+      "rotation": 6.2190872584544445,
+      "scale": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "attributes": []
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21995543.999279052,
+        "y": 63567868.46067157,
+        "z": 0.0
+      },
+      "rotation": 3.0774941991566993,
+      "scale": {
+        "x": -0.6999999999999994,
+        "y": 0.7
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "661.70"
+        }
+      ]
+    },
+    {
+      "name": "T-p9",
+      "layer": "TREE",
+      "position": {
+        "x": 21995332.06488246,
+        "y": 63566377.705536515,
+        "z": 0.0
+      },
+      "rotation": 1.1975058123736677,
+      "scale": {
+        "x": 1.0483199929815885,
+        "y": 1.0483199929815885
+      },
+      "attributes": []
+    },
+    {
+      "name": "T-p9",
+      "layer": "TREE",
+      "position": {
+        "x": 21995549.825237278,
+        "y": 63567253.5599857,
+        "z": 0.0
+      },
+      "rotation": 1.1975058123736677,
+      "scale": {
+        "x": 1.0483199929815885,
+        "y": 1.0483199929815885
+      },
+      "attributes": []
+    },
+    {
+      "name": "level-plan",
+      "layer": "TEXT",
+      "position": {
+        "x": 21993632.270266443,
+        "y": 63566912.43416951,
+        "z": 0.0
+      },
+      "rotation": 3.0774941991566993,
+      "scale": {
+        "x": -0.6999999999999994,
+        "y": 0.7
+      },
+      "attributes": [
+        {
+          "tag": "LEVEL",
+          "value": "p/c=04/3+"
+        }
+      ]
+    }
+  ],
+  "text_entities": [
+    {
+      "type": "AcDbText",
+      "text": "00/0",
+      "layer": "COMMENT",
+      "height": 750.0,
+      "position": {
+        "x": 21994675.536491837,
+        "y": 63571126.40644156
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": ",fbh, eunv rtaubv",
+      "layer": "COMMENT",
+      "height": 250.0,
+      "position": {
+        "x": 21995196.714686796,
+        "y": 63572047.582917
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "tuurur  npuj \"21 )kph hug. nzud tuuhr(",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000247.197632764,
+        "y": 63567659.9194503
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "jmr",
+      "layer": "TEXT",
+      "height": 14.999999999469217,
+      "position": {
+        "x": 22000378.41817957,
+        "y": 63567029.98331902
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "tdbh, 07X07 kkt supi ms",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000189.706221126,
+        "y": 63566786.7021468
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "jkui aru,ho - ehp ' x; ,j,ui 051 x\"n",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000179.20119191,
+        "y": 63566602.708652325
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "sk, hmhtv kjmr - nzudd, bp,j, fkph ju. go arar, u,upxi",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000170.74097418,
+        "y": 63566484.74260755
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ntjz hs ctdbh, cducv 05 x\"n",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000130.763302505,
+        "y": 63565868.38756247
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nu,to kph afc, dhk",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 21999702.15691505,
+        "y": 63565553.42577338
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": " trui thjxui cdsho ' xpxk vj,kv bhhs )nxuni c,fbh,(",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000234.40692718,
+        "y": 63567332.53670085
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "yck, pruy srhau, k,fbui - vaknv k,fbh,",
+      "layer": "TEXT",
+      "height": 20.999999999256904,
+      "position": {
+        "x": 22000627.60459512,
+        "y": 63567787.003702216
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ngk aukji yhpukho -jkui ecug cnhsu, 002X001 x\"n cducv 501 x\"n' ",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000232.397549856,
+        "y": 63567451.82139645
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "aru,h bfho",
+      "layer": "TEXT",
+      "height": 16.799999999405525,
+      "position": {
+        "x": 22000601.382189818,
+        "y": 63567699.50398837
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "fh,, ,hbueu,",
+      "layer": "TEXT",
+      "height": 16.799999999405525,
+      "position": {
+        "x": 22000602.578417778,
+        "y": 63567586.95472519
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "jhpuh rhmpv neso jhful 01=R",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000249.33114767,
+        "y": 63567683.79195812
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "bheuz nrpx, kjmr",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000211.108297843,
+        "y": 63567113.654492855
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "xukkv knhho jnho uerho nms hnhi cducv 041 x\"n ' uhxu, sus gs 54 ngku,",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000235.47214982,
+        "y": 63567499.72282477
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nayj aha go fhur 051X06 ducv 09 x\"n jhpuh ehr 06 x\"n ngk nayj",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000197.542974908,
+        "y": 63566906.733587824
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nayj aha go fhur 051X06 ducv 09 x\"n jhpuh ehr 06 x\"n ngk nayj",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000241.771603636,
+        "y": 63567595.80355162
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": " sk, fb; go muvr nzudd ' nbguk prpr su-fuubh",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000251.30634079,
+        "y": 63567619.24094246
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "aukji yhpukho 45X501 x\"n )xnul kfhur(",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000233.93484984,
+        "y": 63567475.7721106
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": " sk, fb; go muvr nzudd",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000202.447433464,
+        "y": 63566858.0325014
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": " zfufh, chyjui 6 n\"n",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 21999862.141663894,
+        "y": 63567451.53724489
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ra, g\"d jkui",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000219.88202912,
+        "y": 63567236.504992776
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nrpx, neurv",
+      "layer": "TEXT",
+      "height": 14.999999999469217,
+      "position": {
+        "x": 22000387.443018395,
+        "y": 63567170.58784487
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "trdz juk aeug nxchcu junr eahj crujc 06 x\"n",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000206.785518385,
+        "y": 63567046.30676885
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": " sk, fb; go muvr nzudd ' nbguk prpr su-fuubh",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000207.077712074,
+        "y": 63566930.170978665
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "crz knhho erho cducv 57 x\"n - ngk fk fhur",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000183.57300666,
+        "y": 63566691.14833947
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "%%%52 vmkkv /",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000202.25363768,
+        "y": 63566975.70130452
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "aru,ho",
+      "layer": "TEXT",
+      "height": 14.999999999469217,
+      "position": {
+        "x": 22000366.403462447,
+        "y": 63566842.79730545
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "gune urujc ,t ahru,ho 08 x\"n  ,j,h, njhmcv 02 x\"n ngk vrhmpv",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000191.24352111,
+        "y": 63566810.65286096
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "xukkv knhho jnho uerho ngk tdbh, cducv 051 x\"n ' uhxu, sus gs 54 ngku,",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000188.184906617,
+        "y": 63566763.00048193
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ra, g\"d jkui",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000177.66389193,
+        "y": 63566578.75793817
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nrje nfk dsr 021 x\"n",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 21999766.28447957,
+        "y": 63566466.8581942
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "rhmu; nrpx, kph ,ei hartkh 9722",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000173.815574154,
+        "y": 63566532.644035876
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "trdz juk aeug nxchcu junr eahj crujc 06 x\"n",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000167.945455406,
+        "y": 63566441.189188346
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "jmr",
+      "layer": "TEXT",
+      "height": 14.999999999469217,
+      "position": {
+        "x": 22000339.578116585,
+        "y": 63566424.865738526
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "bheuz nrpx, kjmr",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000172.278274156,
+        "y": 63566508.69332172
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "fh,, hksho",
+      "layer": "TEXT",
+      "height": 16.799999999405525,
+      "position": {
+        "x": 22000505.7591395,
+        "y": 63566078.5367951
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "trdz juk aeug nxchcu junr eahj crujc 06 x\"n",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000112.18690433,
+        "y": 63565572.48618099
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "%%%52 vmkkv",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000107.222668357,
+        "y": 63565516.6783443
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "njxuo rhmpv kph srhau, vk\",",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000127.475520626,
+        "y": 63565796.83681173
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "tdbh, ",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000135.472149324,
+        "y": 63565941.750110544
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nu,to kph afc, dhk",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 21999914.944718257,
+        "y": 63567018.19196133
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "3 fhurho 04X25 x\"n cducv 06 x\"n nruuj chbvo 04 x\"n",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000129.226002526,
+        "y": 63565844.43684831
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "rhmu; nrpx, kph ,ei hartkh 9722",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000117.784915213,
+        "y": 63565659.70166249
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": ",fbui kph ,ei bdhau,",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000252.402517732,
+        "y": 63567731.6430654
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ehru, njupho drbhy purmki tu trhjh ernhev gs ducv 061 x\"n",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000250.81433002,
+        "y": 63567706.89953417
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": " sk, fb; go muvr nzudd",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000246.67606217,
+        "y": 63567547.102465235
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "fh,v ",
+      "layer": "TEXT",
+      "height": 14.999999999469217,
+      "position": {
+        "x": 22000415.548573624,
+        "y": 63567608.464724116
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "aru,ho",
+      "layer": "TEXT",
+      "height": 14.999999999469217,
+      "position": {
+        "x": 22000410.63209115,
+        "y": 63567531.86726926
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "njxuo rhmpv kph srhau, vk\",",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000224.49392907,
+        "y": 63567308.357135236
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "fhur krjm, ,hbueu, jrx \\phcrdkx 04X09' gune 04 x\"n ducv 09 x\"n",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000237.371970557,
+        "y": 63567522.83534556
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ehru, njupho drbhy purmki tu trhjh ernhev gs ducv 061 x\"n",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000222.95662908,
+        "y": 63567284.40642109
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "jkui aru,ho - ehp ' x; ,j,ui 051 x\"n",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000221.41932909,
+        "y": 63567260.45570693
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "agr papa ni vnrpx, kjmr - p,hjv cyhju,h, c-081 ngku,",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000214.182897806,
+        "y": 63567161.55592117
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "rhmu; nrpx, kph ,ei hartkh 9722",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000212.645597827,
+        "y": 63567137.60520701
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "dhsur nrpx, cducv 011 x\"n nrje chi akcho 8 x\"n",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000214.29456265,
+        "y": 63567186.413065724
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "sk, hmhtv kjmr - nzudd, bp,j, fkph ju. go arar, u,upxi",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000209.57099786,
+        "y": 63567089.7037787
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nrje nfk dsr 021 x\"n",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 21999807.079864,
+        "y": 63567071.67104265
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "n,ei naje kph ,\"h 8941 junr cuko bphkv cnrjc vn,ei",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000205.26487695,
+        "y": 63567022.615590416
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nxsh ehru, nyuhhjho",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000065.973025165,
+        "y": 63566983.45739947
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "fh,v ",
+      "layer": "TEXT",
+      "height": 14.999999999469217,
+      "position": {
+        "x": 22000371.319944922,
+        "y": 63566919.39476032
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "fh,, pguyu,",
+      "layer": "TEXT",
+      "height": 16.799999999405525,
+      "position": {
+        "x": 22000558.34978906,
+        "y": 63566897.88476139
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "2 txku, chbvo njhmv \"yrxpv\" ducv 011 turl 08 x\"n kkt sk,u,",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000193.23497113,
+        "y": 63566835.19294079
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": " trui thjxui cdsho ' xpxk vj,kv bhhs ",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000190.45359592,
+        "y": 63566644.59492526
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "njxuo rhmpv kph srhau, vk\",",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000183.35982476,
+        "y": 63566667.49901703
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ehru, njupho drbhy purmki tu trhjh ernhev gs ducv 061 x\"n",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000180.533400103,
+        "y": 63566623.464092314
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ntjz hs ctdbh, cducv 05 x\"n",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000186.647606626,
+        "y": 63566739.04976778
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "2 fhurho 04X25 x\"n cducv 06 x\"n nruuj chbvo 04 x\"n",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000185.110306643,
+        "y": 63566715.09905363
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "%%%52 vmkkv",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000163.381933548,
+        "y": 63566376.25863917
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "n,ei naje kph ,\"h 8941 junr cuko bphkv cnrjc vn,ei",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000166.400996324,
+        "y": 63566417.12693748
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nxsh ehru, nyuhhjho",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000161.844633564,
+        "y": 63566352.30792503
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nrpx, ",
+      "layer": "TEXT",
+      "height": 14.999999999469217,
+      "position": {
+        "x": 22000345.720239673,
+        "y": 63566520.55834006
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "eun, fbhxv -",
+      "layer": "TEXT",
+      "height": 20.999999999256904,
+      "position": {
+        "x": 22000628.80705379,
+        "y": 63567847.64974414
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "fh,v ",
+      "layer": "TEXT",
+      "height": 14.999999999469217,
+      "position": {
+        "x": 22000318.729295354,
+        "y": 63566100.04679405
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": " sk, fb; go muvr nzudd ' nbguk prpr su-fuubh",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000154.48706253,
+        "y": 63566110.823012374
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nayj aha go fhur 051X06 ducv 09 x\"n jhpuh ehr 06 x\"n ngk nayj",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000144.952325366,
+        "y": 63566087.38562154
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "aru,ho",
+      "layer": "TEXT",
+      "height": 14.999999999469217,
+      "position": {
+        "x": 22000313.81281288,
+        "y": 63566023.44933917
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "jmr",
+      "layer": "TEXT",
+      "height": 14.999999999469217,
+      "position": {
+        "x": 22000283.8195655,
+        "y": 63565556.16273118
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nrje nfk dsr 021 x\"n",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 21999708.276873417,
+        "y": 63565597.57085977
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "n,ei naje kph ,\"h 8941 junr cuko bphkv cnrjc vn,ei-",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000110.666262902,
+        "y": 63565548.79500256
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nxsh ehru, nyuhhjho",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000105.68536838,
+        "y": 63565492.72763017
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": " sk, fb; go muvr nzudd",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000149.856783904,
+        "y": 63566038.684535146
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "gune urujc ,t ahru,ho 08 x\"n  ,j,h, njhmcv 02 x\"n ngk vrhmpv",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000137.0094493,
+        "y": 63565965.7008247
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "3 txku, chbvo njhmv \"yrxpv\" ducv 011 turl 08 x\"n/  sk,u, cducv njhmu,",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000140.644321553,
+        "y": 63566015.84497452
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": " trui thjxui cdsho ' xpxk vj,kv bhhs ",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000134.569291797,
+        "y": 63565773.932719946
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ehru, njupho drbhy purmki tu trhjh ernhev gs ducv 061 x\"n",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000124.649095975,
+        "y": 63565752.80188699
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "jkui aru,ho - ehp ' x; ,j,ui 051 x\"n",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000123.31688779,
+        "y": 63565732.04644699
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "xukkv knhho jnho uerho ngk tdbh, cducv 051 x\"n ' uhxu, sus gs 54 ngku,",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000132.300602492,
+        "y": 63565892.33827661
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ra, g\"d jkui",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000121.77958781,
+        "y": 63565708.09573283
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "crz knhho erho cducv 57 x\"n - ngk fk fhur",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000127.68870254,
+        "y": 63565820.48613415
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "bp,ju, vjumv go nbdbui cyhju, knbhgm mchyu,",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 21999906.609289892,
+        "y": 63566006.81735437
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nrpx, ",
+      "layer": "TEXT",
+      "height": 14.999999999469217,
+      "position": {
+        "x": 22000289.689580742,
+        "y": 63565647.61596666
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "sk, hmhtv kjmr - nzudd, bp,j, fkph ju. go arar, u,upxi",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000114.71031525,
+        "y": 63565611.800234176
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "bheuz nrpx, kjmr",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000116.24761523,
+        "y": 63565635.75094834
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "fkkh - ,eru, teuxyhu, cfk vfh,u,",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000096.14868361,
+        "y": 63565420.78948711
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ra,u, g\"d jkubu, varu,ho uvnycj",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000030.94201839,
+        "y": 63565402.47945373
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "npuj \"21 cjsrh varu,ho cbux; kjkui",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000029.60322515,
+        "y": 63565381.6214204
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ndbh tmcgu, gk fk vsk,u,",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000028.285707973,
+        "y": 63565361.09486222
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": " tdbh,  'xukkv knhho jnho uerho ngk tdbh, cducv 051 x\"n ",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000236.522826567,
+        "y": 63567380.7673656
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ntjz hs ctdbh, cducv 05 x\"n",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000226.335215386,
+        "y": 63567357.37188011
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "txkv ' fhur hksho cducv 06 x\"n ",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000225.897275213,
+        "y": 63567404.365147695
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "txkv c,t karu,h xdk go njhmu, dcuvu,",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 22000134.335207425,
+        "y": 63565917.55069835
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nu,to kph afc, dhk",
+      "layer": "TEXT",
+      "height": 12.599999999554145,
+      "position": {
+        "x": 21999877.26274207,
+        "y": 63566415.09760551
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "n,ei gdku, + ehruh",
+      "layer": "TEXT",
+      "height": 12.0,
+      "position": {
+        "x": 21995358.309796233,
+        "y": 63566970.90976378
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "dsr cducv 01/1 nw",
+      "layer": "TEXT",
+      "height": 11.999999999999998,
+      "position": {
+        "x": 21992818.275660716,
+        "y": 63568376.75071966
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "agr papa",
+      "layer": "TEXT",
+      "height": 11.999999999999998,
+      "position": {
+        "x": 21992872.50813621,
+        "y": 63568483.81534875
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "cducv 011 x\"n",
+      "layer": "TEXT",
+      "height": 11.999999999999998,
+      "position": {
+        "x": 21992892.67510282,
+        "y": 63568484.78487858
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "dsr cducv 01/1 nw",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21993915.222795904,
+        "y": 63565259.45030892
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "agr jruo ",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21995028.12875238,
+        "y": 63566303.4978553
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "dsr cducv 01/1 nw",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21992181.652447984,
+        "y": 63565942.50054762
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "dsr cducv 01/1 nw",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21992140.185253985,
+        "y": 63567269.81841259
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": ")631 n\"r( ",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21993237.85626141,
+        "y": 63565213.9165095
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "jmr fh,, hksho",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21993270.865977608,
+        "y": 63565238.87815856
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "dsr cducv 01/1 nw",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21995200.16623908,
+        "y": 63566229.510250084
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "cducv 011 x\"n",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21995050.396979943,
+        "y": 63566284.649275005
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ckubh vdz",
+      "layer": "TEXT",
+      "height": 11.999999999999996,
+      "position": {
+        "x": 21994032.583535552,
+        "y": 63568471.04254185
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "knheuo ak",
+      "layer": "TEXT",
+      "height": 11.999999999999996,
+      "position": {
+        "x": 21994046.892366033,
+        "y": 63568490.346923925
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "tupmhv",
+      "layer": "TEXT",
+      "height": 11.999999999999996,
+      "position": {
+        "x": 21994019.9070671,
+        "y": 63568510.03166174
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "eu ddui ngk",
+      "layer": "TEXT",
+      "height": 11.999999999999998,
+      "position": {
+        "x": 21994917.292731754,
+        "y": 63567007.08730622
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ngk pbh vereg ",
+      "layer": "TEXT",
+      "height": 19.99999999999999,
+      "position": {
+        "x": 21995782.56771427,
+        "y": 63565693.42721345
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ungkhu dsr nuxsh, cducv 2 nw",
+      "layer": "TEXT",
+      "height": 19.99999999999999,
+      "position": {
+        "x": 21995841.991788346,
+        "y": 63565645.938031875
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ehr ph,uj 52 x\"n",
+      "layer": "TEXT",
+      "height": 19.99999999999999,
+      "position": {
+        "x": 21995785.11517715,
+        "y": 63565728.88229359
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "660.79",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21994870.24311121,
+        "y": 63564857.37669787
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "661.36",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21993757.29275521,
+        "y": 63564915.14278345
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "664.30",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21991878.74558388,
+        "y": 63565005.24302018
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "665.57",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21991408.988713466,
+        "y": 63565040.425935075
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ayj kngrfu,",
+      "layer": "TEXT",
+      "height": 11.999999999999996,
+      "position": {
+        "x": 21993575.046130907,
+        "y": 63568349.701514386
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "661.80",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21995740.13475735,
+        "y": 63568441.60697895
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "661.20",
+      "layer": "TEXT",
+      "height": 11.999999999999988,
+      "position": {
+        "x": 21995560.72655908,
+        "y": 63566168.071379945
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "bhav ktapv",
+      "layer": "TEXT",
+      "height": 12.0,
+      "position": {
+        "x": 21995589.877164893,
+        "y": 63567798.02573868
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "agr fbhxv ",
+      "layer": "TEXT",
+      "height": 15.0,
+      "position": {
+        "x": 21995318.153509974,
+        "y": 63568318.22957965
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "kjmr nae",
+      "layer": "TEXT",
+      "height": 15.0,
+      "position": {
+        "x": 21995316.58614585,
+        "y": 63568296.95230699
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "agr fbhxv -",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21995372.5181455,
+        "y": 63568102.38740886
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "thbyreuo ',pguk nudi",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21995443.903336868,
+        "y": 63568074.281134814
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "trui jank",
+      "layer": "TEXT",
+      "height": 12.0,
+      "position": {
+        "x": 21995565.955178287,
+        "y": 63566756.977580376
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "trui nho",
+      "layer": "TEXT",
+      "height": 12.0,
+      "position": {
+        "x": 21995548.51131119,
+        "y": 63566525.15862573
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "achk dhav",
+      "layer": "TEXT",
+      "height": 12.0,
+      "position": {
+        "x": 21995310.055642243,
+        "y": 63567838.04407787
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": " ahpug %%%3",
+      "layer": "TEXT",
+      "height": 12.0,
+      "position": {
+        "x": 21995348.227719244,
+        "y": 63567835.59396582
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ducv 00/2 nw",
+      "layer": "TEXT",
+      "height": 17.999999999999996,
+      "position": {
+        "x": 21995753.31129915,
+        "y": 63567387.13297649
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "661.40",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21995666.52593061,
+        "y": 63566826.79199012
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv 0",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21995116.46791981,
+        "y": 63589207.018922485
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv 2",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21995095.964766357,
+        "y": 63588887.58538761
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv 3",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21995085.713189628,
+        "y": 63588727.86862017
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv 5",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21995075.461612903,
+        "y": 63588568.151852734
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv 7",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21995065.210036173,
+        "y": 63588408.4350853
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv SEXA",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21995023.538815893,
+        "y": 63587759.208846696
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv TERETOC",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21994901.192845583,
+        "y": 63585853.09202128
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv STNIOPFED",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21994850.923100688,
+        "y": 63585069.903115995
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv MID",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21994921.695999037,
+        "y": 63586172.52555616
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv LAEM",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21995054.293546077,
+        "y": 63588238.35914901
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv 1_HCTAH",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21994993.12056092,
+        "y": 63587285.30073631
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv TAHATIM",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21995044.041969348,
+        "y": 63588078.64238157
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv PV",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21994871.426254142,
+        "y": 63585389.33665088
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv TIP",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21992962.076112524,
+        "y": 63586169.08730454
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv TXET",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21994890.941268854,
+        "y": 63585693.37525384
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv MITARP",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21994931.947575767,
+        "y": 63586332.2423236
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv TNEMMOC",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21994911.44442231,
+        "y": 63586012.80878872
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv FERX",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21994861.174677417,
+        "y": 63585229.61988343
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv NUKDI_",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21995013.623714376,
+        "y": 63587604.73427118
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ckueho keb\"n 001:1",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21999040.033684313,
+        "y": 63586208.80053279
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 2",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993876.54837093,
+        "y": 63586245.50863011
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 64",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21994040.56556152,
+        "y": 63588800.85169413
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 30",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21994030.313984793,
+        "y": 63588641.134926684
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 1",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21994020.062408067,
+        "y": 63588481.41815925
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 7",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21994071.3202917,
+        "y": 63589280.00199644
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 142",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21994050.817138247,
+        "y": 63588960.56846157
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 251",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993978.391187787,
+        "y": 63587832.191920646
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 64",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993856.045217477,
+        "y": 63585926.07509524
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 253",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993805.77547258,
+        "y": 63585142.88618995
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 14,24,34,44,54,74,84,94",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21992230.806267943,
+        "y": 63584555.688564084
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 4",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993866.296794202,
+        "y": 63586085.791862674
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 142",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21991916.928484417,
+        "y": 63586242.07037849
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 47",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21994009.145917967,
+        "y": 63588311.342222966
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 40",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993947.97293281,
+        "y": 63587358.28381026
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 30",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993968.476086266,
+        "y": 63587677.71734513
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 134",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993998.89434124,
+        "y": 63588151.62545553
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 64",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993845.793640748,
+        "y": 63585766.3583278
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 6",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993886.799947657,
+        "y": 63586405.22539755
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 7",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993826.278626036,
+        "y": 63585462.31972483
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 7",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993816.027049307,
+        "y": 63585302.60295739
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nhsu, 052",
+      "layer": "TEXT-200",
+      "height": 58.0,
+      "position": {
+        "x": 21997179.41705382,
+        "y": 63586360.35877898
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "052",
+      "layer": "TEXT-200",
+      "height": 176.0,
+      "position": {
+        "x": 21997596.572413553,
+        "y": 63586372.546456024
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nhsu, 052",
+      "layer": "TEXT-200",
+      "height": 88.0,
+      "position": {
+        "x": 21997192.253288727,
+        "y": 63586560.34381543
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "005",
+      "layer": "TEXT-200",
+      "height": 350.0,
+      "position": {
+        "x": 21999101.571408767,
+        "y": 63587141.89052195
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nhsu, 005",
+      "layer": "TEXT-200",
+      "height": 175.0,
+      "position": {
+        "x": 21999114.820411514,
+        "y": 63586909.42605745
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nhsu, 005",
+      "layer": "TEXT-200",
+      "height": 175.0,
+      "position": {
+        "x": 21999106.435562048,
+        "y": 63586667.738125056
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nhsu, 002",
+      "layer": "TEXT-200",
+      "height": 70.0,
+      "position": {
+        "x": 21996414.863149498,
+        "y": 63585906.17556314
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nhsu, 002",
+      "layer": "TEXT-200",
+      "height": 46.0,
+      "position": {
+        "x": 21996408.300428625,
+        "y": 63585803.930163085
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "002",
+      "layer": "TEXT-200",
+      "height": 140.0,
+      "position": {
+        "x": 21996800.60744271,
+        "y": 63585788.662740596
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "2",
+      "layer": "TEXT",
+      "height": 1.4,
+      "position": {
+        "x": 21995310.72896591,
+        "y": 63584604.363065794
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nhsu, 2",
+      "layer": "TEXT",
+      "height": 0.46,
+      "position": {
+        "x": 21995309.12854107,
+        "y": 63584604.25344977
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nhsu, 2",
+      "layer": "TEXT",
+      "height": 0.7000000000000001,
+      "position": {
+        "x": 21995309.14352349,
+        "y": 63584605.31417556
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "5",
+      "layer": "TEXT",
+      "height": 3.5,
+      "position": {
+        "x": 21995376.63333492,
+        "y": 63584643.34641231
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nhsu, 5",
+      "layer": "TEXT",
+      "height": 1.75,
+      "position": {
+        "x": 21995371.903057754,
+        "y": 63584645.88588175
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nhsu, 5",
+      "layer": "TEXT",
+      "height": 1.15,
+      "position": {
+        "x": 21995371.252479427,
+        "y": 63584643.65196335
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nhsu, 01",
+      "layer": "TEXT",
+      "height": 2.3,
+      "position": {
+        "x": 21995478.95389263,
+        "y": 63584720.72730094
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nhsu, 01",
+      "layer": "TEXT",
+      "height": 3.5,
+      "position": {
+        "x": 21995479.89292017,
+        "y": 63584735.35709374
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "01",
+      "layer": "TEXT",
+      "height": 7.0,
+      "position": {
+        "x": 21995493.45305912,
+        "y": 63584727.678109184
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "02",
+      "layer": "TEXT",
+      "height": 14.0,
+      "position": {
+        "x": 21995765.013548605,
+        "y": 63584841.739328414
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "52",
+      "layer": "TEXT",
+      "height": 18.0,
+      "position": {
+        "x": 21995789.17756319,
+        "y": 63584975.02292985
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nhsu, 52",
+      "layer": "TEXT",
+      "height": 9.0,
+      "position": {
+        "x": 21995739.8727852,
+        "y": 63585009.5069898
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nhsu, 02",
+      "layer": "TEXT",
+      "height": 7.0,
+      "position": {
+        "x": 21995730.48328489,
+        "y": 63584863.22113769
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nhsu, 02",
+      "layer": "TEXT",
+      "height": 4.6,
+      "position": {
+        "x": 21995728.60522981,
+        "y": 63584833.9615521
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nhsu, 52",
+      "layer": "TEXT",
+      "height": 6.0,
+      "position": {
+        "x": 21995737.99473012,
+        "y": 63584980.2474042
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nhsu, 05",
+      "layer": "TEXT",
+      "height": 18.0,
+      "position": {
+        "x": 21996121.77162849,
+        "y": 63585244.19252582
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nhsu, 05",
+      "layer": "TEXT",
+      "height": 12.0,
+      "position": {
+        "x": 21996118.01551833,
+        "y": 63585185.67335464
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "05",
+      "layer": "TEXT",
+      "height": 35.0,
+      "position": {
+        "x": 21996210.45869043,
+        "y": 63585209.77054103
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nhsu, 001",
+      "layer": "TEXT",
+      "height": 35.0,
+      "position": {
+        "x": 21996218.21353199,
+        "y": 63585534.72773016
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nhsu, 001",
+      "layer": "TEXT",
+      "height": 23.0,
+      "position": {
+        "x": 21996213.70798521,
+        "y": 63585464.53254106
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "001",
+      "layer": "TEXT",
+      "height": 70.0,
+      "position": {
+        "x": 21996402.585721985,
+        "y": 63585476.04948972
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 9",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21994061.068714976,
+        "y": 63589120.285229005
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv 1",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21995106.216343082,
+        "y": 63589047.30215505
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 252",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21991896.425330963,
+        "y": 63585922.636843614
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv OPOT",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21992941.57295907,
+        "y": 63585849.65376966
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv EERT",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21992931.321382344,
+        "y": 63585689.93700222
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 7",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21991886.173754234,
+        "y": 63585762.92007618
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv NRUF",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21992972.327689253,
+        "y": 63586328.80407198
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 9",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21991927.180061147,
+        "y": 63586401.78714593
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv KIT",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21992951.8245358,
+        "y": 63586009.370537095
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 5",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21991906.67690769,
+        "y": 63586082.35361105
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv YNAS",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21992921.069805615,
+        "y": 63585530.22023478
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 4",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21991875.92217751,
+        "y": 63585603.20330873
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "xhnubho kpruphkho keb\"n 01:1",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21998983.898528486,
+        "y": 63585353.484830566
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color36",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21998062.457086593,
+        "y": 63585019.72139907
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color31",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21998052.205509864,
+        "y": 63584860.00463163
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color50",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21998041.95393314,
+        "y": 63584700.28786419
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color210",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21996777.752654992,
+        "y": 63584941.80663299
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color80",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21996767.501078263,
+        "y": 63584782.08986555
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color240",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21996757.249501538,
+        "y": 63584622.37309811
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color150",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21998031.70235641,
+        "y": 63584540.571096756
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "mcgho kvh,r afc, H-TIMREP",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21998968.10488537,
+        "y": 63585107.42418135
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "npkx jzh,",
+      "layer": "TEXT",
+      "height": 23.0,
+      "position": {
+        "x": 21999016.84807966,
+        "y": 63586097.741064794
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "pry",
+      "layer": "TEXT",
+      "height": 23.0,
+      "position": {
+        "x": 21998766.804489776,
+        "y": 63586113.79035685
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "npkx c,fbh,",
+      "layer": "TEXT",
+      "height": 23.0,
+      "position": {
+        "x": 21998583.38948794,
+        "y": 63586125.563027896
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "eu tnmg",
+      "layer": "TEXT",
+      "height": 23.0,
+      "position": {
+        "x": 21998345.947204508,
+        "y": 63586140.80349279
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "npkx j,l",
+      "layer": "TEXT",
+      "height": 23.0,
+      "position": {
+        "x": 21998160.367138527,
+        "y": 63586152.7151306
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nxpr",
+      "layer": "TEXT",
+      "height": 23.0,
+      "position": {
+        "x": 21997962.820453092,
+        "y": 63586163.44641166
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "j,l",
+      "layer": "TEXT",
+      "height": 23.0,
+      "position": {
+        "x": 21997777.238800146,
+        "y": 63586175.358151324
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ghsfui",
+      "layer": "TEXT",
+      "height": 23.0,
+      "position": {
+        "x": 21997541.918487143,
+        "y": 63586190.46241548
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "vgrv kvuxp, afcu,:",
+      "layer": "TEXT",
+      "height": 70.0,
+      "position": {
+        "x": 21994779.142790906,
+        "y": 63584850.75842508
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "kafcv ehhn, bh,i kvuxh; xhun, fdui H- k HCTAH -LP k ENILYLOP",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21994772.73188194,
+        "y": 63584750.87821311
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "X- k TSIXE / k,uxp, afcv ctu,u buat ha kvuxh; nxpr cxupv",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21994765.97071146,
+        "y": 63584645.54102239
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "fdui ,herv 2 ,ert 2KIT ucv,tnv v HCTAH akv hvhv H-2KIT uf\"u/",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21994759.18392138,
+        "y": 63584539.80468531
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "mpui",
+      "layer": "TEXT",
+      "height": 23.0,
+      "position": {
+        "x": 21997360.396792646,
+        "y": 63586202.11356275
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "A4",
+      "layer": "TEXT-200",
+      "height": 5.0,
+      "position": {
+        "x": 21996191.797675215,
+        "y": 63589106.69977986
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "A3",
+      "layer": "TEXT-200",
+      "height": 5.0,
+      "position": {
+        "x": 21996239.12097802,
+        "y": 63589104.6513837
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "A2",
+      "layer": "TEXT-200",
+      "height": 5.0,
+      "position": {
+        "x": 21996320.495707586,
+        "y": 63589104.073419616
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "A1",
+      "layer": "TEXT-200",
+      "height": 5.0,
+      "position": {
+        "x": 21996390.83004901,
+        "y": 63589117.18107382
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "A0",
+      "layer": "TEXT-200",
+      "height": 5.0,
+      "position": {
+        "x": 21996502.101371568,
+        "y": 63589110.03901529
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "A4",
+      "layer": "TEXT-200",
+      "height": 5.0,
+      "position": {
+        "x": 21996198.450354304,
+        "y": 63589210.346704304
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "A3",
+      "layer": "TEXT-200",
+      "height": 5.0,
+      "position": {
+        "x": 21996245.773657106,
+        "y": 63589208.29830814
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "A2",
+      "layer": "TEXT-200",
+      "height": 5.0,
+      "position": {
+        "x": 21996312.72121972,
+        "y": 63589208.646365866
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "A1",
+      "layer": "TEXT-200",
+      "height": 5.0,
+      "position": {
+        "x": 21996404.61054797,
+        "y": 63589210.34724544
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "A0",
+      "layer": "TEXT-200",
+      "height": 5.0,
+      "position": {
+        "x": 21996525.649964593,
+        "y": 63589216.49939613
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv NEM",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21992899.563191574,
+        "y": 63585195.15305783
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 5",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21991854.415563464,
+        "y": 63585268.13613178
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv RAC",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21992910.633003324,
+        "y": 63585367.6177036
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 5",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21991865.485375214,
+        "y": 63585440.60077755
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv junrho-E-M cncy ucmcgho",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21994749.663144816,
+        "y": 63584391.47358491
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv junrho-P-M c,fbh, ucmcgho",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21994740.4267785,
+        "y": 63584247.57351857
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 11,21,41,51,61,71,81,91",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21992295.560002875,
+        "y": 63584415.88588322
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ckueho keb\"n 05:1",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21999080.106897064,
+        "y": 63585839.2069935
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "1:5",
+      "layer": "TEXT",
+      "height": 2.0,
+      "position": {
+        "x": 21998285.37695467,
+        "y": 63585661.16754275
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "000",
+      "layer": "TEXT",
+      "height": 4.800000000000001,
+      "position": {
+        "x": 21998310.153379764,
+        "y": 63585659.13421428
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "buat vpry",
+      "layer": "TEXT",
+      "height": 2.5,
+      "position": {
+        "x": 21998306.12138056,
+        "y": 63585659.61363949
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "000",
+      "layer": "TEXT",
+      "height": 9.600000000000001,
+      "position": {
+        "x": 21998327.55712939,
+        "y": 63585779.144156225
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "buat vpry",
+      "layer": "TEXT",
+      "height": 5.0,
+      "position": {
+        "x": 21998320.925229866,
+        "y": 63585779.859147996
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "1:10",
+      "layer": "TEXT",
+      "height": 4.0,
+      "position": {
+        "x": 21998274.968180083,
+        "y": 63585783.1048171
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ckueho keb\"n 01:1",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21999071.08615841,
+        "y": 63585698.666347325
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ckueho keb\"n 5:1",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21999063.656341646,
+        "y": 63585582.911829926
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "?",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21991790.927242048,
+        "y": 63586250.15789131
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "1:2",
+      "layer": "TEXT",
+      "height": 0.8,
+      "position": {
+        "x": 21998293.290933043,
+        "y": 63585553.37291521
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "000",
+      "layer": "TEXT",
+      "height": 2.0,
+      "position": {
+        "x": 21998303.30045442,
+        "y": 63585552.3675078
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "buat vpry",
+      "layer": "TEXT",
+      "height": 1.0,
+      "position": {
+        "x": 21998301.844729736,
+        "y": 63585552.68157231
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ckueho keb\"n 2:1",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21999056.8034163,
+        "y": 63585476.14512344
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "txt 500",
+      "layer": "TEXT-200",
+      "height": 175.0,
+      "position": {
+        "x": 21998137.318633407,
+        "y": 63587897.48896155
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "Romant 500",
+      "layer": "TEXT-200",
+      "height": 175.0,
+      "position": {
+        "x": 21997792.589462925,
+        "y": 63587680.623531364
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "guch gy",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21993949.170842707,
+        "y": 63589414.542478204
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "0.1",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993773.935018644,
+        "y": 63589299.08996067
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "0.1",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993763.68344192,
+        "y": 63589139.373193234
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "0.2",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993753.43186519,
+        "y": 63588979.6564258
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "0.3",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993743.180288464,
+        "y": 63588819.93965836
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "0.4",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993732.928711735,
+        "y": 63588660.22289092
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "0.5",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993722.677135006,
+        "y": 63588500.50612348
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "0.1",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993711.76064491,
+        "y": 63588330.430187196
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "0.15",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993701.50906818,
+        "y": 63588170.71341976
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "0.1",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993681.005914725,
+        "y": 63587851.27988488
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "0.4",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993671.09081321,
+        "y": 63587696.80530937
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "0.1",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993650.587659754,
+        "y": 63587377.371774495
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "0.25",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993589.4146746,
+        "y": 63586424.31336179
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "0.2",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993579.16309787,
+        "y": 63586264.59659435
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "0.3",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993558.659944415,
+        "y": 63585945.163059466
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "0.3",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993548.40836769,
+        "y": 63585785.44629203
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "0.1",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993528.893352978,
+        "y": 63585481.407689065
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "0.1",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993518.64177625,
+        "y": 63585321.69092162
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "guch gy",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21991805.03061215,
+        "y": 63586536.32762769
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "0.1",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21991629.794788085,
+        "y": 63586420.875110164
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "0.2",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21991619.54321136,
+        "y": 63586261.15834273
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "0.15",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21991609.29163463,
+        "y": 63586101.44157528
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "0.1",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21991599.040057905,
+        "y": 63585941.72480784
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "0.1",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21991588.788481176,
+        "y": 63585782.008040406
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "0.25",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21991578.53690445,
+        "y": 63585622.29127297
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "0.15",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21991568.100102156,
+        "y": 63585459.68874179
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "0.15",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21991557.030290406,
+        "y": 63585287.224096015
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": ")kt kvspxv(",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993574.14274543,
+        "y": 63586098.64480311
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv  002 TXET",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21994880.68969213,
+        "y": 63585533.6584864
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 64",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993835.54206402,
+        "y": 63585606.64156035
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "0.3",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993538.15679096,
+        "y": 63585625.72952459
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 9",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993988.642764512,
+        "y": 63587991.90868809
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv TABAM",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21995033.790392622,
+        "y": 63587918.92561413
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "0.1",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993691.257491454,
+        "y": 63588010.99665232
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 252",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993927.469779357,
+        "y": 63587038.85027538
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv 252",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21994972.617407463,
+        "y": 63586965.867201425
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "0.13",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993630.0845063,
+        "y": 63587057.93823961
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 253",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993917.218202632,
+        "y": 63586879.133507945
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv 352",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21994962.365830738,
+        "y": 63586806.15043399
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "0.13",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993619.83292957,
+        "y": 63586898.221472174
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 254",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993906.966625903,
+        "y": 63586719.4167405
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv 452",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21994952.11425401,
+        "y": 63586646.43366655
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "0.13",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993609.581352845,
+        "y": 63586738.504704736
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 255",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993896.715049177,
+        "y": 63586559.69997306
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv 552",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21994941.862677284,
+        "y": 63586486.71689911
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": " - ",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993599.329776116,
+        "y": 63586578.7879373
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 251",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993937.721356086,
+        "y": 63587198.56704282
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv 152",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21994982.868984193,
+        "y": 63587125.58396886
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "0.09",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993640.336083025,
+        "y": 63587217.65500705
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "reg kci",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993531.917064454,
+        "y": 63586581.615072936
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color253",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21996788.004231717,
+        "y": 63585101.52340043
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "afcv HCTAH",
+      "layer": "TEXT",
+      "height": 58.0,
+      "position": {
+        "x": 21995003.03566244,
+        "y": 63587439.77531182
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "color 251",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993957.888034333,
+        "y": 63587512.75838577
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "0.09",
+      "layer": "TEXT",
+      "height": 50.0,
+      "position": {
+        "x": 21993660.50276127,
+        "y": 63587531.84635001
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "jmr nae kt neurv",
+      "layer": "TEXT",
+      "height": 11.999999999999996,
+      "position": {
+        "x": 21994411.743644036,
+        "y": 63568339.94674633
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "jmr nae kt neurv",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21994411.749730084,
+        "y": 63568339.94635121
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ddui cyui",
+      "layer": "TEXT",
+      "height": 11.999999999999998,
+      "position": {
+        "x": 21992624.872297585,
+        "y": 63567729.146764584
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "bheuz",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21992643.739884917,
+        "y": 63567980.1150022
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ddui cyui",
+      "layer": "TEXT",
+      "height": 11.999999999999998,
+      "position": {
+        "x": 21992564.994738024,
+        "y": 63566796.066081464
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "bheuz",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21992499.29547911,
+        "y": 63566354.390435174
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "bheuz",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21993268.2378304,
+        "y": 63565424.51464276
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "eu ddui ngk",
+      "layer": "TEXT",
+      "height": 11.999999999999998,
+      "position": {
+        "x": 21994830.16058088,
+        "y": 63565574.02890364
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "eu ddui ngk",
+      "layer": "TEXT",
+      "height": 11.999999999999998,
+      "position": {
+        "x": 21994574.892159212,
+        "y": 63565356.76138547
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "fbhxv",
+      "layer": "TEXT",
+      "height": 15.0,
+      "position": {
+        "x": 21995072.62688691,
+        "y": 63566731.56780351
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "bheuz",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21995177.65574525,
+        "y": 63566644.20555834
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": ")28 n\"r( ",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21995203.749031343,
+        "y": 63565471.500125006
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "jmr fh,, ,hbueu,",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21995243.349120278,
+        "y": 63565499.5740458
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "tjuz vmkkv cjmr %%%52",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21995257.06347566,
+        "y": 63565442.96913507
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "agr jruo ",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21994744.26878435,
+        "y": 63565318.956911065
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "cducv 011 x\"n",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21994746.879456572,
+        "y": 63565301.402559265
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "dsr cducv 01/1 nw",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21994687.40910477,
+        "y": 63565185.64733969
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "agr jruo ",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21993927.53564189,
+        "y": 63565375.03395496
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "cducv 011 x\"n",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21993930.14631411,
+        "y": 63565357.479603164
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "tjuz vmkkv cjmr %%%52",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21993284.179104537,
+        "y": 63565185.31961953
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nheuo kn,ei naje",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21992064.79045861,
+        "y": 63565840.433593094
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "trdz juk",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21992435.43747767,
+        "y": 63565372.54434657
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": ")011 n\"r( ",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21992283.413830508,
+        "y": 63567092.34323979
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "jmr fh,, pguyu, 1",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21992316.423546705,
+        "y": 63567117.30488885
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "tjuz vmkkv cjmr %%%52",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21992329.736673634,
+        "y": 63567063.74634982
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "agr jruo ",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21991744.01022062,
+        "y": 63565984.84606879
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "cducv 011 x\"n",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21991746.62089284,
+        "y": 63565967.29171699
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "agr jruo ",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21991821.52830318,
+        "y": 63567296.57460041
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "cducv 011 x\"n",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21991824.1389754,
+        "y": 63567279.020248614
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ehr ph,uj 02 x\"n ngk pbh vereg",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21992425.557649847,
+        "y": 63564932.906101026
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ungkhu dsr nuxsh, cducv 2 nw",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21992422.36066047,
+        "y": 63564911.02435372
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ehr ph,uj 02 x\"n ngk pbh vereg",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21991471.258766964,
+        "y": 63566469.71809254
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ungkhu dsr nuxsh, cducv 2 nw",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21991468.061777588,
+        "y": 63566447.83634523
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ehr ph,uj 02 x\"n ngk pbh vereg",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21991589.94754299,
+        "y": 63568359.91718358
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ungkhu dsr nuxsh, cducv 2 nw",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21991586.750553615,
+        "y": 63568338.03543627
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "trubu, jank unho",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21995747.61453245,
+        "y": 63566371.43378125
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "kngubu,",
+      "layer": "TEXT",
+      "height": 15.0,
+      "position": {
+        "x": 21995071.1252063,
+        "y": 63566708.17202946
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ehr ph,uj 02 x\"n ngk pbh vereg",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21995975.235840693,
+        "y": 63567043.33812436
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ungkhu dsr nuxsh, cducv 2 nw",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21995972.038851317,
+        "y": 63567021.45637705
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ehr ph,uj 02 x\"n ngk pbh vereg",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21996015.80160506,
+        "y": 63568408.779780105
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ungkhu dsr nuxsh, cducv 2 nw",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21996012.604615685,
+        "y": 63568386.8980328
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "achk dhav",
+      "layer": "TEXT",
+      "height": 12.0,
+      "position": {
+        "x": 21994906.115937233,
+        "y": 63568350.319010034
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": " ahpug %%%4",
+      "layer": "TEXT",
+      "height": 12.0,
+      "position": {
+        "x": 21994903.66582518,
+        "y": 63568312.146933034
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "661.60",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21995726.22396197,
+        "y": 63567465.59501913
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "661.32",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21995621.96299164,
+        "y": 63566526.66782777
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "661.08",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21995527.30352604,
+        "y": 63565901.405528545
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "660.83",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21995250.614018317,
+        "y": 63564839.18332461
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": ")011 n\"r( ",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21992308.134954274,
+        "y": 63567477.49160093
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "jmr fh,, pguyu, 2",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21992341.14467047,
+        "y": 63567502.45324999
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "tjuz vmkkv cjmr %%%52",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21992354.4577974,
+        "y": 63567448.89471096
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "trdz juk",
+      "layer": "TEXT",
+      "height": 11.999999999999988,
+      "position": {
+        "x": 21995110.91663407,
+        "y": 63565085.820353635
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nheuo kn,ei naje",
+      "layer": "TEXT",
+      "height": 11.999999999999988,
+      "position": {
+        "x": 21995216.169909712,
+        "y": 63565989.60819677
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nheuo kn,ei naje",
+      "layer": "TEXT",
+      "height": 11.999999999999988,
+      "position": {
+        "x": 21991977.16273325,
+        "y": 63566195.716438696
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "trdz juk",
+      "layer": "TEXT",
+      "height": 11.999999999999988,
+      "position": {
+        "x": 21991962.46689042,
+        "y": 63567051.749499895
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "vmkkv",
+      "layer": "TEXT",
+      "height": 11.999999999999993,
+      "position": {
+        "x": 21992321.975463685,
+        "y": 63566529.677700855
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "pdusv",
+      "layer": "TEXT",
+      "height": 11.999999999999993,
+      "position": {
+        "x": 21992320.80774263,
+        "y": 63566511.48492562
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nheuo kn,ei naje",
+      "layer": "TEXT",
+      "height": 11.999999999999988,
+      "position": {
+        "x": 21992116.269229587,
+        "y": 63568362.76849281
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "trdz juk",
+      "layer": "TEXT",
+      "height": 11.999999999999988,
+      "position": {
+        "x": 21991992.031408366,
+        "y": 63567512.10136941
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "vmkkv",
+      "layer": "TEXT",
+      "height": 11.999999999999993,
+      "position": {
+        "x": 21992373.62019129,
+        "y": 63567800.415132985
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "pdusv",
+      "layer": "TEXT",
+      "height": 11.999999999999993,
+      "position": {
+        "x": 21992372.452470236,
+        "y": 63567782.22235774
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "vmkkv",
+      "layer": "TEXT",
+      "height": 11.999999999999993,
+      "position": {
+        "x": 21992312.63534284,
+        "y": 63565752.10692009
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "pdusv",
+      "layer": "TEXT",
+      "height": 11.999999999999993,
+      "position": {
+        "x": 21992311.467621785,
+        "y": 63565733.91414485
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "vmkkv",
+      "layer": "TEXT",
+      "height": 11.999999999999993,
+      "position": {
+        "x": 21995372.367135905,
+        "y": 63566196.41489074
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "pdusv",
+      "layer": "TEXT",
+      "height": 11.999999999999993,
+      "position": {
+        "x": 21995371.19941485,
+        "y": 63566178.222115494
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "bheuz %%%5/1",
+      "layer": "TEXT",
+      "height": 11.999999999999988,
+      "position": {
+        "x": 21993312.62944391,
+        "y": 63567081.71386817
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "bheuz %%%5/1",
+      "layer": "TEXT",
+      "height": 11.999999999999988,
+      "position": {
+        "x": 21994731.06599346,
+        "y": 63567718.80398658
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "bheuz %%%5/1",
+      "layer": "TEXT",
+      "height": 11.999999999999986,
+      "position": {
+        "x": 21993133.649693422,
+        "y": 63565950.321990535
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "bheuz %%%5/1",
+      "layer": "TEXT",
+      "height": 11.999999999999988,
+      "position": {
+        "x": 21993213.552675743,
+        "y": 63566628.22032451
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "bheuz %%%5/1",
+      "layer": "TEXT",
+      "height": 11.999999999999986,
+      "position": {
+        "x": 21993274.56821853,
+        "y": 63567800.937995665
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "bheuz %%%5/1",
+      "layer": "TEXT",
+      "height": 11.999999999999988,
+      "position": {
+        "x": 21994027.276598696,
+        "y": 63566337.634039275
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "bheuz %%%5/1",
+      "layer": "TEXT",
+      "height": 11.999999999999988,
+      "position": {
+        "x": 21994630.610035382,
+        "y": 63566345.61910403
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "mn\"d \"4",
+      "layer": "TEXT",
+      "height": 11.999999999999996,
+      "position": {
+        "x": 21992534.97803304,
+        "y": 63566197.96396228
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "eupx, ekhy, ",
+      "layer": "TEXT",
+      "height": 11.999999999999995,
+      "position": {
+        "x": 21992533.933387373,
+        "y": 63566179.62363004
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nh dao",
+      "layer": "TEXT",
+      "height": 11.999999999999995,
+      "position": {
+        "x": 21992532.069762643,
+        "y": 63566163.73335818
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "+8",
+      "layer": "TEXT",
+      "height": 11.999999999999995,
+      "position": {
+        "x": 21992679.86816035,
+        "y": 63566253.98550747
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "mn\"d \"4",
+      "layer": "TEXT",
+      "height": 11.999999999999996,
+      "position": {
+        "x": 21994280.592280466,
+        "y": 63565397.39912897
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "eupx, ekhy, ",
+      "layer": "TEXT",
+      "height": 11.999999999999995,
+      "position": {
+        "x": 21994279.5476348,
+        "y": 63565379.05879673
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nh dao",
+      "layer": "TEXT",
+      "height": 11.999999999999995,
+      "position": {
+        "x": 21994277.68401007,
+        "y": 63565363.168524876
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "+8",
+      "layer": "TEXT",
+      "height": 11.999999999999995,
+      "position": {
+        "x": 21994353.92875862,
+        "y": 63565527.39934579
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "mn\"d \"4",
+      "layer": "TEXT",
+      "height": 11.999999999999996,
+      "position": {
+        "x": 21994402.129607003,
+        "y": 63568191.97653693
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "eupx, ekhy, ",
+      "layer": "TEXT",
+      "height": 11.999999999999995,
+      "position": {
+        "x": 21994401.084961336,
+        "y": 63568173.63620469
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nh dao",
+      "layer": "TEXT",
+      "height": 11.999999999999995,
+      "position": {
+        "x": 21994399.221336607,
+        "y": 63568157.74593283
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "+8",
+      "layer": "TEXT",
+      "height": 11.999999999999995,
+      "position": {
+        "x": 21994290.349652357,
+        "y": 63568028.256874956
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "mn\"d \"4",
+      "layer": "TEXT",
+      "height": 11.999999999999996,
+      "position": {
+        "x": 21992569.698212385,
+        "y": 63567312.53223933
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "eupx, ekhy, ",
+      "layer": "TEXT",
+      "height": 11.999999999999995,
+      "position": {
+        "x": 21992568.653566718,
+        "y": 63567294.19190709
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nh dao",
+      "layer": "TEXT",
+      "height": 11.999999999999995,
+      "position": {
+        "x": 21992566.78994199,
+        "y": 63567278.301635236
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "+8",
+      "layer": "TEXT",
+      "height": 11.999999999999995,
+      "position": {
+        "x": 21992751.86767118,
+        "y": 63567293.554652974
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "+29",
+      "layer": "TEXT",
+      "height": 11.999999999999995,
+      "position": {
+        "x": 21994765.670066725,
+        "y": 63566737.86578126
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "+29",
+      "layer": "TEXT",
+      "height": 11.999999999999995,
+      "position": {
+        "x": 21994765.11925457,
+        "y": 63566763.53170924
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "+29",
+      "layer": "TEXT",
+      "height": 11.999999999999995,
+      "position": {
+        "x": 21993657.066233423,
+        "y": 63566805.57181875
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "+26",
+      "layer": "TEXT",
+      "height": 11.999999999999995,
+      "position": {
+        "x": 21993612.71247635,
+        "y": 63565547.199322954
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "+26",
+      "layer": "TEXT",
+      "height": 11.999999999999995,
+      "position": {
+        "x": 21993821.9820324,
+        "y": 63568119.03156485
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "+29",
+      "layer": "TEXT",
+      "height": 11.999999999999995,
+      "position": {
+        "x": 21993748.796392348,
+        "y": 63566800.49111907
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "+26",
+      "layer": "TEXT",
+      "height": 11.999999999999995,
+      "position": {
+        "x": 21993661.591474973,
+        "y": 63565544.9479515
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "+26",
+      "layer": "TEXT",
+      "height": 11.999999999999995,
+      "position": {
+        "x": 21993764.123668175,
+        "y": 63568123.360085376
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "fhcuh ta",
+      "layer": "TEXT",
+      "height": 11.999999999999984,
+      "position": {
+        "x": 21992484.440171048,
+        "y": 63565631.92609694
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "fhcuh ta",
+      "layer": "TEXT",
+      "height": 11.999999999999984,
+      "position": {
+        "x": 21992650.375531483,
+        "y": 63568231.17275821
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "agr fbhxv -",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21995151.52184044,
+        "y": 63568262.65299989
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "thbyreuo ',pguk nudi",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21995222.907031804,
+        "y": 63568234.54672585
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "agr fbhxv ",
+      "layer": "TEXT",
+      "height": 15.0,
+      "position": {
+        "x": 21995365.720381632,
+        "y": 63568220.22775578
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "kngubu,",
+      "layer": "TEXT",
+      "height": 15.0,
+      "position": {
+        "x": 21995353.347417913,
+        "y": 63568197.580587946
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "fhcuh ta",
+      "layer": "TEXT",
+      "height": 11.999999999999984,
+      "position": {
+        "x": 21992579.40105434,
+        "y": 63567066.46260095
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ahpug",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21995540.26417631,
+        "y": 63566638.162681684
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "dsr nuxsh,",
+      "layer": "TEXT",
+      "height": 11.999999999999998,
+      "position": {
+        "x": 21995033.701420058,
+        "y": 63568459.32490827
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "cducv 2 nw",
+      "layer": "TEXT",
+      "height": 11.999999999999998,
+      "position": {
+        "x": 21995033.13381017,
+        "y": 63568436.26961075
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "dsr nuxsh,",
+      "layer": "TEXT",
+      "height": 11.999999999999998,
+      "position": {
+        "x": 21995014.90188051,
+        "y": 63568172.434079096
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "cducv 2 nw",
+      "layer": "TEXT",
+      "height": 11.999999999999998,
+      "position": {
+        "x": 21995014.334270623,
+        "y": 63568149.37878157
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "dd ngrfu,",
+      "layer": "TEXT",
+      "height": 11.99999999999999,
+      "position": {
+        "x": 21994714.87941886,
+        "y": 63567823.37620412
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ungkhu dsr nuxsh, cducv 2 nw",
+      "layer": "TEXT",
+      "height": 11.999999999999998,
+      "position": {
+        "x": 21995219.14650017,
+        "y": 63568636.69266001
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ehr ph,uj",
+      "layer": "TEXT",
+      "height": 11.999999999999998,
+      "position": {
+        "x": 21995079.253014307,
+        "y": 63568668.74208753
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ehr ehho",
+      "layer": "TEXT",
+      "height": 11.999999999999998,
+      "position": {
+        "x": 21993973.60863027,
+        "y": 63568673.68264364
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ehr ehho",
+      "layer": "TEXT",
+      "height": 11.999999999999998,
+      "position": {
+        "x": 21995452.97025209,
+        "y": 63568638.51343105
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "ehr ehho",
+      "layer": "TEXT",
+      "height": 11.999999999999998,
+      "position": {
+        "x": 21992566.635154378,
+        "y": 63568707.78213401
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "xuko gkhv kdd",
+      "layer": "TEXT",
+      "height": 11.999999999999993,
+      "position": {
+        "x": 21994675.210214697,
+        "y": 63568164.37449506
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "+ fkuc vdbv",
+      "layer": "TEXT",
+      "height": 11.999999999999993,
+      "position": {
+        "x": 21994669.178398214,
+        "y": 63568148.06034151
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nducv 2 nw",
+      "layer": "TEXT",
+      "height": 11.999999999999993,
+      "position": {
+        "x": 21994663.504604027,
+        "y": 63568132.22224067
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "dsr nuxsh,",
+      "layer": "TEXT",
+      "height": 11.999999999999998,
+      "position": {
+        "x": 21993795.731102988,
+        "y": 63568448.973988794
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "cducv 2 nw",
+      "layer": "TEXT",
+      "height": 11.999999999999998,
+      "position": {
+        "x": 21993795.163493093,
+        "y": 63568425.91869126
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "+29",
+      "layer": "TEXT",
+      "height": 11.999999999999995,
+      "position": {
+        "x": 21994799.685577255,
+        "y": 63567302.0655825
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "bheuz %%%5/1",
+      "layer": "TEXT",
+      "height": 11.999999999999988,
+      "position": {
+        "x": 21994058.569308706,
+        "y": 63567809.72391852
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "bheuz %%%5/1",
+      "layer": "TEXT",
+      "height": 11.999999999999988,
+      "position": {
+        "x": 21993381.76926498,
+        "y": 63567344.62271183
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "+23",
+      "layer": "TEXT",
+      "height": 11.999999999999995,
+      "position": {
+        "x": 21995019.075022053,
+        "y": 63567372.16246659
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "+19",
+      "layer": "TEXT",
+      "height": 11.999999999999995,
+      "position": {
+        "x": 21993826.145826597,
+        "y": 63567444.34339049
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "660.83",
+      "layer": "TEXT",
+      "height": 11.999999999999988,
+      "position": {
+        "x": 21995250.614018314,
+        "y": 63564839.18332461
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "trui nho",
+      "layer": "TEXT",
+      "height": 11.999999999999998,
+      "position": {
+        "x": 21995358.460235115,
+        "y": 63565215.423084095
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "trui jank",
+      "layer": "TEXT",
+      "height": 11.999999999999998,
+      "position": {
+        "x": 21995413.702224247,
+        "y": 63565528.21102646
+      }
+    },
+    {
+      "type": "AcDbText",
+      "text": "nbs; 53q03",
+      "layer": "TEXT",
+      "height": 11.999999999999996,
+      "position": {
+        "x": 21993933.17537012,
+        "y": 63567690.927271895
+      }
+    }
+  ],
+  "dimensions": [],
+  "layers": {
+    "0": 4,
+    "COMMENT": 3,
+    "xref": 2,
+    "TEXT": 502,
+    "1": 56,
+    "2": 87,
+    "251": 40,
+    "MITAHAT": 59,
+    "DIM": 144,
+    "HATCH": 13,
+    "road": 1,
+    "shazap": 2,
+    "area": 1,
+    "255": 4,
+    "PERMIT-H": 16,
+    "3": 2,
+    "5": 1,
+    "7": 56,
+    "AXES": 2,
+    "COTERET": 1,
+    "Defpoints": 3,
+    "HATCH_1": 1,
+    "MEAL": 3,
+    "VP": 3,
+    "PIT": 1,
+    "PRATIM": 33,
+    "_IDKUN": 2,
+    "TEXT-200": 22,
+    "TOPO": 1,
+    "TREE": 5,
+    "FURN": 13,
+    "TIK": 1,
+    "SANY": 1,
+    "MEN": 1,
+    "CAR": 1,
+    "M-E-אבן": 1,
+    "M-P-אבן": 1,
+    "252": 1,
+    "253": 1,
+    "254": 1,
+    "door": 12,
+    "pituah": 91,
+    "HATCH GINUN": 3,
+    "MASGERUT": 6
+  },
+  "geometry": {
+    "total_line_length": 306839.88624906127,
+    "total_area": 76467711.65692073,
+    "polyline_count": 244,
+    "circle_count": 44,
+    "arc_count": 0
+  },
+  "attributes": [
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "%%p0.00"
+    },
+    {
+      "block": "level-front",
+      "tag": "N1",
+      "value": "+1.00"
+    },
+    {
+      "block": "NUM",
+      "tag": "00",
+      "value": "00"
+    },
+    {
+      "block": "idkun",
+      "tag": "00",
+      "value": "00"
+    },
+    {
+      "block": "level-sec",
+      "tag": "SECTION",
+      "value": "%%p0.00"
+    },
+    {
+      "block": "ELEVATION",
+      "tag": "00",
+      "value": "3"
+    },
+    {
+      "block": "PRAT-100",
+      "tag": "0000",
+      "value": "00"
+    },
+    {
+      "block": "PRAT-100",
+      "tag": "ADTE",
+      "value": "DT0-00"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "-0.02=661.98"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "-0.02=661.98"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "-0.02=661.98"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "-0.20=661.80"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "-0.02=661.98"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "-0.02=661.98"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "-0.02=661.98"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "-0.02=661.98"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "-0.02=661.98"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "+2.00"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "+0.11"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "675.28"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "666.51"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "664.56"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "663.58"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "665.42"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "667.51"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "665.61"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "669.86"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "667.11"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "666.36"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "665.11"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "664.61"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "666.61"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "667.86"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "668.86"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "662.11"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "+4.91"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "+4.91"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "+4.91"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "+4.16"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "+4.16"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "+4.16"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "+4.16"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "+4.16"
+    },
+    {
+      "block": "M",
+      "tag": "0000-0",
+      "value": "26"
+    },
+    {
+      "block": "M",
+      "tag": "TYPE",
+      "value": "M-10"
+    },
+    {
+      "block": "M",
+      "tag": "MASHKUF",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "EMG",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "MIDOT",
+      "value": "40/180"
+    },
+    {
+      "block": "M",
+      "tag": "GMAR",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "INFO",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "ZIRIM",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "MAHAZIR",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "YADIT",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "MANUL",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "MAAZUR",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "0000-0",
+      "value": "26"
+    },
+    {
+      "block": "M",
+      "tag": "TYPE",
+      "value": "M-10"
+    },
+    {
+      "block": "M",
+      "tag": "MASHKUF",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "EMG",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "MIDOT",
+      "value": "40/180"
+    },
+    {
+      "block": "M",
+      "tag": "GMAR",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "INFO",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "ZIRIM",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "MAHAZIR",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "YADIT",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "MANUL",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "MAAZUR",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "0000-0",
+      "value": "26"
+    },
+    {
+      "block": "M",
+      "tag": "TYPE",
+      "value": "M-10"
+    },
+    {
+      "block": "M",
+      "tag": "MASHKUF",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "EMG",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "MIDOT",
+      "value": "40/180"
+    },
+    {
+      "block": "M",
+      "tag": "GMAR",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "INFO",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "ZIRIM",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "MAHAZIR",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "YADIT",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "MANUL",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "MAAZUR",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "0000-0",
+      "value": "26"
+    },
+    {
+      "block": "M",
+      "tag": "TYPE",
+      "value": "M-10"
+    },
+    {
+      "block": "M",
+      "tag": "MASHKUF",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "EMG",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "MIDOT",
+      "value": "40/180"
+    },
+    {
+      "block": "M",
+      "tag": "GMAR",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "INFO",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "ZIRIM",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "MAHAZIR",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "YADIT",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "MANUL",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "MAAZUR",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "0000-0",
+      "value": "26"
+    },
+    {
+      "block": "M",
+      "tag": "TYPE",
+      "value": "M-10"
+    },
+    {
+      "block": "M",
+      "tag": "MASHKUF",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "EMG",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "MIDOT",
+      "value": "40/180"
+    },
+    {
+      "block": "M",
+      "tag": "GMAR",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "INFO",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "ZIRIM",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "MAHAZIR",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "YADIT",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "MANUL",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "MAAZUR",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "0000-0",
+      "value": "26"
+    },
+    {
+      "block": "M",
+      "tag": "TYPE",
+      "value": "M-10"
+    },
+    {
+      "block": "M",
+      "tag": "MASHKUF",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "EMG",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "MIDOT",
+      "value": "40/180"
+    },
+    {
+      "block": "M",
+      "tag": "GMAR",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "INFO",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "ZIRIM",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "MAHAZIR",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "YADIT",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "MANUL",
+      "value": "-"
+    },
+    {
+      "block": "M",
+      "tag": "MAAZUR",
+      "value": "-"
+    },
+    {
+      "block": "PRAT-100",
+      "tag": "0000",
+      "value": "08,08A"
+    },
+    {
+      "block": "PRAT-100",
+      "tag": "ADTE",
+      "value": "DT1-00"
+    },
+    {
+      "block": "PRAT-100",
+      "tag": "0000",
+      "value": "11"
+    },
+    {
+      "block": "PRAT-100",
+      "tag": "ADTE",
+      "value": "DT1-01"
+    },
+    {
+      "block": "PRAT-100",
+      "tag": "0000",
+      "value": "11,A,B,C"
+    },
+    {
+      "block": "PRAT-100",
+      "tag": "ADTE",
+      "value": "DT1-01"
+    },
+    {
+      "block": "PRAT-100",
+      "tag": "0000",
+      "value": "08,08A"
+    },
+    {
+      "block": "PRAT-100",
+      "tag": "ADTE",
+      "value": "DT1-00"
+    },
+    {
+      "block": "PRAT-100",
+      "tag": "0000",
+      "value": "11"
+    },
+    {
+      "block": "PRAT-100",
+      "tag": "ADTE",
+      "value": "DT1-01"
+    },
+    {
+      "block": "PRAT-100",
+      "tag": "0000",
+      "value": "11,A,B,C"
+    },
+    {
+      "block": "PRAT-100",
+      "tag": "ADTE",
+      "value": "DT1-01"
+    },
+    {
+      "block": "PRAT-100",
+      "tag": "0000",
+      "value": "08,08A"
+    },
+    {
+      "block": "PRAT-100",
+      "tag": "ADTE",
+      "value": "DT1-00"
+    },
+    {
+      "block": "PRAT-100",
+      "tag": "0000",
+      "value": "11"
+    },
+    {
+      "block": "PRAT-100",
+      "tag": "ADTE",
+      "value": "DT1-01"
+    },
+    {
+      "block": "PRAT-100",
+      "tag": "0000",
+      "value": "11,A,B,C"
+    },
+    {
+      "block": "PRAT-100",
+      "tag": "ADTE",
+      "value": "DT1-01"
+    },
+    {
+      "block": "PRAT-100",
+      "tag": "0000",
+      "value": "08,08A"
+    },
+    {
+      "block": "PRAT-100",
+      "tag": "ADTE",
+      "value": "DT1-00"
+    },
+    {
+      "block": "PRAT-100",
+      "tag": "0000",
+      "value": "11"
+    },
+    {
+      "block": "PRAT-100",
+      "tag": "ADTE",
+      "value": "DT1-01"
+    },
+    {
+      "block": "PRAT-100",
+      "tag": "0000",
+      "value": "11C"
+    },
+    {
+      "block": "PRAT-100",
+      "tag": "ADTE",
+      "value": "DT1-01"
+    },
+    {
+      "block": "PRAT-100",
+      "tag": "0000",
+      "value": "08,08A"
+    },
+    {
+      "block": "PRAT-100",
+      "tag": "ADTE",
+      "value": "DT1-00"
+    },
+    {
+      "block": "PRAT-100",
+      "tag": "0000",
+      "value": "08,08A"
+    },
+    {
+      "block": "PRAT-100",
+      "tag": "ADTE",
+      "value": "DT1-00"
+    },
+    {
+      "block": "PRAT-100",
+      "tag": "0000",
+      "value": "05A"
+    },
+    {
+      "block": "PRAT-100",
+      "tag": "ADTE",
+      "value": "DT1-00"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "661.70"
+    },
+    {
+      "block": "level-plan",
+      "tag": "LEVEL",
+      "value": "p/c=04/3+"
+    }
+  ],
+  "errors": []
+}

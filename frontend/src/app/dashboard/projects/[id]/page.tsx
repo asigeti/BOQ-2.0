@@ -64,6 +64,11 @@ interface Plan {
   processing_progress: number;
 }
 
+// Helper to check if a filename is a PDF
+const isPdfFile = (filename: string): boolean => {
+  return filename.toLowerCase().endsWith('.pdf');
+};
+
 interface Project {
   id: number;
   name: string;
@@ -113,6 +118,7 @@ interface BOQData {
     total_items: number;
   };
   source_files: string[];
+  warning?: string;
 }
 
 interface ExtractionFileData {
@@ -176,8 +182,13 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
     user_notes: '',
   });
   const [saving, setSaving] = useState(false);
+  const [generatingPdfBoq, setGeneratingPdfBoq] = useState(false);
   const router = useRouter();
   const { showError, showConfirm } = useNotification();
+
+  // Check if all files are PDFs (no CAD files)
+  const isPdfOnlyProject = project?.plans?.length > 0 &&
+    project.plans.every(plan => isPdfFile(plan.filename));
 
   const fetchProject = async () => {
     try {
@@ -270,6 +281,25 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
   const handleExtractionConfirmed = () => {
     // Refresh project data - status will change to "generating_boq"
     fetchProject();
+  };
+
+  // Handle PDF-only project BOQ generation (no layer selection needed)
+  const handleGeneratePdfBoq = async () => {
+    try {
+      setGeneratingPdfBoq(true);
+      // Call the extraction-confirm endpoint with empty layer selection
+      // This will trigger BOQ generation for PDF files
+      await api.post(`/projects/${projectId}/extraction-confirm`, {
+        selected_layer_ids: [],
+        custom_area_m2: null,
+      });
+      // Refresh project data - status will change to "generating_boq"
+      fetchProject();
+    } catch (error: any) {
+      showError(error.response?.data?.detail || 'שגיאה ביצירת כתב הכמויות');
+    } finally {
+      setGeneratingPdfBoq(false);
+    }
   };
 
   const toggleChapter = (code: string) => {
@@ -634,10 +664,49 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
       {project.processing_status === 'extracted' && (
         <Card sx={{ mb: 4 }}>
           <CardContent>
-            <ExtractionReview
-              projectId={project.id}
-              onConfirm={handleExtractionConfirmed}
-            />
+            {isPdfOnlyProject ? (
+              /* PDF-only projects - no layer selection needed */
+              <Box sx={{ textAlign: 'center', py: 4 }}>
+                <PdfIcon sx={{ fontSize: 64, color: '#dc2626', mb: 2 }} />
+                <Typography variant="h5" fontWeight={600} gutterBottom>
+                  קבצי PDF מוכנים ליצירת כתב כמויות
+                </Typography>
+                <Typography variant="body1" color="text.secondary" sx={{ mb: 3, maxWidth: 500, mx: 'auto' }}>
+                  זוהו {project.plans.length} קבצי PDF בפרויקט.
+                  לחץ על הכפתור למטה כדי ליצור כתב כמויות אוטומטי מהנתונים שחולצו.
+                </Typography>
+                <Alert severity="info" sx={{ mb: 3, maxWidth: 500, mx: 'auto', textAlign: 'right' }}>
+                  <Typography variant="body2">
+                    קבצי PDF אינם מכילים שכבות AutoCAD, לכן המערכת תיצור כתב כמויות ישירות מהנתונים שחולצו.
+                  </Typography>
+                </Alert>
+                <Button
+                  variant="contained"
+                  size="large"
+                  onClick={handleGeneratePdfBoq}
+                  disabled={generatingPdfBoq}
+                  startIcon={generatingPdfBoq ? <CircularProgress size={20} color="inherit" /> : <PlayIcon />}
+                  sx={{
+                    px: 4,
+                    py: 1.5,
+                    fontSize: '1.1rem',
+                    fontWeight: 600,
+                    background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+                    '&:hover': {
+                      background: 'linear-gradient(135deg, #4f46e5 0%, #4338ca 100%)',
+                    },
+                  }}
+                >
+                  {generatingPdfBoq ? 'מייצר כתב כמויות...' : 'צור כתב כמויות'}
+                </Button>
+              </Box>
+            ) : (
+              /* CAD files - show layer selection */
+              <ExtractionReview
+                projectId={project.id}
+                onConfirm={handleExtractionConfirmed}
+              />
+            )}
           </CardContent>
         </Card>
       )}
@@ -671,79 +740,141 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
         </Card>
       )}
 
-      {/* AutoCAD Extraction Summary */}
-      {project.processing_status === 'completed' && extractionData && (
+      {/* Extraction Summary - Adapts to PDF vs CAD */}
+      {project.processing_status === 'completed' && extractionData && (() => {
+        // Check if all files are PDFs
+        const isPdfProject = extractionData.files.every(f => f.filename.toLowerCase().endsWith('.pdf'));
+        const hasCadFiles = extractionData.files.some(f =>
+          f.filename.toLowerCase().endsWith('.dwg') || f.filename.toLowerCase().endsWith('.dxf')
+        );
+
+        return (
         <Card sx={{ mb: 4 }}>
           <CardContent>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-              <FolderIcon sx={{ color: '#10b981', fontSize: 28 }} />
+              {isPdfProject ? (
+                <PdfIcon sx={{ color: '#ef4444', fontSize: 28 }} />
+              ) : (
+                <FolderIcon sx={{ color: '#10b981', fontSize: 28 }} />
+              )}
               <Typography variant="h5" fontWeight={600}>
-                נתוני חילוץ מ-AutoCAD
+                {isPdfProject ? 'נתוני חילוץ מ-PDF' : 'נתוני חילוץ מ-AutoCAD'}
               </Typography>
             </Box>
 
-            {/* Summary Stats */}
+            {/* Summary Stats - Different for PDF vs CAD */}
             <Grid container spacing={2} sx={{ mb: 3 }}>
-              <Grid xs={6} sm={4} md={2}>
-                <Box sx={{ p: 2, backgroundColor: alpha('#6366f1', 0.05), borderRadius: 2, textAlign: 'center' }}>
-                  <Typography variant="h4" fontWeight={700} color="primary">
-                    {extractionData.extraction_summary.total_area_m2.toLocaleString('he-IL')}
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    שטח כולל (מ״ר)
-                  </Typography>
-                </Box>
-              </Grid>
-              <Grid xs={6} sm={4} md={2}>
-                <Box sx={{ p: 2, backgroundColor: alpha('#10b981', 0.05), borderRadius: 2, textAlign: 'center' }}>
-                  <Typography variant="h4" fontWeight={700} sx={{ color: '#10b981' }}>
-                    {extractionData.extraction_summary.total_blocks.toLocaleString('he-IL')}
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    בלוקים
-                  </Typography>
-                </Box>
-              </Grid>
-              <Grid xs={6} sm={4} md={2}>
-                <Box sx={{ p: 2, backgroundColor: alpha('#f59e0b', 0.05), borderRadius: 2, textAlign: 'center' }}>
-                  <Typography variant="h4" fontWeight={700} sx={{ color: '#f59e0b' }}>
-                    {extractionData.extraction_summary.total_text_entities.toLocaleString('he-IL')}
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    טקסט
-                  </Typography>
-                </Box>
-              </Grid>
-              <Grid xs={6} sm={4} md={2}>
-                <Box sx={{ p: 2, backgroundColor: alpha('#8b5cf6', 0.05), borderRadius: 2, textAlign: 'center' }}>
-                  <Typography variant="h4" fontWeight={700} sx={{ color: '#8b5cf6' }}>
-                    {extractionData.extraction_summary.total_layers.toLocaleString('he-IL')}
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    שכבות
-                  </Typography>
-                </Box>
-              </Grid>
-              <Grid xs={6} sm={4} md={2}>
-                <Box sx={{ p: 2, backgroundColor: alpha('#ec4899', 0.05), borderRadius: 2, textAlign: 'center' }}>
-                  <Typography variant="h4" fontWeight={700} sx={{ color: '#ec4899' }}>
-                    {extractionData.extraction_summary.total_polylines.toLocaleString('he-IL')}
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    פוליליינים
-                  </Typography>
-                </Box>
-              </Grid>
-              <Grid xs={6} sm={4} md={2}>
-                <Box sx={{ p: 2, backgroundColor: alpha('#64748b', 0.05), borderRadius: 2, textAlign: 'center' }}>
-                  <Typography variant="h4" fontWeight={700} sx={{ color: '#64748b' }}>
-                    {extractionData.total_files}
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    קבצים
-                  </Typography>
-                </Box>
-              </Grid>
+              {isPdfProject ? (
+                // PDF-specific stats
+                <>
+                  <Grid xs={6} sm={4} md={3}>
+                    <Box sx={{ p: 2, backgroundColor: alpha('#ef4444', 0.05), borderRadius: 2, textAlign: 'center' }}>
+                      <Typography variant="h4" fontWeight={700} sx={{ color: '#ef4444' }}>
+                        {extractionData.total_files}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        קבצי PDF
+                      </Typography>
+                    </Box>
+                  </Grid>
+                  <Grid xs={6} sm={4} md={3}>
+                    <Box sx={{ p: 2, backgroundColor: alpha('#f59e0b', 0.05), borderRadius: 2, textAlign: 'center' }}>
+                      <Typography variant="h4" fontWeight={700} sx={{ color: '#f59e0b' }}>
+                        {extractionData.extraction_summary.total_text_entities.toLocaleString('he-IL')}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        פריטים שנמצאו
+                      </Typography>
+                    </Box>
+                  </Grid>
+                  <Grid xs={6} sm={4} md={3}>
+                    <Box sx={{ p: 2, backgroundColor: alpha('#10b981', 0.05), borderRadius: 2, textAlign: 'center' }}>
+                      <Typography variant="h4" fontWeight={700} sx={{ color: '#10b981' }}>
+                        Gemini
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        מנוע AI
+                      </Typography>
+                    </Box>
+                  </Grid>
+                  <Grid xs={6} sm={4} md={3}>
+                    <Box sx={{ p: 2, backgroundColor: alpha('#6366f1', 0.05), borderRadius: 2, textAlign: 'center' }}>
+                      <Typography variant="h4" fontWeight={700} color="primary">
+                        {extractionData.extraction_summary.total_area_m2 > 0
+                          ? extractionData.extraction_summary.total_area_m2.toLocaleString('he-IL')
+                          : '-'}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        שטח כולל (מ״ר)
+                      </Typography>
+                    </Box>
+                  </Grid>
+                </>
+              ) : (
+                // CAD-specific stats
+                <>
+                  <Grid xs={6} sm={4} md={2}>
+                    <Box sx={{ p: 2, backgroundColor: alpha('#6366f1', 0.05), borderRadius: 2, textAlign: 'center' }}>
+                      <Typography variant="h4" fontWeight={700} color="primary">
+                        {extractionData.extraction_summary.total_area_m2.toLocaleString('he-IL')}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        שטח כולל (מ״ר)
+                      </Typography>
+                    </Box>
+                  </Grid>
+                  <Grid xs={6} sm={4} md={2}>
+                    <Box sx={{ p: 2, backgroundColor: alpha('#10b981', 0.05), borderRadius: 2, textAlign: 'center' }}>
+                      <Typography variant="h4" fontWeight={700} sx={{ color: '#10b981' }}>
+                        {extractionData.extraction_summary.total_blocks.toLocaleString('he-IL')}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        בלוקים
+                      </Typography>
+                    </Box>
+                  </Grid>
+                  <Grid xs={6} sm={4} md={2}>
+                    <Box sx={{ p: 2, backgroundColor: alpha('#f59e0b', 0.05), borderRadius: 2, textAlign: 'center' }}>
+                      <Typography variant="h4" fontWeight={700} sx={{ color: '#f59e0b' }}>
+                        {extractionData.extraction_summary.total_text_entities.toLocaleString('he-IL')}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        טקסט
+                      </Typography>
+                    </Box>
+                  </Grid>
+                  <Grid xs={6} sm={4} md={2}>
+                    <Box sx={{ p: 2, backgroundColor: alpha('#8b5cf6', 0.05), borderRadius: 2, textAlign: 'center' }}>
+                      <Typography variant="h4" fontWeight={700} sx={{ color: '#8b5cf6' }}>
+                        {extractionData.extraction_summary.total_layers.toLocaleString('he-IL')}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        שכבות
+                      </Typography>
+                    </Box>
+                  </Grid>
+                  <Grid xs={6} sm={4} md={2}>
+                    <Box sx={{ p: 2, backgroundColor: alpha('#ec4899', 0.05), borderRadius: 2, textAlign: 'center' }}>
+                      <Typography variant="h4" fontWeight={700} sx={{ color: '#ec4899' }}>
+                        {extractionData.extraction_summary.total_polylines.toLocaleString('he-IL')}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        פוליליינים
+                      </Typography>
+                    </Box>
+                  </Grid>
+                  <Grid xs={6} sm={4} md={2}>
+                    <Box sx={{ p: 2, backgroundColor: alpha('#64748b', 0.05), borderRadius: 2, textAlign: 'center' }}>
+                      <Typography variant="h4" fontWeight={700} sx={{ color: '#64748b' }}>
+                        {extractionData.total_files}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        קבצים
+                      </Typography>
+                    </Box>
+                  </Grid>
+                </>
+              )}
             </Grid>
 
             {/* Per-file breakdown */}
@@ -755,11 +886,23 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
                 <TableHead>
                   <TableRow sx={{ backgroundColor: alpha('#6366f1', 0.02) }}>
                     <TableCell>שם קובץ</TableCell>
-                    <TableCell align="right">שטח (מ״ר)</TableCell>
-                    <TableCell align="right">בלוקים</TableCell>
-                    <TableCell align="right">טקסט</TableCell>
-                    <TableCell align="right">שכבות</TableCell>
-                    <TableCell align="right">פוליליינים</TableCell>
+                    {isPdfProject ? (
+                      // PDF columns
+                      <>
+                        <TableCell align="right">פריטים</TableCell>
+                        <TableCell align="right">סוג תכנית</TableCell>
+                        <TableCell align="right">שטח (מ״ר)</TableCell>
+                      </>
+                    ) : (
+                      // CAD columns
+                      <>
+                        <TableCell align="right">שטח (מ״ר)</TableCell>
+                        <TableCell align="right">בלוקים</TableCell>
+                        <TableCell align="right">טקסט</TableCell>
+                        <TableCell align="right">שכבות</TableCell>
+                        <TableCell align="right">פוליליינים</TableCell>
+                      </>
+                    )}
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -767,25 +910,48 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
                     <TableRow key={file.plan_id}>
                       <TableCell>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <FileIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
+                          {file.filename.toLowerCase().endsWith('.pdf') ? (
+                            <PdfIcon sx={{ fontSize: 18, color: '#ef4444' }} />
+                          ) : (
+                            <FileIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
+                          )}
                           {file.filename}
                         </Box>
                       </TableCell>
-                      <TableCell align="right">
-                        {file.area_m2?.toLocaleString('he-IL') || '-'}
-                      </TableCell>
-                      <TableCell align="right">
-                        {file.extraction_data?.blocks_count?.toLocaleString('he-IL') || '-'}
-                      </TableCell>
-                      <TableCell align="right">
-                        {file.extraction_data?.text_count?.toLocaleString('he-IL') || '-'}
-                      </TableCell>
-                      <TableCell align="right">
-                        {file.extraction_data?.layers_count?.toLocaleString('he-IL') || '-'}
-                      </TableCell>
-                      <TableCell align="right">
-                        {file.extraction_data?.polylines_count?.toLocaleString('he-IL') || '-'}
-                      </TableCell>
+                      {isPdfProject ? (
+                        // PDF data
+                        <>
+                          <TableCell align="right">
+                            {(file as any).items_count?.toLocaleString('he-IL') ||
+                              file.extraction_data?.items_count?.toLocaleString('he-IL') || '-'}
+                          </TableCell>
+                          <TableCell align="right">
+                            {file.extraction_data?.plan_type || 'site_development'}
+                          </TableCell>
+                          <TableCell align="right">
+                            {file.area_m2 && file.area_m2 > 0 ? file.area_m2.toLocaleString('he-IL') : '-'}
+                          </TableCell>
+                        </>
+                      ) : (
+                        // CAD data
+                        <>
+                          <TableCell align="right">
+                            {file.area_m2?.toLocaleString('he-IL') || '-'}
+                          </TableCell>
+                          <TableCell align="right">
+                            {file.extraction_data?.blocks_count?.toLocaleString('he-IL') || '-'}
+                          </TableCell>
+                          <TableCell align="right">
+                            {file.extraction_data?.text_count?.toLocaleString('he-IL') || '-'}
+                          </TableCell>
+                          <TableCell align="right">
+                            {file.extraction_data?.layers_count?.toLocaleString('he-IL') || '-'}
+                          </TableCell>
+                          <TableCell align="right">
+                            {file.extraction_data?.polylines_count?.toLocaleString('he-IL') || '-'}
+                          </TableCell>
+                        </>
+                      )}
                     </TableRow>
                   ))}
                 </TableBody>
@@ -793,7 +959,8 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
             </TableContainer>
           </CardContent>
         </Card>
-      )}
+        );
+      })()}
 
       {/* BOQ Section */}
       {project.processing_status === 'completed' && (
@@ -837,6 +1004,27 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
               </Box>
             ) : boqData ? (
               <>
+                {/* Warning message if BOQ is empty */}
+                {boqData.warning && boqData.chapters.length === 0 && (
+                  <Box
+                    sx={{
+                      p: 3,
+                      mb: 2,
+                      backgroundColor: alpha('#f59e0b', 0.1),
+                      borderRadius: 2,
+                      border: '1px solid',
+                      borderColor: alpha('#f59e0b', 0.3),
+                      textAlign: 'center',
+                    }}
+                  >
+                    <Typography variant="h6" color="warning.main" gutterBottom>
+                      אין נתוני כתב כמויות
+                    </Typography>
+                    <Typography color="text.secondary">
+                      {boqData.warning}
+                    </Typography>
+                  </Box>
+                )}
                 {/* Chapters */}
                 {boqData.chapters.map((chapter) => (
                   <Box key={chapter.chapter_code} sx={{ mb: 2 }}>

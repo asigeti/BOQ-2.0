@@ -1,14 +1,15 @@
 """
 BOQ Items CRUD API
 Allows users to edit, delete, and annotate BOQ line items
+Also provides aggregation endpoints for multi-file BOQ
 """
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 import json
 import logging
 from app.api import deps
-from app import models, schemas
+from app import models, schemas, services
 from app.services.ai_description_generator import get_ai_description_generator
 
 logger = logging.getLogger(__name__)
@@ -359,3 +360,76 @@ def generate_ai_descriptions_batch(
         "errors": error_count,
         "error_details": errors if errors else None
     }
+
+
+# =============================================================================
+# BOQ Aggregation Endpoints
+# =============================================================================
+
+@router.get("/{project_id}/boq/aggregated")
+def get_aggregated_boq(
+    project_id: int,
+    include_deleted: bool = False,
+    db: Session = Depends(deps.get_db)
+) -> Dict[str, Any]:
+    """
+    Get aggregated BOQ for a project, combining items from all plan files.
+
+    This endpoint:
+    - Deduplicates items by item_code
+    - Sums quantities for matching items across files
+    - Tracks which source files contributed to each item
+    - Organizes items by chapter
+
+    Returns:
+        Aggregated BOQ with chapters, items, and summary statistics
+    """
+    # Verify project exists
+    project = db.query(models.Project).filter(models.Project.id == project_id).first()
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+
+    return services.get_aggregated_boq(db, project_id, include_deleted)
+
+
+@router.get("/{project_id}/boq/by-plan")
+def get_boq_by_plan(
+    project_id: int,
+    db: Session = Depends(deps.get_db)
+) -> Dict[str, Any]:
+    """
+    Get BOQ grouped by source plan/file.
+
+    Useful for viewing BOQ contributions from each individual file
+    before aggregation.
+
+    Returns:
+        BOQ data organized by source plan file
+    """
+    # Verify project exists
+    project = db.query(models.Project).filter(models.Project.id == project_id).first()
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+
+    return services.get_boq_by_plan(db, project_id)
+
+
+@router.get("/{project_id}/boq/chapter-summary")
+def get_chapter_summary(
+    project_id: int,
+    db: Session = Depends(deps.get_db)
+) -> List[Dict[str, Any]]:
+    """
+    Get summary of BOQ by chapter for a project.
+
+    Provides a quick overview of chapter totals without full item details.
+
+    Returns:
+        List of chapter summaries with totals
+    """
+    # Verify project exists
+    project = db.query(models.Project).filter(models.Project.id == project_id).first()
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+
+    return services.get_chapter_summary(db, project_id)

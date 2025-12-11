@@ -17,17 +17,17 @@ export default function MainLayout({ children }: MainLayoutProps) {
     <Box
       sx={{
         display: 'flex',
-        flexDirection: 'row-reverse', // RTL: sidebar on right
+        flexDirection: 'row',
         minHeight: '100vh',
       }}
     >
-      {/* Sidebar on the right */}
+      {/* Sidebar FIRST - in RTL, first item goes to the RIGHT */}
       <Sidebar
         collapsed={sidebarCollapsed}
         onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
       />
 
-      {/* Main content */}
+      {/* Main content SECOND - fills remaining space on the LEFT */}
       <Box
         component="main"
         sx={{
@@ -36,7 +36,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
           backgroundColor: '#f8fafc',
           minHeight: '100vh',
           overflow: 'auto',
-          transition: 'margin 0.3s ease-in-out',
+          transition: 'all 0.3s ease-in-out',
         }}
       >
         {children}

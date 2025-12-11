@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -20,7 +21,6 @@ import {
   Settings as SettingsIcon,
   Logout as LogoutIcon,
 } from '@mui/icons-material';
-import { useState } from 'react';
 
 interface HeaderProps {
   title: string;
@@ -29,6 +29,11 @@ interface HeaderProps {
 
 export default function Header({ title, subtitle }: HeaderProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -37,6 +42,11 @@ export default function Header({ title, subtitle }: HeaderProps) {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+
+  // Prevent SSR issues with InputBase and Menu components
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <Box
@@ -71,7 +81,7 @@ export default function Header({ title, subtitle }: HeaderProps) {
 
       {/* Actions Section */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        {/* Search */}
+        {/* Search - disabled due to SSR issues with InputBase */}
         <Box
           sx={{
             display: 'flex',
@@ -81,28 +91,17 @@ export default function Header({ title, subtitle }: HeaderProps) {
             px: 2,
             py: 1,
             minWidth: 240,
+            cursor: 'pointer',
             transition: 'all 0.2s ease-in-out',
             '&:hover': {
               backgroundColor: alpha('#64748b', 0.12),
             },
-            '&:focus-within': {
-              backgroundColor: '#fff',
-              boxShadow: '0 0 0 2px rgba(99, 102, 241, 0.2)',
-            },
           }}
         >
           <SearchIcon sx={{ color: 'text.secondary', mr: 1, fontSize: 20 }} />
-          <InputBase
-            placeholder="חיפוש..."
-            sx={{
-              flex: 1,
-              fontSize: '0.875rem',
-              '& input::placeholder': {
-                color: 'text.secondary',
-                opacity: 1,
-              },
-            }}
-          />
+          <Typography variant="body2" color="text.secondary">
+            חיפוש...
+          </Typography>
         </Box>
 
         {/* Help */}

@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import {
   Box,
@@ -17,14 +16,13 @@ import {
 } from '@mui/material';
 import {
   Dashboard as DashboardIcon,
-  Description as DescriptionIcon,
+  FolderOpen as FolderIcon,
   CloudUpload as UploadIcon,
   Assessment as AssessmentIcon,
   ChevronRight as ChevronRightIcon,
   ChevronLeft as ChevronLeftIcon,
   Layers as LayersIcon,
 } from '@mui/icons-material';
-import { motion, AnimatePresence } from 'framer-motion';
 
 export const DRAWER_WIDTH = 260;
 export const COLLAPSED_WIDTH = 72;
@@ -53,7 +51,7 @@ const navItems: NavItem[] = [
     title: 'הפרויקטים שלי',
     titleEn: 'My Projects',
     path: '/dashboard/projects',
-    icon: <DescriptionIcon />,
+    icon: <FolderIcon />,
   },
   {
     title: 'דוחות',
@@ -119,38 +117,36 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
         >
           <LayersIcon sx={{ color: 'white', fontSize: 22 }} />
         </Box>
-        <AnimatePresence>
-          {!collapsed && (
-            <motion.div
-              initial={{ opacity: 0, width: 0 }}
-              animate={{ opacity: 1, width: 'auto' }}
-              exit={{ opacity: 0, width: 0 }}
-              transition={{ duration: 0.2 }}
-              style={{ overflow: 'hidden', whiteSpace: 'nowrap' }}
-            >
-              <Typography
-                variant="h6"
-                sx={{
-                  fontWeight: 700,
-                  background: 'linear-gradient(135deg, #6366f1 0%, #06b6d4 100%)',
-                  backgroundClip: 'text',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  whiteSpace: 'nowrap',
-                  fontSize: '1.1rem',
-                }}
-              >
-                BOQ Pro
-              </Typography>
-              <Typography
-                variant="caption"
-                sx={{ color: 'text.secondary', display: 'block', mt: -0.5 }}
-              >
-                כתב כמויות חכם
-              </Typography>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <Box
+          sx={{
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            opacity: collapsed ? 0 : 1,
+            width: collapsed ? 0 : 'auto',
+            transition: 'all 0.2s ease-in-out',
+          }}
+        >
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 700,
+              background: 'linear-gradient(135deg, #6366f1 0%, #06b6d4 100%)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              whiteSpace: 'nowrap',
+              fontSize: '1.1rem',
+            }}
+          >
+            BOQ Pro
+          </Typography>
+          <Typography
+            variant="caption"
+            sx={{ color: 'text.secondary', display: 'block', mt: -0.5 }}
+          >
+            כתב כמויות חכם
+          </Typography>
+        </Box>
       </Box>
 
       <Divider sx={{ mx: 2 }} />
@@ -158,14 +154,23 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
       {/* Navigation Items */}
       <List sx={{ px: 1.5, py: 2, flex: 1 }}>
         {navItems.map((item, index) => {
-          const isActive = pathname === item.path || pathname?.startsWith(item.path + '/');
+          // For dashboard, only exact match. For others, also match sub-paths
+          const isActive = item.path === '/dashboard'
+            ? pathname === '/dashboard'
+            : pathname === item.path || pathname?.startsWith(item.path + '/');
 
           return (
-            <motion.div
+            <Box
               key={item.path}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.05 }}
+              sx={{
+                animation: 'fadeInRight 0.3s ease-out forwards',
+                animationDelay: `${index * 0.05}s`,
+                opacity: 0,
+                '@keyframes fadeInRight': {
+                  '0%': { opacity: 0, transform: 'translateX(20px)' },
+                  '100%': { opacity: 1, transform: 'translateX(0)' },
+                },
+              }}
             >
               <Tooltip
                 title={collapsed ? item.title : ''}
@@ -200,31 +205,28 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
                     >
                       {item.icon}
                     </ListItemIcon>
-                    <AnimatePresence>
-                      {!collapsed && (
-                        <motion.div
-                          initial={{ opacity: 0, width: 0 }}
-                          animate={{ opacity: 1, width: 'auto' }}
-                          exit={{ opacity: 0, width: 0 }}
-                          transition={{ duration: 0.2 }}
-                          style={{ overflow: 'hidden' }}
-                        >
-                          <ListItemText
-                            primary={item.title}
-                            primaryTypographyProps={{
-                              fontSize: '0.875rem',
-                              fontWeight: isActive ? 600 : 500,
-                              color: isActive ? 'primary.main' : 'text.primary',
-                              whiteSpace: 'nowrap',
-                            }}
-                          />
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                    <Box
+                      sx={{
+                        overflow: 'hidden',
+                        opacity: collapsed ? 0 : 1,
+                        width: collapsed ? 0 : 'auto',
+                        transition: 'all 0.2s ease-in-out',
+                      }}
+                    >
+                      <ListItemText
+                        primary={item.title}
+                        primaryTypographyProps={{
+                          fontSize: '0.875rem',
+                          fontWeight: isActive ? 600 : 500,
+                          color: isActive ? 'primary.main' : 'text.primary',
+                          whiteSpace: 'nowrap',
+                        }}
+                      />
+                    </Box>
                   </ListItemButton>
                 </ListItem>
               </Tooltip>
-            </motion.div>
+            </Box>
           );
         })}
       </List>

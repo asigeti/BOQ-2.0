@@ -123,6 +123,23 @@ export default function ProjectsPage() {
       setBrowseResult(response.data);
     } catch (error: any) {
       console.error('Failed to browse folder', error);
+      // On error, fallback to root folder (drive list)
+      if (path !== '') {
+        // Clear localStorage to prevent repeated errors
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('boq_last_folder_path');
+        }
+        // Retry with empty path to get drive list
+        try {
+          const rootResponse = await api.get('/projects/browse-folder', {
+            params: { path: '' },
+          });
+          setBrowseResult(rootResponse.data);
+        } catch (rootError) {
+          console.error('Failed to get root folders', rootError);
+          setBrowseResult(null);
+        }
+      }
     } finally {
       setBrowsing(false);
     }
@@ -253,7 +270,7 @@ export default function ProjectsPage() {
 
   return (
     <MainLayout>
-      <Header title="פרויקטים" subtitle="ניהול פרויקטים וסריקת תיקיות DWG" />
+      <Header title="פרויקטים" subtitle="ניהול פרויקטים וסריקת תיקיות DWG/PDF" />
 
       {/* Action Bar */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
@@ -297,7 +314,7 @@ export default function ProjectsPage() {
             אין פרויקטים עדיין
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-            צור פרויקט חדש וסרוק תיקיית DWG
+            צור פרויקט חדש וסרוק תיקיית תכניות
           </Typography>
           <Button
             variant="contained"
@@ -494,7 +511,7 @@ export default function ProjectsPage() {
                   sx={{ mt: 1 }}
                   startIcon={scanning ? <RefreshIcon className="animate-spin" /> : <FolderOpenIcon />}
                 >
-                  {scanning ? 'סורק...' : 'סרוק לקבצי DWG'}
+                  {scanning ? 'סורק...' : 'סרוק לקבצי תכניות'}
                 </Button>
               )}
             </Box>
@@ -502,7 +519,7 @@ export default function ProjectsPage() {
             {scanResult && (
               <Alert severity={scanResult.total_count > 0 ? 'success' : 'warning'}>
                 <Typography variant="body2" fontWeight={600}>
-                  נמצאו {scanResult.total_count} קבצי DWG/DXF
+                  נמצאו {scanResult.total_count} קבצי תכניות (DWG/DXF/PDF)
                 </Typography>
                 {scanResult.total_count > 0 && (
                   <Box sx={{ mt: 1, maxHeight: 150, overflow: 'auto' }}>
@@ -573,11 +590,11 @@ export default function ProjectsPage() {
 
           {/* Navigation buttons */}
           <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
-            {browseResult?.parent_path && (
+            {browseResult?.parent_path !== null && browseResult?.parent_path !== undefined && (
               <Button
                 size="small"
                 startIcon={<ArrowUpIcon />}
-                onClick={() => browseFolders(browseResult.parent_path!)}
+                onClick={() => browseFolders(browseResult.parent_path ?? '')}
               >
                 תיקייה למעלה
               </Button>

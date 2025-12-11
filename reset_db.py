@@ -13,8 +13,12 @@ from app import models
 def reset_database():
     print("Resetting database...")
     try:
-        # Drop all tables
-        Base.metadata.drop_all(bind=engine)
+        # Drop all tables with CASCADE
+        from sqlalchemy import text
+        with engine.connect() as conn:
+            conn.execute(text("DROP SCHEMA public CASCADE"))
+            conn.execute(text("CREATE SCHEMA public"))
+            conn.commit()
         print("All tables dropped.")
         
         # Recreate all tables

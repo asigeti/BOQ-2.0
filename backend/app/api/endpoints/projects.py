@@ -12,16 +12,22 @@ import pandas as pd
 
 from app import models, schemas, services
 from app.api import deps
+from app.models.boq_hierarchy import (
+    get_or_create_sub_document,
+    get_or_create_chapter,
+    get_or_create_sub_chapter,
+    update_hierarchy_totals
+)
 
 router = APIRouter()
 
 
-def scan_folder_for_dwg(folder_path: str) -> List[str]:
+def scan_folder_for_plan_files(folder_path: str) -> List[str]:
     """
-    Recursively scan a folder for DWG files.
-    Returns list of absolute paths to DWG files.
+    Recursively scan a folder for plan files (DWG, DXF, PDF).
+    Returns list of absolute paths to plan files.
     """
-    dwg_files = []
+    plan_files = []
     folder = Path(folder_path)
 
     if not folder.exists():
@@ -32,69 +38,908 @@ def scan_folder_for_dwg(folder_path: str) -> List[str]:
 
     # Recursively find all .dwg files
     for dwg_file in folder.rglob("*.dwg"):
-        dwg_files.append(str(dwg_file.absolute()))
+        plan_files.append(str(dwg_file.absolute()))
 
     # Also check for .dxf files
     for dxf_file in folder.rglob("*.dxf"):
-        dwg_files.append(str(dxf_file.absolute()))
+        plan_files.append(str(dxf_file.absolute()))
 
-    return sorted(dwg_files)
+    # Also check for .pdf files
+    for pdf_file in folder.rglob("*.pdf"):
+        plan_files.append(str(pdf_file.absolute()))
+
+    return sorted(plan_files)
 
 
-def process_project_files(project_id: int, db: Session):
+# Backwards compatibility alias
+def scan_folder_for_dwg(folder_path: str) -> List[str]:
+    """Alias for scan_folder_for_plan_files for backwards compatibility."""
+    return scan_folder_for_plan_files(folder_path)
+
+
+def process_project_files(project_id: int):
     """
-    Background task to EXTRACT data from all DWG files in a project.
+    Background task to EXTRACT data from all plan files in a project.
 
-    NEW FLOW: This only extracts data, does NOT generate BOQ.
-    After extraction completes, user reviews layers and confirms selection.
-    Then BOQ generation starts separately.
+    FLOW by file type:
+    - DWG/DXF: Extract layers -> User selects layers -> Generate BOQ
+    - PDF: Extract with Vision AI -> Generate BOQ directly (no layer selection)
+
+    For PDF-only projects, BOQ is generated immediately after extraction.
+    For mixed or DWG-only projects, waits for user layer selection.
+
+    NOTE: This function creates its own database session because it runs
+    as a background task after the endpoint returns. The session from
+    the endpoint would be closed by then.
     """
     import logging
     import traceback
+    from app.db.session import SessionLocal
+
     logger = logging.getLogger(__name__)
 
-    project = db.query(models.Project).filter(models.Project.id == project_id).first()
-    if not project:
-        logger.error(f"Project {project_id} not found")
-        return
+    # Create a new session for the background task
+    db = SessionLocal()
 
     try:
-        logger.info(f"Starting EXTRACTION for project {project_id}")
-        project.processing_status = "processing"
-        db.commit()
+        project = db.query(models.Project).filter(models.Project.id == project_id).first()
+        if not project:
+            logger.error(f"Project {project_id} not found")
+            return
 
-        plans = project.plans
-        total = len(plans)
-        processed = 0
+        try:
+            logger.info(f"Starting EXTRACTION for project {project_id}")
+            project.processing_status = "processing"
+            db.commit()
 
-        for plan in plans:
+            plans = project.plans
+            total = len(plans)
+            processed = 0
+
+            # Track file types for flow decision
+            has_cad_files = False
+            has_pdf_files = False
+            pdf_plans = []
+
+            for plan in plans:
+                try:
+                    file_ext = os.path.splitext(plan.filename)[1].lower()
+                    logger.info(f"Extracting plan {plan.id}: {plan.filename} (type: {file_ext})")
+
+                    # Track file types
+                    if file_ext in {'.dwg', '.dxf'}:
+                        has_cad_files = True
+                    elif file_ext == '.pdf':
+                        has_pdf_files = True
+                        pdf_plans.append(plan)
+
+                    # Auto-detect plan type for PDFs based on filename
+                    plan_type = "general"
+                    if file_ext == '.pdf':
+                        plan_type = _detect_pdf_plan_type(plan.filename)
+                        logger.info(f"Auto-detected plan type: {plan_type}")
+
+                    # Extract data only (no BOQ generation)
+                    services.process_plan(plan.id, db, plan_type=plan_type)
+                    processed += 1
+                    project.processed_files = processed
+                    project.processing_progress = int((processed / total) * 100)
+                    db.commit()
+                    logger.info(f"Plan {plan.id} extraction completed")
+                except Exception as e:
+                    error_msg = str(e)
+                    logger.error(f"Plan {plan.id} failed: {error_msg}")
+                    logger.error(traceback.format_exc())
+                    plan.processing_status = "failed"
+                    db.commit()
+
+            # Determine next step based on file types
+            logger.info(f"Project {project_id}: has_cad_files={has_cad_files}, has_pdf_files={has_pdf_files}, pdf_plans={len(pdf_plans)}")
+            if has_cad_files:
+                # Has DWG/DXF files - need layer selection
+                project.processing_status = "extracted"
+                project.processing_progress = 100
+                db.commit()
+                logger.info(f"Project {project_id} extraction completed - waiting for user layer selection")
+            else:
+                # PDF-only project - generate BOQ directly from extracted items
+                logger.info(f"Project {project_id} is PDF-only - generating BOQ directly")
+                project.processing_status = "generating_boq"
+                db.commit()
+
+                try:
+                    _generate_boq_from_pdf_extractions(project_id, pdf_plans, db)
+                    project.processing_status = "completed"
+                    project.processing_progress = 100
+                    db.commit()
+                    logger.info(f"Project {project_id} PDF BOQ generation completed")
+                except Exception as e:
+                    logger.error(f"PDF BOQ generation failed: {e}")
+                    logger.error(traceback.format_exc())
+                    project.processing_status = "failed"
+                    db.commit()
+
+        except Exception as e:
+            logger.error(f"Project {project_id} extraction failed: {e}")
+            logger.error(traceback.format_exc())
+            project.processing_status = "failed"
+            db.commit()
+
+    finally:
+        # Always close the session when done
+        db.close()
+        logger.info(f"Background task session closed for project {project_id}")
+
+
+def _generate_boq_from_pdf_extractions(project_id: int, pdf_plans: list, db: Session):
+    """
+    Generate BOQ items directly from PDF extraction results.
+
+    Creates proper 4-level Israeli BOQ hierarchy:
+    - תת כתב (Sub-Document) - Level 1
+    - פרק (Chapter) - Level 2
+    - תת פרק (Sub-Chapter) - Level 3
+    - סעיף (Item) - Level 4
+
+    Includes:
+    - Automatic Dekel pricing lookup for extracted items
+    - Professional 4-level item code structure (תת_כתב.פרק.תת_פרק.סעיף)
+    - Smart categorization to sub-chapters based on description
+    """
+    import logging
+    from app.services.pricing.dekel_pricing import DekelPricing
+    logger = logging.getLogger(__name__)
+
+    logger.info(f"Generating BOQ from {len(pdf_plans)} PDF plans for project {project_id}")
+
+    # Initialize Dekel pricing service for price lookup
+    dekel_pricing = DekelPricing()
+
+    # =========================================================================
+    # Create default תת כתב (Sub-Document) for the project
+    # =========================================================================
+    # Determine the sub-document code based on plan types
+    # Default to "1" for general projects
+    sub_doc_code = "1"
+    sub_doc_name = "כתב כמויות ראשי"
+
+    # Check plan types to determine appropriate sub-document
+    for plan in pdf_plans:
+        if plan.extraction_data:
             try:
-                logger.info(f"Extracting plan {plan.id}: {plan.filename}")
-                # Extract data only (no BOQ generation)
-                services.process_plan(plan.id, db)
-                processed += 1
-                project.processed_files = processed
-                project.processing_progress = int((processed / total) * 100)
-                db.commit()
-                logger.info(f"Plan {plan.id} extraction completed")
-            except Exception as e:
-                error_msg = str(e)
-                logger.error(f"Plan {plan.id} failed: {error_msg}")
-                logger.error(traceback.format_exc())
-                plan.processing_status = "failed"
-                db.commit()
+                extraction_data = json.loads(plan.extraction_data)
+                plan_type = extraction_data.get("plan_type", "general")
+                if plan_type in ["site_development", "landscape"]:
+                    sub_doc_code = "13"
+                    sub_doc_name = "פיתוח שטח"
+                elif plan_type == "traffic":
+                    sub_doc_code = "14"
+                    sub_doc_name = "עבודות תנועה"
+                break  # Use first plan's type
+            except:
+                pass
 
-        # Set status to "extracted" - waiting for user to review and confirm layers
-        project.processing_status = "extracted"
-        project.processing_progress = 100
-        db.commit()
-        logger.info(f"Project {project_id} extraction completed - waiting for user review")
+    sub_document = get_or_create_sub_document(
+        db, project_id, sub_doc_code, sub_doc_name
+    )
+    logger.info(f"Created/got sub-document: {sub_doc_code} - {sub_doc_name}")
+
+    # =========================================================================
+    # Cache for created hierarchy objects (avoid duplicates)
+    # =========================================================================
+    chapter_cache = {}  # (sub_doc_id, chapter_code) -> BOQChapter
+    sub_chapter_cache = {}  # (chapter_id, sub_chapter_code) -> BOQSubChapter
+
+    # Track item counts per sub-chapter/section for 4-level codes
+    # Key: (chapter_code, sub_chapter, section) -> item_num
+    subchapter_counters = {}
+
+    # Track all created sub-chapters for total updates
+    created_sub_chapter_ids = set()
+
+    for plan in pdf_plans:
+        try:
+            if not plan.extraction_data:
+                logger.warning(f"Plan {plan.id} has no extraction data")
+                continue
+
+            extraction_data = json.loads(plan.extraction_data)
+            extracted_items = extraction_data.get("extracted_items", [])
+            plan_type = extraction_data.get("plan_type", "general")
+            confidence = extraction_data.get("confidence", 0.5)
+
+            logger.info(f"Processing plan {plan.id}: {len(extracted_items)} items, type={plan_type}")
+
+            # Get chapter info for this plan type
+            chapter_info = _get_chapter_for_plan_type(plan_type)
+            chapter_code = chapter_info["code"]
+
+            # =========================================================================
+            # Get or create פרק (Chapter) for this plan type
+            # =========================================================================
+            chapter_key = (sub_document.id, chapter_code)
+            if chapter_key not in chapter_cache:
+                chapter = get_or_create_chapter(
+                    db,
+                    sub_document.id,
+                    chapter_code,
+                    chapter_info["name_he"],
+                    chapter_info.get("name_en", ""),
+                    chapter_code  # dekel_code same as chapter_code
+                )
+                chapter_cache[chapter_key] = chapter
+                logger.info(f"Created/got chapter: {chapter_code} - {chapter_info['name_he']}")
+            else:
+                chapter = chapter_cache[chapter_key]
+
+            # Convert extracted items to BOQ items
+            for item in extracted_items:
+                if not isinstance(item, dict):
+                    continue
+
+                # Get quantity - use 1 as default if not found/zero
+                quantity = _get_item_quantity(item)
+                needs_quantity_review = False
+                if quantity <= 0:
+                    quantity = 1.0  # Default quantity for review
+                    needs_quantity_review = True
+                    logger.info(f"Item with zero quantity, defaulting to 1: {item.get('description', item.get('type', 'unknown'))[:50]}")
+
+                # Get item description and unit
+                description = _get_item_description(item)
+                unit = item.get("unit", "יח׳")
+
+                # Categorize item to sub-chapter and section for 4-level code
+                sub_chapter_code, section = _categorize_item_to_subchapter(description, chapter_code)
+
+                # =========================================================================
+                # Get or create תת פרק (Sub-Chapter)
+                # =========================================================================
+                sub_chapter_key = (chapter.id, sub_chapter_code)
+                if sub_chapter_key not in sub_chapter_cache:
+                    sub_chapter_name = _get_sub_chapter_name(chapter_code, sub_chapter_code)
+                    sub_chapter = get_or_create_sub_chapter(
+                        db,
+                        chapter.id,
+                        sub_chapter_code,
+                        sub_chapter_name
+                    )
+                    sub_chapter_cache[sub_chapter_key] = sub_chapter
+                    logger.info(f"Created/got sub-chapter: {sub_chapter_code} - {sub_chapter_name}")
+                else:
+                    sub_chapter = sub_chapter_cache[sub_chapter_key]
+
+                created_sub_chapter_ids.add(sub_chapter.id)
+
+                # Get next item number for this sub-chapter/section
+                counter_key = (chapter_code, sub_chapter_code, section)
+                if counter_key not in subchapter_counters:
+                    subchapter_counters[counter_key] = 0
+                subchapter_counters[counter_key] += 1
+                item_num = subchapter_counters[counter_key]
+
+                # Generate professional 4-level item code
+                full_item_code = f"{sub_doc_code}.{chapter_code.lstrip('0') or '0'}.{sub_chapter_code}.{item_num:04d}"
+                section_code = f"{item_num:04d}"
+
+                # Try to get unit price from extraction first, then from Dekel pricing
+                unit_price = float(item.get("unit_price", 0) or 0)
+                item_confidence = confidence
+                user_note = None
+                has_dekel_price = False
+
+                if unit_price == 0:
+                    # Try to match with Dekel pricing
+                    price_match = dekel_pricing.fuzzy_match_description(description, unit)
+                    if price_match:
+                        unit_price = price_match.price
+                        has_dekel_price = True
+                        logger.info(f"Matched '{description[:30]}...' to Dekel: {price_match.name_he} @ {unit_price} ILS")
+                    else:
+                        # No Dekel price found - try AI estimation
+                        logger.info(f"No Dekel price for '{description[:30]}...' - trying AI estimation")
+                        ai_price, ai_conf, ai_note = _estimate_price_with_ai(description, unit, quantity)
+
+                        if ai_price > 0:
+                            unit_price = ai_price
+                            item_confidence = ai_conf  # AI estimates have lower confidence
+                            user_note = ai_note  # Shows "💡 אומדן AI: <reasoning>"
+                            logger.info(f"AI estimated '{description[:30]}...': {ai_price} ILS ({ai_note})")
+                        else:
+                            # AI estimation also failed - flag for manual review
+                            item_confidence = min(item_confidence, 0.3)  # Very low confidence
+                            user_note = ai_note or "⚠️ לא נמצא מחיר - נדרש תמחור ידני"
+                            logger.warning(f"No price found for: '{description[:40]}...' ({unit})")
+                else:
+                    has_dekel_price = True
+
+                # Add quantity review note if needed
+                if needs_quantity_review:
+                    quantity_note = "📐 כמות לא נמצאה - נא לעדכן ידנית"
+                    if user_note:
+                        user_note = f"{quantity_note} | {user_note}"
+                    else:
+                        user_note = quantity_note
+                    item_confidence = min(item_confidence, 0.4)  # Lower confidence for items needing review
+
+                # Create BOQ item with proper hierarchy linkage
+                boq_item = models.BOQItem(
+                    project_id=project_id,
+                    plan_id=plan.id,
+                    # NEW: Hierarchical structure linkage
+                    sub_chapter_id=sub_chapter.id,
+                    section_code=section_code,
+                    full_item_code=full_item_code,
+                    # Legacy fields (for backward compatibility)
+                    chapter_code=chapter_code,
+                    chapter_name_he=chapter_info["name_he"],
+                    chapter_name_en=chapter_info.get("name_en", ""),
+                    item_code=full_item_code,
+                    # Item details
+                    description_he=description,
+                    description_en="",
+                    quantity=quantity,
+                    unit=unit,
+                    unit_price=unit_price,
+                    total_price=0,  # Will be calculated
+                    source_filename=plan.filename,
+                    source_layer=f"PDF:{plan_type}",
+                    confidence=item_confidence,
+                    user_notes=user_note,
+                    is_deleted=False,
+                    is_modified=False,
+                )
+
+                # Calculate total price
+                boq_item.total_price = boq_item.quantity * boq_item.unit_price
+
+                db.add(boq_item)
+
+            db.commit()
+            logger.info(f"Created BOQ items from plan {plan.id}")
+
+        except Exception as e:
+            logger.error(f"Failed to process PDF plan {plan.id}: {e}")
+            import traceback
+            traceback.print_exc()
+            continue
+
+    # =========================================================================
+    # Update cached totals for hierarchy
+    # =========================================================================
+    logger.info(f"Updating hierarchy totals for {len(created_sub_chapter_ids)} sub-chapters")
+    for sub_chapter_id in created_sub_chapter_ids:
+        update_hierarchy_totals(db, sub_chapter_id)
+
+    db.commit()
+    logger.info(f"PDF BOQ generation complete for project {project_id}")
+
+
+def _estimate_price_with_ai(description: str, unit: str, quantity: float) -> tuple:
+    """
+    Use AI (Gemini) to estimate Israeli construction prices when Dekel pricing fails.
+
+    Returns:
+        tuple: (estimated_price, confidence, note)
+        - estimated_price: float, the AI-estimated unit price in ILS
+        - confidence: float, AI's confidence in the estimate (0.3-0.6)
+        - note: str, explanation of the estimate
+    """
+    import logging
+    logger = logging.getLogger(__name__)
+
+    try:
+        from app.core.config import settings
+        import os
+
+        api_key = getattr(settings, 'GEMINI_API_KEY', None) or os.environ.get("GEMINI_API_KEY")
+        if not api_key:
+            logger.warning("No Gemini API key for price estimation")
+            return (0, 0.3, "⚠️ אומדן AI לא זמין - נדרש תמחור ידני")
+
+        from google import genai
+        from google.genai import types
+
+        client = genai.Client(
+            api_key=api_key,
+            http_options=types.HttpOptions(api_version='v1')
+        )
+
+        prompt = f"""אתה מומחה תמחור בנייה ישראלי. אנא העריך את המחיר ליחידה עבור הפריט הבא:
+
+פריט: {description}
+יחידת מידה: {unit}
+כמות: {quantity}
+
+הנחיות:
+1. תן מחיר ליחידה אחת בש"ח (ILS) - מחיר סביר לשוק הישראלי 2024-2025
+2. המחיר צריך לכלול: חומרים + עבודה + רווח קבלן (ללא מע"מ)
+3. התבסס על מחירי שוק ריאליסטיים בישראל
+
+החזר JSON בלבד בפורמט:
+{{"unit_price": <מספר>, "confidence": <0.3-0.6>, "reasoning": "<הסבר קצר בעברית>"}}
+
+דוגמאות מחירים לייחוס:
+- חפירה כללית: 40-60 ₪/מ"ק
+- בטון B30: 800-1200 ₪/מ"ק
+- ריצוף קרמיקה: 150-300 ₪/מ"ר
+- קיר בלוקים 20 ס"מ: 180-280 ₪/מ"ר
+- צבע קירות: 25-45 ₪/מ"ר
+- משטח גומי בטיחותי: 350-550 ₪/מ"ר"""
+
+        response = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                temperature=0.2,
+                max_output_tokens=200,
+            )
+        )
+
+        # Parse response
+        import json
+        import re
+
+        text = response.text.strip()
+        # Extract JSON from response
+        json_match = re.search(r'\{[^}]+\}', text)
+        if json_match:
+            result = json.loads(json_match.group())
+            price = float(result.get("unit_price", 0))
+            conf = float(result.get("confidence", 0.4))
+            reasoning = result.get("reasoning", "אומדן AI")
+
+            if price > 0:
+                note = f"💡 אומדן AI: {reasoning}"
+                logger.info(f"AI estimated price for '{description[:30]}...': {price} ILS/unit (conf: {conf})")
+                return (price, min(conf, 0.5), note)  # Cap confidence at 0.5 for estimates
+
+        logger.warning(f"AI price estimation failed to parse for: {description[:40]}")
+        return (0, 0.3, "⚠️ אומדן AI נכשל - נדרש תמחור ידני")
 
     except Exception as e:
-        logger.error(f"Project {project_id} extraction failed: {e}")
-        logger.error(traceback.format_exc())
-        project.processing_status = "failed"
-        db.commit()
+        logger.error(f"AI price estimation error: {e}")
+        return (0, 0.3, f"⚠️ שגיאת אומדן AI - נדרש תמחור ידני")
+
+
+def _get_chapter_for_plan_type(plan_type: str) -> dict:
+    """
+    Map plan type to BOQ chapter according to מחירון דקל standard.
+
+    Based on ISRAELI_BOQ_KNOWLEDGE_BASE.md - Appendix A:
+    פרק 01 - עבודות הכנה, פירוק והריסה
+    פרק 02 - עבודות עפר
+    פרק 03 - בטון יצוק באתר
+    פרק 04 - מבנים טרומיים
+    פרק 05 - עבודות פלדה
+    פרק 06 - עבודות בנייה
+    פרק 07 - עבודות איטום
+    פרק 08 - עבודות טיח
+    פרק 09 - עבודות ריצוף וחיפוי
+    פרק 10 - עבודות צבע
+    פרק 11 - עבודות אלומיניום
+    פרק 12 - מוצרי עץ ונגרות
+    פרק 13 - עבודות מסגרות
+    פרק 14 - עבודות אינסטלציה
+    פרק 15 - עבודות חשמל
+    פרק 16 - מערכות מיזוג אוויר
+    פרק 17 - מעליות ומדרגות נעות
+    פרק 18 - עבודות פיתוח ותשתית
+    פרק 19 - עבודות גינון והשקייה
+    פרק 20 - ציוד קבוע ואביזרים
+    פרק 21 - עבודות שונות
+    """
+    plan_type_chapters = {
+        # פרק 01 - עבודות הכנה, פירוק והריסה
+        "demolition": {"code": "01", "name_he": "עבודות הכנה, פירוק והריסה", "name_en": "Preliminaries & Demolition"},
+        "preliminary": {"code": "01", "name_he": "עבודות הכנה, פירוק והריסה", "name_en": "Preliminaries & Demolition"},
+
+        # פרק 02 - עבודות עפר
+        "earthworks": {"code": "02", "name_he": "עבודות עפר", "name_en": "Earthworks"},
+        "excavation": {"code": "02", "name_he": "עבודות עפר", "name_en": "Earthworks"},
+
+        # פרק 03 - בטון יצוק באתר
+        "structural": {"code": "03", "name_he": "בטון יצוק באתר", "name_en": "Cast-in-place Concrete"},
+        "concrete": {"code": "03", "name_he": "בטון יצוק באתר", "name_en": "Cast-in-place Concrete"},
+
+        # פרק 04 - מבנים טרומיים
+        "precast": {"code": "04", "name_he": "מבנים טרומיים", "name_en": "Precast Structures"},
+
+        # פרק 05 - עבודות פלדה
+        "steel": {"code": "05", "name_he": "עבודות פלדה", "name_en": "Steelwork"},
+
+        # פרק 06 - עבודות בנייה
+        "masonry": {"code": "06", "name_he": "עבודות בנייה", "name_en": "Masonry"},
+        "architectural": {"code": "06", "name_he": "עבודות בנייה", "name_en": "Masonry"},
+
+        # פרק 07 - עבודות איטום
+        "waterproofing": {"code": "07", "name_he": "עבודות איטום", "name_en": "Waterproofing"},
+
+        # פרק 08 - עבודות טיח
+        "plastering": {"code": "08", "name_he": "עבודות טיח", "name_en": "Plastering"},
+
+        # פרק 09 - עבודות ריצוף וחיפוי
+        "flooring": {"code": "09", "name_he": "עבודות ריצוף וחיפוי", "name_en": "Flooring & Cladding"},
+        "tiling": {"code": "09", "name_he": "עבודות ריצוף וחיפוי", "name_en": "Flooring & Cladding"},
+        "finishing": {"code": "09", "name_he": "עבודות ריצוף וחיפוי", "name_en": "Flooring & Cladding"},
+
+        # פרק 10 - עבודות צבע
+        "painting": {"code": "10", "name_he": "עבודות צבע", "name_en": "Painting"},
+
+        # פרק 11 - עבודות אלומיניום
+        "aluminum": {"code": "11", "name_he": "עבודות אלומיניום", "name_en": "Aluminum Works"},
+        "windows_doors": {"code": "11", "name_he": "עבודות אלומיניום", "name_en": "Aluminum Works"},
+
+        # פרק 12 - מוצרי עץ ונגרות
+        "carpentry": {"code": "12", "name_he": "מוצרי עץ ונגרות", "name_en": "Carpentry"},
+        "wood": {"code": "12", "name_he": "מוצרי עץ ונגרות", "name_en": "Carpentry"},
+
+        # פרק 13 - עבודות מסגרות
+        "metalwork": {"code": "13", "name_he": "עבודות מסגרות", "name_en": "Metalwork"},
+
+        # פרק 14 - עבודות אינסטלציה
+        "plumbing": {"code": "14", "name_he": "עבודות אינסטלציה", "name_en": "Plumbing"},
+
+        # פרק 15 - עבודות חשמל
+        "electrical": {"code": "15", "name_he": "עבודות חשמל", "name_en": "Electrical"},
+
+        # פרק 16 - מערכות מיזוג אוויר
+        "hvac": {"code": "16", "name_he": "מערכות מיזוג אוויר", "name_en": "HVAC"},
+
+        # פרק 17 - מעליות ומדרגות נעות
+        "elevators": {"code": "17", "name_he": "מעליות ומדרגות נעות", "name_en": "Elevators"},
+
+        # פרק 18 - עבודות פיתוח ותשתית
+        "site_development": {"code": "18", "name_he": "עבודות פיתוח ותשתית", "name_en": "Site Development"},
+
+        # פרק 19 - עבודות גינון והשקייה
+        "landscape": {"code": "19", "name_he": "עבודות גינון והשקייה", "name_en": "Landscaping"},
+
+        # פרק 20 - ציוד קבוע ואביזרים
+        "equipment": {"code": "20", "name_he": "ציוד קבוע ואביזרים", "name_en": "Fixed Equipment"},
+
+        # פרק 21 - עבודות שונות
+        "general": {"code": "21", "name_he": "עבודות שונות", "name_en": "Miscellaneous"},
+        "boq_table": {"code": "21", "name_he": "עבודות שונות", "name_en": "Miscellaneous"},
+    }
+    return plan_type_chapters.get(plan_type, plan_type_chapters["general"])
+
+
+def _categorize_item_to_subchapter(description: str, chapter_code: str) -> tuple:
+    """
+    Categorize BOQ item to sub-chapter and section based on description.
+    Returns (sub_chapter, section) tuple for 4-level code structure.
+
+    Professional Israeli BOQ structure: פרק.תת_פרק.סעיף.מספר
+    Example: 3.1.1.0010 = Chapter 3, Sub-chapter 1, Section 1, Item 10
+
+    This is GENERIC - works for any project type.
+    """
+    desc_lower = description.lower()
+
+    # Site Development (פרק 13) - פיתוח
+    if chapter_code == "13":
+        # Sub-chapter 1: חפירה ודיפון (Excavation & Shoring)
+        if any(word in desc_lower for word in ["חפירה", "דיפון", "חפר", "excavation", "shoring"]):
+            return ("1", "1")
+        # Sub-chapter 2: קירות תמך ויסודות (Retaining Walls & Foundations)
+        if any(word in desc_lower for word in ["קיר תמך", "קירות תמך", "יסוד", "retaining", "foundation"]):
+            return ("1", "2")
+        # Sub-chapter 3: ניקוז ותיעול (Drainage)
+        if any(word in desc_lower for word in ["ניקוז", "תיעול", "תעלה", "drainage", "channel"]):
+            return ("2", "1")
+        # Sub-chapter 4: ריצוף ומשטחים (Paving & Surfaces)
+        if any(word in desc_lower for word in ["ריצוף", "מרצפ", "משטח", "אספלט", "paving", "surface", "asphalt"]):
+            return ("3", "1")
+        # Sub-chapter 5: גינון (Landscaping)
+        if any(word in desc_lower for word in ["גינון", "דשא", "עץ", "שיח", "צמח", "landscap", "grass", "tree", "plant"]):
+            return ("4", "1")
+        # Sub-chapter 6: גדרות ומעקות (Fences & Railings)
+        if any(word in desc_lower for word in ["גדר", "מעקה", "fence", "railing"]):
+            return ("5", "1")
+        # Sub-chapter 7: ציוד חוץ (Outdoor Equipment)
+        if any(word in desc_lower for word in ["ספסל", "פח אשפה", "מתקן", "bench", "equipment"]):
+            return ("6", "1")
+        # Default for site development
+        return ("9", "1")
+
+    # Earthworks (פרק 01) - עבודות עפר
+    if chapter_code == "01":
+        if any(word in desc_lower for word in ["חפירה", "חפר", "excavat"]):
+            return ("1", "1")
+        if any(word in desc_lower for word in ["מילוי", "הידוק", "fill", "compact"]):
+            return ("2", "1")
+        if any(word in desc_lower for word in ["פינוי", "הובלה", "remov", "transport"]):
+            return ("3", "1")
+        return ("1", "1")
+
+    # Concrete (פרק 02) - עבודות בטון
+    if chapter_code == "02":
+        if any(word in desc_lower for word in ["יסוד", "רצועה", "foundation", "strip"]):
+            return ("1", "1")
+        if any(word in desc_lower for word in ["עמוד", "column"]):
+            return ("2", "1")
+        if any(word in desc_lower for word in ["קורה", "beam"]):
+            return ("3", "1")
+        if any(word in desc_lower for word in ["תקרה", "רצפה", "slab", "floor"]):
+            return ("4", "1")
+        if any(word in desc_lower for word in ["קיר", "wall"]):
+            return ("5", "1")
+        return ("1", "1")
+
+    # Masonry (פרק 04) - בנייה
+    if chapter_code == "04":
+        if any(word in desc_lower for word in ["בלוק", "block"]):
+            return ("1", "1")
+        if any(word in desc_lower for word in ["לבנ", "brick"]):
+            return ("2", "1")
+        return ("1", "1")
+
+    # Electrical (פרק 05) - חשמל
+    if chapter_code == "05":
+        if any(word in desc_lower for word in ["תאורה", "נורה", "light"]):
+            return ("1", "1")
+        if any(word in desc_lower for word in ["שקע", "outlet", "socket"]):
+            return ("2", "1")
+        if any(word in desc_lower for word in ["לוח", "panel", "board"]):
+            return ("3", "1")
+        return ("1", "1")
+
+    # Plumbing (פרק 07) - אינסטלציה
+    if chapter_code == "07":
+        if any(word in desc_lower for word in ["מים קרים", "cold water"]):
+            return ("1", "1")
+        if any(word in desc_lower for word in ["מים חמים", "hot water"]):
+            return ("1", "2")
+        if any(word in desc_lower for word in ["ביוב", "sewage"]):
+            return ("2", "1")
+        if any(word in desc_lower for word in ["כלי סניטר", "sanitary"]):
+            return ("3", "1")
+        return ("1", "1")
+
+    # Traffic Works (פרק 14) - עבודות תנועה
+    if chapter_code == "14":
+        # Sub-chapter 1: סימון אופקי (Horizontal Road Markings)
+        if any(word in desc_lower for word in [
+            "סימון", "marking", "קו", "line", "פס", "stripe",
+            "חץ", "arrow", "מעבר חציה", "zebra", "crosswalk"
+        ]):
+            return ("1", "1")
+        # Sub-chapter 2: תמרורים ושילוט (Signs & Signage)
+        if any(word in desc_lower for word in [
+            "תמרור", "sign", "שלט", "signage", "עמוד שילוט"
+        ]):
+            return ("2", "1")
+        # Sub-chapter 3: מעקות בטיחות (Safety Barriers/Guardrails)
+        if any(word in desc_lower for word in [
+            "מעקה", "guardrail", "barrier", "w-beam", "גל", "בטיחות"
+        ]):
+            return ("3", "1")
+        # Sub-chapter 4: פסי האטה ובליטות (Speed Control)
+        if any(word in desc_lower for word in [
+            "פס האטה", "speed bump", "האטה", "blitta", "בליטה",
+            "speed cushion", "הרגעת תנועה", "traffic calm"
+        ]):
+            return ("4", "1")
+        # Sub-chapter 5: תאורת רחוב (Street Lighting)
+        if any(word in desc_lower for word in [
+            "תאורה", "lighting", "עמוד תאורה", "פנס", "lamp", "led",
+            "נורה", "מנורה", "street light"
+        ]):
+            return ("5", "1")
+        # Sub-chapter 6: איי תנועה (Traffic Islands)
+        if any(word in desc_lower for word in [
+            "אי תנועה", "traffic island", "איים", "island", "כיכר",
+            "roundabout", "מפריד", "separator", "refuge"
+        ]):
+            return ("6", "1")
+        # Sub-chapter 7: חניות (Parking)
+        if any(word in desc_lower for word in [
+            "חניה", "parking", "חנייה", "מגרש חניה", "lot",
+            "מחסום חניה", "parking barrier"
+        ]):
+            return ("7", "1")
+        # Sub-chapter 8: מדרכות ושבילים (Sidewalks & Paths)
+        if any(word in desc_lower for word in [
+            "מדרכה", "sidewalk", "שביל", "path", "אופניים", "bicycle",
+            "רוכב", "אבני שפה", "curb", "kerb"
+        ]):
+            return ("8", "1")
+        # Sub-chapter 9: ניקוז כבישים (Road Drainage)
+        if any(word in desc_lower for word in [
+            "ניקוז", "drainage", "תעלה", "channel", "גשם", "rain",
+            "תא ניקוז", "catch basin", "סכר"
+        ]):
+            return ("9", "1")
+        # Default for traffic works
+        return ("1", "1")
+
+    # Default - use generic structure
+    return ("1", "1")
+
+
+def _generate_hierarchical_item_code(
+    chapter_code: str,
+    sub_chapter: str,
+    section: str,
+    item_num: int
+) -> str:
+    """
+    Generate professional 4-level Israeli BOQ item code.
+
+    Format: פרק.תת_פרק.סעיף.מספר
+    Example: 3.1.1.0010
+
+    This matches the structure used in professional Israeli BOQs
+    and Dekel pricing system.
+    """
+    # Remove leading zeros from chapter for cleaner format
+    chapter = chapter_code.lstrip('0') or '0'
+
+    # Format: X.Y.Z.NNNN (4-digit item number for sorting)
+    return f"{chapter}.{sub_chapter}.{section}.{item_num:04d}"
+
+
+def _get_sub_chapter_name(chapter_code: str, sub_chapter_code: str) -> str:
+    """
+    Get Hebrew name for sub-chapter based on chapter and sub-chapter codes.
+    Returns the professional Israeli BOQ sub-chapter name.
+    """
+    # Sub-chapter names by chapter
+    SUB_CHAPTER_NAMES = {
+        # פרק 13 - עבודות פיתוח
+        "13": {
+            "1": "חפירה ודיפון",
+            "2": "ניקוז ותיעול",
+            "3": "ריצוף ומשטחים",
+            "4": "גינון ונטיעות",
+            "5": "גדרות ומעקות",
+            "6": "ציוד חוץ",
+            "9": "עבודות שונות",
+        },
+        # פרק 01 - עבודות עפר
+        "01": {
+            "1": "חפירה",
+            "2": "מילוי והידוק",
+            "3": "פינוי והובלה",
+        },
+        # פרק 02 - עבודות בטון
+        "02": {
+            "1": "יסודות",
+            "2": "עמודים",
+            "3": "קורות",
+            "4": "תקרות ורצפות",
+            "5": "קירות",
+        },
+        # פרק 05 - עבודות חשמל
+        "05": {
+            "1": "תאורה",
+            "2": "שקעים",
+            "3": "לוחות חשמל",
+        },
+        # פרק 14 - עבודות תנועה
+        "14": {
+            "1": "סימון אופקי",
+            "2": "תמרורים ושילוט",
+            "3": "מעקות בטיחות",
+            "4": "פסי האטה",
+            "5": "תאורת רחוב",
+            "6": "איי תנועה",
+            "7": "חניות",
+        },
+    }
+
+    chapter_names = SUB_CHAPTER_NAMES.get(chapter_code, SUB_CHAPTER_NAMES.get(chapter_code.lstrip('0'), {}))
+    return chapter_names.get(sub_chapter_code, f"תת פרק {sub_chapter_code}")
+
+
+def _get_item_description(item: dict) -> str:
+    """Get description for BOQ item from extracted data."""
+    # Try various fields for description
+    desc = item.get("description", "")
+    if desc:
+        return str(desc)
+
+    name = item.get("name", "")
+    item_type = item.get("type", "")
+
+    if name and item_type:
+        return f"{item_type}: {name}"
+    elif name:
+        return str(name)
+    elif item_type:
+        return str(item_type)
+
+    # Build description from available fields
+    parts = []
+    for key in ["material", "size", "specs", "location"]:
+        if item.get(key):
+            parts.append(str(item[key]))
+
+    return " - ".join(parts) if parts else "פריט מחילוץ PDF"
+
+
+def _get_item_quantity(item: dict) -> float:
+    """Get quantity from extracted item."""
+    # Try various quantity fields
+    for key in ["quantity", "area_m2", "count", "length_m", "amount"]:
+        val = item.get(key)
+        if val is not None:
+            try:
+                return float(val)
+            except (ValueError, TypeError):
+                pass
+    return 1.0
+
+
+def _detect_pdf_plan_type(filename: str) -> str:
+    """
+    Auto-detect plan type from PDF filename using Hebrew/English keywords.
+
+    Returns one of the plan types:
+    - boq_table: כתב כמויות (BOQ document)
+    - architectural: תכנית אדריכלית
+    - electrical: תכנית חשמל
+    - plumbing: תכנית אינסטלציה
+    - structural: תכנית קונסטרוקציה
+    - hvac: תכנית מיזוג אוויר
+    - windows_doors: לוח חלונות ודלתות
+    - finishing: תכנית גמרים
+    - landscape: תכנית גינון
+    - site_development: תכנית פיתוח
+    - general: default
+    """
+    filename_lower = filename.lower()
+
+    # Hebrew and English keyword patterns for each type
+    patterns = {
+        "boq_table": [
+            "כתב כמויות", "כמויות", "boq", "כ\"כ", "כ.כ", "כ\"כ",
+            "bill of quantities", "quantity", "מפרט"
+        ],
+        "traffic": [
+            "תנועה", "תמרור", "traffic", "signage", "סימון", "marking",
+            "כביש", "road", "חניה", "parking", "מעבר חציה", "crosswalk",
+            "מדרכה", "sidewalk", "תאורת רחוב", "street light", "מעקה בטיחות",
+            "guardrail", "פס האטה", "speed bump", "אי תנועה", "traffic island"
+        ],
+        "site_development": [
+            "פיתוח", "פתוח", "site", "development", "גינון ופיתוח",
+            "עבודות חוץ", "שטח", "חצר"
+        ],
+        "electrical": [
+            "חשמל", "electric", "elec", "תאורה", "lighting", "מתח"
+        ],
+        "plumbing": [
+            "אינסטלציה", "סניטרי", "plumb", "sanit", "ביוב", "מים", "צנרת"
+        ],
+        "structural": [
+            "קונסטרוקציה", "מבנה", "struct", "בטון", "יסודות", "עמודים"
+        ],
+        "hvac": [
+            "מיזוג", "hvac", "אוויר", "air condition", "מזגן", "ventil"
+        ],
+        "windows_doors": [
+            "חלונות", "דלתות", "אלומ", "window", "door", "לוח חלונות"
+        ],
+        "finishing": [
+            "גמר", "גמרים", "finish", "ריצוף", "חיפוי", "צבע", "טיח"
+        ],
+        "landscape": [
+            "גינון", "נוף", "landscape", "garden", "צמחיה", "דשא"
+        ],
+        "architectural": [
+            "אדריכל", "בניה", "arch", "תכנית", "קומה", "חזית", "חתך"
+        ],
+    }
+
+    # Check each pattern type
+    for plan_type, keywords in patterns.items():
+        for keyword in keywords:
+            if keyword in filename_lower:
+                return plan_type
+
+    return "general"
 
 
 @router.post("/", response_model=schemas.Project)
@@ -163,7 +1008,13 @@ def browse_folder(
         raise HTTPException(status_code=400, detail=f"Path is not a directory: {path}")
 
     # Get parent path
-    parent_path = str(folder.parent) if folder.parent != folder else None
+    # If at drive root (e.g., C:\), parent_path = "" to go back to drive list
+    # Otherwise, get the actual parent folder
+    if folder.parent == folder:
+        # We're at a drive root (C:\, D:\, etc.) - go back to drive list
+        parent_path = ""
+    else:
+        parent_path = str(folder.parent)
 
     # Get subfolders
     subfolders = []
@@ -256,24 +1107,18 @@ def delete_project(
     db: Session = Depends(deps.get_db),
 ) -> Any:
     """
-    Delete a project and all its plans, materials, and associated files.
+    Delete a project and all its plans from the database.
+    Note: Original files in the folder are NOT deleted - only database records.
     """
     project = db.query(models.Project).filter(models.Project.id == project_id).first()
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
 
-    # Delete physical files for all plans
-    deleted_files = 0
-    for plan in project.plans:
-        if plan.file_path and os.path.exists(plan.file_path):
-            try:
-                os.remove(plan.file_path)
-                deleted_files += 1
-            except Exception:
-                pass  # Log but don't fail - DB cleanup is more important
-
-    # Delete from database (cascade will delete plans and materials)
+    # Count plans for response
     plan_count = len(project.plans)
+
+    # Delete from database only (cascade will delete plans, materials, BOQ items)
+    # Original files in the folder are preserved
     db.delete(project)
     db.commit()
 
@@ -281,7 +1126,6 @@ def delete_project(
         "message": "Project deleted successfully",
         "id": project_id,
         "deleted_plans": plan_count,
-        "deleted_files": deleted_files
     }
 
 
@@ -362,8 +1206,8 @@ def process_project(
     if not project.plans:
         raise HTTPException(status_code=400, detail="Project has no files to process")
 
-    # Start background processing
-    background_tasks.add_task(process_project_files, project_id, db)
+    # Start background processing (creates its own session)
+    background_tasks.add_task(process_project_files, project_id)
 
     return {"message": "Processing started", "total_files": len(project.plans)}
 
@@ -410,10 +1254,24 @@ def get_project_boq(
     ).order_by(BOQItem.chapter_code, BOQItem.item_code).all()
 
     if not items:
-        raise HTTPException(
-            status_code=400,
-            detail="No BOQ data available. Process files first to generate BOQ."
-        )
+        # Return empty BOQ structure instead of error for better UX
+        return {
+            "project_name": project.name,
+            "project_id": project.id,
+            "date": datetime.now().isoformat(),
+            "chapters": [],
+            "summary": {
+                "subtotal": 0,
+                "vat_rate": 0.17,
+                "vat_amount": 0,
+                "grand_total": 0,
+                "total_files": len(project.plans),
+                "total_items": 0
+            },
+            "source_files": [],
+            "notes": [],
+            "warning": "No BOQ data available. Process files to generate BOQ."
+        }
 
     # Group items by chapter
     chapters = {}
@@ -570,17 +1428,35 @@ def get_project_extraction_data(
                 data = json.loads(plan.extraction_data)
                 plan_extraction["extraction_data"] = data
 
-                # Aggregate totals
-                total_blocks += data.get("blocks_count", 0)
-                total_text += data.get("text_count", 0)
-                total_layers += data.get("layers_count", 0)
-                total_polylines += data.get("polylines_count", 0)
+                # Check if this is a PDF extraction (has different fields)
+                is_pdf = data.get("extraction_method", "").startswith("vision_ai")
 
-                # Convert area from cm² to m² (divide by 10000)
-                area_cm2 = data.get("total_area_cm2", 0)
-                area_m2 = area_cm2 / 10000.0
-                plan_extraction["area_m2"] = round(area_m2, 2)
-                total_area_m2 += area_m2
+                if is_pdf:
+                    # PDF extraction data
+                    total_text += data.get("items_count", 0)  # Count items as "text"
+                    # PDF area is already in m²
+                    area_m2 = data.get("total_area_m2", 0)
+                    plan_extraction["area_m2"] = round(area_m2, 2)
+                    total_area_m2 += area_m2
+                    # Count extracted items
+                    items = data.get("extracted_items", [])
+                    plan_extraction["items_count"] = len(items)
+                else:
+                    # CAD extraction data
+                    total_blocks += data.get("blocks_count", 0)
+                    total_text += data.get("text_count", 0)
+                    total_layers += data.get("layers_count", 0)
+                    total_polylines += data.get("polylines_count", 0)
+
+                    # CAD area: check if already converted to m² or still in raw units
+                    if "total_area_m2" in data:
+                        area_m2 = data.get("total_area_m2", 0)
+                    else:
+                        # Legacy: convert from cm² to m²
+                        area_cm2 = data.get("total_area_cm2", 0)
+                        area_m2 = area_cm2 / 10000.0
+                    plan_extraction["area_m2"] = round(area_m2, 2)
+                    total_area_m2 += area_m2
             except json.JSONDecodeError:
                 pass
 
@@ -959,7 +1835,12 @@ def confirm_extraction_selection(
     1. Store the user's layer selection in DB
     2. Calculate the final area from selected layers
     3. START BOQ generation in background (AI + Dekel pricing)
+
+    For PDF-only projects (no CAD layers), BOQ is generated directly from PDF extraction data.
     """
+    import logging
+    logger = logging.getLogger(__name__)
+
     project = db.query(models.Project).filter(models.Project.id == project_id).first()
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
@@ -967,6 +1848,48 @@ def confirm_extraction_selection(
     selected_layer_ids = set(selection.selected_layer_ids) if selection.selected_layer_ids else set()
     custom_area = selection.custom_area_m2
 
+    # Check if this is a PDF-only project (no CAD files)
+    pdf_plans = []
+    has_cad_files = False
+
+    for plan in project.plans:
+        file_ext = os.path.splitext(plan.filename)[1].lower()
+        if file_ext == '.pdf':
+            pdf_plans.append(plan)
+        elif file_ext in {'.dwg', '.dxf'}:
+            has_cad_files = True
+
+    # PDF-only project - generate BOQ directly from PDF extractions
+    if not has_cad_files and pdf_plans:
+        logger.info(f"PDF-only project {project_id} - generating BOQ directly from PDF data")
+        project.processing_status = "generating_boq"
+        db.commit()
+
+        try:
+            _generate_boq_from_pdf_extractions(project_id, pdf_plans, db)
+            project.processing_status = "completed"
+            project.processing_progress = 100
+            db.commit()
+            logger.info(f"PDF BOQ generation completed for project {project_id}")
+
+            return {
+                "message": "PDF BOQ generation completed",
+                "project_id": project_id,
+                "selected_layer_ids": [],
+                "selected_layer_names": [],
+                "selected_area_m2": 0,
+                "final_area_m2": 0,
+                "custom_override": False,
+                "status": "completed",
+                "is_pdf_only": True
+            }
+        except Exception as e:
+            logger.error(f"PDF BOQ generation failed: {e}")
+            project.processing_status = "failed"
+            db.commit()
+            raise HTTPException(status_code=500, detail=f"PDF BOQ generation failed: {str(e)}")
+
+    # CAD files present - use layer selection workflow
     # Calculate selected area from layers and update DB
     selected_area_m2 = 0.0
     selected_layer_names = []

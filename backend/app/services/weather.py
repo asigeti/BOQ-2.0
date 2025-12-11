@@ -1,20 +1,15 @@
-import random
+class WeatherNotImplementedError(Exception):
+    """Raised when weather feature is called but not yet implemented"""
+    pass
+
 
 def get_weather_forecast(location: str) -> dict:
     """
-    Mock weather forecast.
+    Get weather forecast for construction planning.
+
+    NO MOCK DATA - This feature requires real weather API integration.
     """
-    conditions = ["Sunny", "Cloudy", "Rainy", "Windy"]
-    forecast = []
-    for i in range(5):
-        forecast.append({
-            "day": f"Day {i+1}",
-            "condition": random.choice(conditions),
-            "temp_high": random.randint(60, 90),
-            "temp_low": random.randint(40, 60)
-        })
-    
-    return {
-        "location": location,
-        "forecast": forecast
-    }
+    raise WeatherNotImplementedError(
+        "Weather forecast not yet implemented. "
+        "This feature requires integration with a real weather API (e.g., OpenWeatherMap)."
+    )

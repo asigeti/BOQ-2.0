@@ -4,8 +4,11 @@ from sqlalchemy.orm import Session
 
 from app import models, schemas, services
 from app.api import deps
+from app.services.supply_chain import SupplyChainNotImplementedError
+from app.services.weather import WeatherNotImplementedError
 
 router = APIRouter()
+
 
 @router.post("/supply-chain", response_model=List[dict])
 def get_supply_chain_recommendations(
@@ -15,11 +18,16 @@ def get_supply_chain_recommendations(
 ) -> Any:
     """
     Get supplier recommendations for a specific plan.
+
+    NOT YET IMPLEMENTED - Requires real supplier integration.
     """
-    plan = db.query(models.ProjectPlan).filter(models.ProjectPlan.id == plan_id, models.ProjectPlan.user_id == current_user.id).first()
+    plan = db.query(models.ProjectPlan).filter(
+        models.ProjectPlan.id == plan_id,
+        models.ProjectPlan.user_id == current_user.id
+    ).first()
     if not plan:
         raise HTTPException(status_code=404, detail="Plan not found")
-    
+
     # Convert SQLAlchemy models to dicts for the service
     materials_data = []
     for mat in plan.materials:
@@ -28,9 +36,13 @@ def get_supply_chain_recommendations(
             "quantity": mat.quantity,
             "unit": mat.unit
         })
-    
-    recommendations = services.get_supplier_recommendations(materials_data)
-    return recommendations
+
+    try:
+        recommendations = services.get_supplier_recommendations(materials_data)
+        return recommendations
+    except SupplyChainNotImplementedError as e:
+        raise HTTPException(status_code=501, detail=str(e))
+
 
 @router.get("/weather", response_model=dict)
 def get_weather(
@@ -39,5 +51,10 @@ def get_weather(
 ) -> Any:
     """
     Get weather forecast for a location.
+
+    NOT YET IMPLEMENTED - Requires real weather API integration.
     """
-    return services.get_weather_forecast(location)
+    try:
+        return services.get_weather_forecast(location)
+    except WeatherNotImplementedError as e:
+        raise HTTPException(status_code=501, detail=str(e))

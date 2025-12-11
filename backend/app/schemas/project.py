@@ -59,7 +59,7 @@ class ProjectWithPlans(Project):
 
 class FolderScanResult(BaseModel):
     folder_path: str
-    dwg_files: List[str]
+    dwg_files: List[str]  # Note: Also includes DXF and PDF files despite the name
     total_count: int
 
 

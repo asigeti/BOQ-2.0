@@ -4,8 +4,9 @@ DWG Extractor for ConstructionAI Pro
 Extracts material quantities from AutoCAD DWG files using multiple strategies:
 1. AutoCAD COM interface (most accurate - requires AutoCAD installed)
 2. ODA File Converter (DWG -> DXF conversion)
-3. Fallback to basic DXF extraction
+3. Direct ezdxf parsing (for compatible files)
 
+NO FALLBACKS - If extraction fails, an error is raised.
 Based on Easy-MCP-AutoCAD patterns for accurate BOQ extraction.
 """
 
@@ -20,6 +21,135 @@ from typing import List, Dict, Optional, Tuple
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
+
+
+# Layer categorization patterns for BOQ area calculation
+# Categories: "include" (auto-select), "exclude" (auto-deselect), "review" (user decides)
+LAYER_CATEGORIES = {
+    # Layers to AUTO-INCLUDE (construction-related)
+    "include": [
+        "A-ROOM", "A-AREA", "A-FLOOR", "A-WALL",  # Architecture
+        "S-SLAB", "S-BEAM", "S-COLUMN", "S-FOUNDATION",  # Structure
+        "ROOM", "AREA", "FLOOR", "FLOORING",  # Common names
+        "SLAB", "CEILING", "WALL",
+        "גמר", "ריצוף", "רצפה", "קירות", "תקרה",  # Hebrew: finish, flooring, floor, walls, ceiling
+    ],
+    # Layers to AUTO-EXCLUDE (not for area calculation)
+    "exclude": [
+        "DEFPOINTS", "DEFPOINT",  # System layers
+        "XREF", "X-REF", "XREF-",  # External references
+        "ANNO", "ANNOTATION", "A-ANNO",  # Annotations
+        "DIM", "DIMENSION", "A-DIM",  # Dimensions
+        "TEXT", "A-TEXT", "S-TEXT",  # Text layers
+        "SYMBOL", "SYM-", "A-SYMB",  # Symbols
+        "TITLE", "TITLEBLOCK", "TB-",  # Title blocks
+        "BORDER", "FRAME", "SHEET",  # Sheet borders
+        "LEGEND", "SCHEDULE", "TABLE",  # Non-geometry
+        "GRID", "AXIS", "A-GRID",  # Reference grids
+        "VIEWPORT", "VP", "VPORT",  # Viewports
+        "HATCH", "A-HATCH",  # Often decorative hatches
+        "FURNITURE", "FURN", "A-FURN",  # Furniture (not construction)
+        "EQUIPMENT", "EQUIP", "E-",  # Equipment
+        "PLUMB", "P-", "PLUMBING",  # MEP (separate BOQ)
+        "ELEC", "E-", "ELECTRICAL",  # Electrical (separate BOQ)
+        "HVAC", "M-", "MECHANICAL",  # HVAC (separate BOQ)
+    ],
+}
+
+
+def categorize_layer(layer_name: str) -> str:
+    """
+    Categorize a layer as 'include', 'exclude', or 'review'.
+
+    Args:
+        layer_name: The layer name from AutoCAD
+
+    Returns:
+        'include': Layer should be included in area calculation by default
+        'exclude': Layer should be excluded from area calculation by default
+        'review': Layer needs user review (uncategorized)
+    """
+    layer_upper = layer_name.upper()
+
+    # Check exclude patterns first (more specific)
+    for pattern in LAYER_CATEGORIES["exclude"]:
+        if pattern.upper() in layer_upper or layer_upper.startswith(pattern.upper()):
+            return "exclude"
+
+    # Check include patterns
+    for pattern in LAYER_CATEGORIES["include"]:
+        if pattern.upper() in layer_upper or layer_upper.startswith(pattern.upper()):
+            return "include"
+
+    # Default to review (user decides)
+    return "review"
+
+
+def categorize_extraction_layers(area_by_layer: Dict) -> Dict:
+    """
+    Categorize all layers in extraction data for user review.
+
+    Args:
+        area_by_layer: Dict from extraction with layer -> area info (already in m²)
+
+    Returns:
+        Dict with categorized layers:
+        {
+            "include": [{"layer": "A-ROOM", "area": 500.0, ...}, ...],
+            "exclude": [{"layer": "DEFPOINTS", "area": 100.0, ...}, ...],
+            "review": [{"layer": "UNKNOWN", "area": 200.0, ...}, ...],
+            "totals": {
+                "include_area": 500.0,
+                "exclude_area": 100.0,
+                "review_area": 200.0,
+                "all_area": 800.0
+            }
+        }
+    """
+    result = {
+        "include": [],
+        "exclude": [],
+        "review": [],
+        "totals": {
+            "include_area": 0.0,
+            "exclude_area": 0.0,
+            "review_area": 0.0,
+            "all_area": 0.0
+        }
+    }
+
+    for layer_name, layer_data in area_by_layer.items():
+        category = categorize_layer(layer_name)
+        # Area is already in m² from extraction
+        area = layer_data.get("area", 0.0)
+
+        layer_info = {
+            "layer": layer_name,
+            "area": round(area, 2),
+            "polyline_count": layer_data.get("polyline_count", 0),
+            "hatch_count": layer_data.get("hatch_count", 0),
+            "category": category
+        }
+
+        result[category].append(layer_info)
+        result["totals"][f"{category}_area"] += area
+        result["totals"]["all_area"] += area
+
+    # Round totals
+    for key in result["totals"]:
+        result["totals"][key] = round(result["totals"][key], 2)
+
+    # Sort each category by area (descending)
+    for category in ["include", "exclude", "review"]:
+        result[category].sort(key=lambda x: x["area"], reverse=True)
+
+    return result
+
+
+class DWGExtractionError(Exception):
+    """Raised when DWG extraction fails"""
+    pass
+
 
 # AutoCAD COM interface (Windows only)
 try:
@@ -71,13 +201,16 @@ class AutoCADExtractor:
             return False
 
     def open_drawing(self, file_path: str) -> bool:
-        """Open a DWG file in AutoCAD with proper timing"""
+        """Open a DWG file in AutoCAD with proper timing (read-only mode)"""
         if not self.acad:
             return False
 
         try:
-            self.doc = self.acad.Documents.Open(file_path)
-            logger.info(f"Opened drawing: {file_path}")
+            # Open in read-only mode (True = ReadOnly)
+            # This prevents file locking issues and works with files that
+            # may have permission restrictions
+            self.doc = self.acad.Documents.Open(file_path, True)
+            logger.info(f"Opened drawing (read-only): {file_path}")
             # Wait for document to fully load
             time.sleep(3)
             return True
@@ -417,14 +550,35 @@ def extract_from_dwg(file_path: str) -> List[Dict]:
     Uses multiple strategies in order of accuracy:
     1. AutoCAD COM interface (most accurate)
     2. ODA File Converter -> DXF -> ezdxf
-    3. Basic fallback
+    3. Direct ezdxf parsing
+
+    NO FALLBACKS - Raises DWGExtractionError if all methods fail.
 
     Args:
         file_path: Path to the DWG file
 
     Returns:
         List of extracted materials with quantities
+
+    Raises:
+        DWGExtractionError: If extraction fails with all methods
     """
+    # Initialize COM for this thread (critical for background tasks!)
+    if HAS_WIN32COM:
+        try:
+            pythoncom.CoInitialize()
+            logger.info("COM initialized for extraction thread")
+        except Exception as e:
+            logger.warning(f"COM init warning: {e}")
+
+    # Convert to absolute path - AutoCAD COM requires absolute paths
+    file_path = os.path.abspath(file_path)
+    logger.info(f"DWG extraction starting for: {file_path}")
+
+    if not os.path.exists(file_path):
+        logger.error(f"File not found: {file_path}")
+        raise DWGExtractionError(f"File not found: {file_path}")
+
     materials = []
     extraction_method = None
 
@@ -491,16 +645,12 @@ def extract_from_dwg(file_path: str) -> List[Dict]:
     except Exception as e:
         logger.warning(f"Direct ezdxf read failed: {e}")
 
-    # Strategy 4: Last resort - return placeholder
-    logger.warning(f"All extraction methods failed for {file_path}")
-    return [{
-        'material_name': 'DWG File - Manual Review Required',
-        'quantity': 1,
-        'unit': 'file',
-        'confidence_score': 0.1,
-        'source': 'no_extraction',
-        'note': 'Install AutoCAD or ODA File Converter for accurate extraction'
-    }]
+    # All extraction methods failed - raise error
+    logger.error(f"All extraction methods failed for {file_path}")
+    raise DWGExtractionError(
+        f"Failed to extract data from {file_path}. "
+        "Install AutoCAD or ODA File Converter for DWG extraction."
+    )
 
 
 def extract_raw_data_from_dwg(file_path: str) -> Dict:
@@ -523,6 +673,18 @@ def extract_raw_data_from_dwg(file_path: str) -> Dict:
         - geometry: Line lengths, areas, polylines
         - metadata: File info, extraction method
     """
+    # Initialize COM for this thread (critical for background tasks!)
+    if HAS_WIN32COM:
+        try:
+            pythoncom.CoInitialize()
+            logger.info("COM initialized for extraction thread")
+        except Exception as e:
+            logger.warning(f"COM init warning: {e}")
+
+    # Convert to absolute path - AutoCAD COM requires absolute paths
+    file_path = os.path.abspath(file_path)
+    logger.info(f"Raw DWG extraction starting for: {file_path}")
+
     raw_data = {
         "file_path": file_path,
         "filename": os.path.basename(file_path),
@@ -600,7 +762,16 @@ def extract_raw_data_from_dwg(file_path: str) -> Dict:
 
 
 def _extract_raw_autocad_data(doc, file_path: str) -> Dict:
-    """Extract comprehensive raw data from AutoCAD document"""
+    """
+    Extract comprehensive raw data from AutoCAD document.
+
+    Enhanced to:
+    1. Follow and explode XRefs (external references)
+    2. Extract nested block contents
+    3. Handle all dimension types
+    4. Better text/attribute handling
+    5. Track areas PER LAYER for user selection
+    """
     raw_data = {
         "file_path": file_path,
         "filename": os.path.basename(file_path),
@@ -615,128 +786,345 @@ def _extract_raw_autocad_data(doc, file_path: str) -> Dict:
             "total_area": 0.0,
             "polyline_count": 0,
             "circle_count": 0,
-            "arc_count": 0
+            "arc_count": 0,
+            "hatch_count": 0,
+            "solid_count": 0
         },
+        # NEW: Per-layer area tracking for user selection
+        "area_by_layer": {},  # layer_name -> {"area": float, "polyline_count": int, "hatch_count": int}
+        "closed_polylines": [],  # List of individual closed polylines with area
         "attributes": [],
+        "xrefs": [],
+        "block_definitions": {},
+        "tables": [],
         "errors": []
     }
 
-    try:
-        model_space = doc.ModelSpace
+    def process_entity(entity, scale_factor=1.0, is_block_content=False, block_name=""):
+        """Process a single entity and update raw_data"""
+        try:
+            entity_type = entity.ObjectName
+            layer_name = entity.Layer if hasattr(entity, 'Layer') else "0"
 
-        for i in range(model_space.Count):
-            try:
-                entity = model_space.Item(i)
-                entity_type = entity.ObjectName
-                layer_name = entity.Layer
+            # Count by layer
+            raw_data["layers"][layer_name] = raw_data["layers"].get(layer_name, 0) + 1
 
-                # Count by layer
-                raw_data["layers"][layer_name] = raw_data["layers"].get(layer_name, 0) + 1
+            # All dimension types (AcDbAlignedDimension, AcDbRotatedDimension, etc.)
+            if "Dimension" in entity_type or entity_type.startswith("AcDbDim"):
+                try:
+                    measurement = entity.Measurement * scale_factor if hasattr(entity, 'Measurement') else 0
+                    text_override = ""
+                    if hasattr(entity, 'TextOverride'):
+                        text_override = entity.TextOverride
 
-                # Blocks
-                if entity_type == "AcDbBlockReference":
-                    block_info = {
-                        "name": entity.Name,
+                    raw_data["dimensions"].append({
+                        "type": entity_type,
+                        "measurement": measurement,
+                        "text_override": text_override,
                         "layer": layer_name,
-                        "position": {
-                            "x": entity.InsertionPoint[0],
-                            "y": entity.InsertionPoint[1],
-                            "z": entity.InsertionPoint[2] if len(entity.InsertionPoint) > 2 else 0
-                        },
-                        "rotation": entity.Rotation if hasattr(entity, 'Rotation') else 0,
-                        "scale": {
-                            "x": entity.XScaleFactor if hasattr(entity, 'XScaleFactor') else 1,
-                            "y": entity.YScaleFactor if hasattr(entity, 'YScaleFactor') else 1
-                        },
-                        "attributes": []
-                    }
+                        "from_block": block_name if is_block_content else ""
+                    })
+                except Exception as e:
+                    pass
 
-                    # Extract block attributes
-                    if entity.HasAttributes:
-                        for attr in entity.GetAttributes():
-                            block_info["attributes"].append({
-                                "tag": attr.TagString,
-                                "value": attr.TextString
-                            })
-                            raw_data["attributes"].append({
-                                "block": entity.Name,
-                                "tag": attr.TagString,
-                                "value": attr.TextString
-                            })
-
-                    raw_data["blocks"].append(block_info)
-
-                # Text
-                elif entity_type in ("AcDbText", "AcDbMText"):
+            # Text entities
+            elif entity_type in ("AcDbText", "AcDbMText"):
+                try:
                     raw_data["text_entities"].append({
                         "type": entity_type,
                         "text": entity.TextString,
                         "layer": layer_name,
-                        "height": entity.Height if hasattr(entity, 'Height') else 0,
+                        "height": (entity.Height if hasattr(entity, 'Height') else 0) * scale_factor,
                         "position": {
                             "x": entity.InsertionPoint[0],
                             "y": entity.InsertionPoint[1]
+                        },
+                        "from_block": block_name if is_block_content else ""
+                    })
+                except:
+                    pass
+
+            # Tables (schedule data)
+            elif entity_type == "AcDbTable":
+                try:
+                    table_data = {
+                        "rows": entity.Rows,
+                        "columns": entity.Columns,
+                        "cells": [],
+                        "layer": layer_name
+                    }
+                    for row in range(entity.Rows):
+                        row_data = []
+                        for col in range(entity.Columns):
+                            try:
+                                cell_text = entity.GetText(row, col)
+                                row_data.append(cell_text)
+                            except:
+                                row_data.append("")
+                        table_data["cells"].append(row_data)
+                    raw_data["tables"].append(table_data)
+                except Exception as e:
+                    raw_data["errors"].append(f"Table extraction error: {e}")
+
+            # Geometry - Lines
+            elif entity_type == "AcDbLine":
+                try:
+                    length = entity.Length * scale_factor
+                    raw_data["geometry"]["total_line_length"] += length
+                except:
+                    pass
+
+            # Geometry - Polylines (including 3D)
+            elif entity_type in ("AcDbPolyline", "AcDbLWPolyline", "AcDb2dPolyline", "AcDb3dPolyline"):
+                raw_data["geometry"]["polyline_count"] += 1
+                try:
+                    raw_data["geometry"]["total_line_length"] += entity.Length * scale_factor
+                except:
+                    pass
+                try:
+                    if hasattr(entity, 'Closed') and entity.Closed:
+                        area = entity.Area * (scale_factor ** 2)
+                        raw_data["geometry"]["total_area"] += area
+
+                        # Track area by layer
+                        if layer_name not in raw_data["area_by_layer"]:
+                            raw_data["area_by_layer"][layer_name] = {
+                                "area": 0.0, "polyline_count": 0, "hatch_count": 0
+                            }
+                        raw_data["area_by_layer"][layer_name]["area"] += area
+                        raw_data["area_by_layer"][layer_name]["polyline_count"] += 1
+
+                        # Track individual closed polylines
+                        raw_data["closed_polylines"].append({
+                            "layer": layer_name,
+                            "area": area,
+                            "type": entity_type,
+                            "from_block": block_name if is_block_content else ""
+                        })
+                except:
+                    pass
+
+            # Geometry - Circles
+            elif entity_type == "AcDbCircle":
+                raw_data["geometry"]["circle_count"] += 1
+                try:
+                    raw_data["geometry"]["total_area"] += entity.Area * (scale_factor ** 2)
+                except:
+                    pass
+
+            # Geometry - Arcs
+            elif entity_type == "AcDbArc":
+                raw_data["geometry"]["arc_count"] += 1
+                try:
+                    raw_data["geometry"]["total_line_length"] += entity.ArcLength * scale_factor
+                except:
+                    pass
+
+            # Geometry - Ellipses
+            elif entity_type == "AcDbEllipse":
+                try:
+                    raw_data["geometry"]["total_area"] += entity.Area * (scale_factor ** 2)
+                except:
+                    pass
+
+            # Hatches (areas) - important for room areas
+            elif entity_type == "AcDbHatch":
+                raw_data["geometry"]["hatch_count"] = raw_data["geometry"].get("hatch_count", 0) + 1
+                try:
+                    area = entity.Area * (scale_factor ** 2)
+                    raw_data["geometry"]["total_area"] += area
+
+                    # Track area by layer
+                    if layer_name not in raw_data["area_by_layer"]:
+                        raw_data["area_by_layer"][layer_name] = {
+                            "area": 0.0, "polyline_count": 0, "hatch_count": 0
                         }
+                    raw_data["area_by_layer"][layer_name]["area"] += area
+                    raw_data["area_by_layer"][layer_name]["hatch_count"] += 1
+
+                    # Track as closed polyline equivalent
+                    raw_data["closed_polylines"].append({
+                        "layer": layer_name,
+                        "area": area,
+                        "type": "hatch",
+                        "from_block": block_name if is_block_content else ""
+                    })
+                except:
+                    pass
+
+            # Solids and regions
+            elif entity_type in ("AcDbSolid", "AcDbRegion", "AcDb3dSolid"):
+                raw_data["geometry"]["solid_count"] = raw_data["geometry"].get("solid_count", 0) + 1
+                try:
+                    if hasattr(entity, 'Area'):
+                        raw_data["geometry"]["total_area"] += entity.Area * (scale_factor ** 2)
+                except:
+                    pass
+
+        except Exception as e:
+            raw_data["errors"].append(f"Entity processing error: {e}")
+
+    def process_block_reference(entity, parent_scale=1.0):
+        """Process a block reference and its contents"""
+        try:
+            block_name = entity.Name
+            layer_name = entity.Layer if hasattr(entity, 'Layer') else "0"
+
+            # Calculate combined scale
+            x_scale = entity.XScaleFactor if hasattr(entity, 'XScaleFactor') else 1
+            y_scale = entity.YScaleFactor if hasattr(entity, 'YScaleFactor') else 1
+            combined_scale = parent_scale * ((abs(x_scale) + abs(y_scale)) / 2)
+
+            block_info = {
+                "name": block_name,
+                "layer": layer_name,
+                "position": {
+                    "x": entity.InsertionPoint[0],
+                    "y": entity.InsertionPoint[1],
+                    "z": entity.InsertionPoint[2] if len(entity.InsertionPoint) > 2 else 0
+                },
+                "rotation": entity.Rotation if hasattr(entity, 'Rotation') else 0,
+                "scale": {"x": x_scale, "y": y_scale},
+                "is_xref": False,
+                "attributes": []
+            }
+
+            # Extract block attributes (important for BOQ data)
+            if hasattr(entity, 'HasAttributes') and entity.HasAttributes:
+                for attr in entity.GetAttributes():
+                    attr_data = {
+                        "tag": attr.TagString,
+                        "value": attr.TextString
+                    }
+                    block_info["attributes"].append(attr_data)
+                    raw_data["attributes"].append({
+                        "block": block_name,
+                        "tag": attr.TagString,
+                        "value": attr.TextString
                     })
 
-                # Dimensions
-                elif entity_type == "AcDbDimension":
-                    try:
-                        raw_data["dimensions"].append({
-                            "type": "dimension",
-                            "measurement": entity.Measurement,
-                            "text_override": entity.TextOverride if hasattr(entity, 'TextOverride') else "",
-                            "layer": layer_name
-                        })
-                    except:
-                        pass
+            raw_data["blocks"].append(block_info)
 
-                # Geometry - Lines
-                elif entity_type == "AcDbLine":
-                    try:
-                        length = entity.Length
-                        raw_data["geometry"]["total_line_length"] += length
-                    except:
-                        pass
+            # Check if this is an XRef
+            try:
+                if hasattr(entity, 'IsDynamicBlock') or "*" in block_name or block_name.startswith("A$"):
+                    # This might be an xref or anonymous block
+                    pass
+            except:
+                pass
 
-                # Geometry - Polylines
-                elif entity_type in ("AcDbPolyline", "AcDbLWPolyline", "AcDb2dPolyline"):
-                    raw_data["geometry"]["polyline_count"] += 1
-                    try:
-                        raw_data["geometry"]["total_line_length"] += entity.Length
-                    except:
-                        pass
-                    try:
-                        if entity.Closed:
-                            raw_data["geometry"]["total_area"] += entity.Area
-                    except:
-                        pass
+            return block_name, combined_scale
 
-                # Geometry - Circles
-                elif entity_type == "AcDbCircle":
-                    raw_data["geometry"]["circle_count"] += 1
-                    try:
-                        raw_data["geometry"]["total_area"] += entity.Area
-                    except:
-                        pass
+        except Exception as e:
+            raw_data["errors"].append(f"Block reference error: {e}")
+            return None, 1.0
 
-                # Geometry - Arcs
-                elif entity_type == "AcDbArc":
-                    raw_data["geometry"]["arc_count"] += 1
-                    try:
-                        raw_data["geometry"]["total_line_length"] += entity.ArcLength
-                    except:
-                        pass
+    try:
+        model_space = doc.ModelSpace
+        logger.info(f"Processing ModelSpace with {model_space.Count} entities")
 
-                # Hatches (areas)
-                elif entity_type == "AcDbHatch":
-                    try:
-                        raw_data["geometry"]["total_area"] += entity.Area
-                    except:
-                        pass
+        # First pass: Process all entities in model space
+        for i in range(model_space.Count):
+            try:
+                entity = model_space.Item(i)
+                entity_type = entity.ObjectName
+
+                if entity_type == "AcDbBlockReference":
+                    block_name, scale = process_block_reference(entity)
+                else:
+                    process_entity(entity)
 
             except Exception as e:
                 raw_data["errors"].append(f"Error processing entity {i}: {e}")
+
+        # Second pass: Extract block definition contents for geometry
+        try:
+            blocks_collection = doc.Blocks
+            logger.info(f"Processing {blocks_collection.Count} block definitions")
+
+            for i in range(blocks_collection.Count):
+                try:
+                    block_def = blocks_collection.Item(i)
+                    block_name = block_def.Name
+
+                    # Skip model space, paper space, and system blocks
+                    if block_name.startswith("*") and block_name not in ["*Model_Space", "*Paper_Space"]:
+                        continue
+                    if block_name in ["*Model_Space", "*Paper_Space"]:
+                        continue
+
+                    # Count entities in block definition
+                    entity_count = block_def.Count
+                    if entity_count == 0:
+                        continue
+
+                    block_def_data = {
+                        "name": block_name,
+                        "entity_count": entity_count,
+                        "is_xref": block_def.IsXRef if hasattr(block_def, 'IsXRef') else False,
+                        "xref_path": "",
+                        "geometry": {
+                            "lines": 0,
+                            "polylines": 0,
+                            "circles": 0,
+                            "hatches": 0,
+                            "texts": 0,
+                            "dimensions": 0
+                        }
+                    }
+
+                    # Check if it's an XRef
+                    if hasattr(block_def, 'IsXRef') and block_def.IsXRef:
+                        block_def_data["is_xref"] = True
+                        try:
+                            block_def_data["xref_path"] = block_def.Path
+                        except:
+                            pass
+                        raw_data["xrefs"].append({
+                            "name": block_name,
+                            "path": block_def_data.get("xref_path", ""),
+                            "entity_count": entity_count
+                        })
+
+                    # Process entities within block definition
+                    for j in range(entity_count):
+                        try:
+                            block_entity = block_def.Item(j)
+                            block_entity_type = block_entity.ObjectName
+
+                            # Count by type
+                            if block_entity_type == "AcDbLine":
+                                block_def_data["geometry"]["lines"] += 1
+                            elif "Polyline" in block_entity_type:
+                                block_def_data["geometry"]["polylines"] += 1
+                            elif block_entity_type == "AcDbCircle":
+                                block_def_data["geometry"]["circles"] += 1
+                            elif block_entity_type == "AcDbHatch":
+                                block_def_data["geometry"]["hatches"] += 1
+                            elif block_entity_type in ("AcDbText", "AcDbMText"):
+                                block_def_data["geometry"]["texts"] += 1
+                            elif "Dimension" in block_entity_type:
+                                block_def_data["geometry"]["dimensions"] += 1
+
+                            # Process the entity to extract actual geometry
+                            process_entity(block_entity, scale_factor=1.0, is_block_content=True, block_name=block_name)
+
+                        except Exception as e:
+                            pass
+
+                    raw_data["block_definitions"][block_name] = block_def_data
+
+                except Exception as e:
+                    raw_data["errors"].append(f"Block definition error: {e}")
+
+        except Exception as e:
+            raw_data["errors"].append(f"Blocks collection error: {e}")
+
+        # Log summary
+        logger.info(f"Extraction complete: {len(raw_data['blocks'])} blocks, "
+                   f"{len(raw_data['dimensions'])} dimensions, "
+                   f"{len(raw_data['text_entities'])} texts, "
+                   f"{len(raw_data['xrefs'])} xrefs")
 
     except Exception as e:
         raw_data["errors"].append(f"Model space iteration error: {e}")

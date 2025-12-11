@@ -6,8 +6,9 @@ import pandas as pd
 import io
 import json
 
-from app import models
+from app import models, schemas
 from app.api import deps
+from app.services.pdf_generator import generate_hierarchical_boq_pdf
 
 router = APIRouter()
 
@@ -162,5 +163,45 @@ def export_plan_to_excel(
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={
             "Content-Disposition": f"attachment; filename=BOQ_{plan.filename}.xlsx"
+        }
+    )
+
+
+@router.get("/projects/{project_id}/pdf/hierarchy")
+def export_hierarchical_boq_to_pdf(
+    project_id: int,
+    db: Session = Depends(deps.get_db),
+) -> Any:
+    """
+    Export hierarchical BOQ to professional PDF.
+
+    Generates a PDF with 4-level hierarchy:
+    - תת כתב (Sub-Document)
+    - פרק (Chapter)
+    - תת פרק (Sub-Chapter)
+    - סעיף (Item)
+
+    Includes executive summary, sub-totals at each level, and terms/conditions.
+    """
+    # Get hierarchical BOQ data
+    boq_data = schemas.build_hierarchy_response(db, project_id)
+
+    if not boq_data:
+        raise HTTPException(status_code=404, detail="Project not found")
+
+    # Get project for filename
+    project = db.query(models.Project).filter(models.Project.id == project_id).first()
+
+    # Generate PDF
+    pdf_buffer = generate_hierarchical_boq_pdf(boq_data)
+
+    # Return as downloadable file
+    filename = f"BOQ_{project.name.replace(' ', '_')}_Hierarchy.pdf"
+
+    return StreamingResponse(
+        pdf_buffer,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f"attachment; filename={filename}"
         }
     )

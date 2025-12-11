@@ -23,6 +23,7 @@ import {
   Collapse,
   Button,
   Grid,
+  TextField,
 } from '@mui/material';
 import {
   Download as DownloadIcon,
@@ -35,12 +36,17 @@ import {
   Receipt as ReceiptIcon,
   Layers as LayersIcon,
   AttachMoney as MoneyIcon,
+  Edit as EditIcon,
+  Save as SaveIcon,
+  Cancel as CancelIcon,
+  Delete as DeleteIcon,
 } from '@mui/icons-material';
-import { motion } from 'framer-motion';
 import { MainLayout } from '@/components/layout';
 import api from '@/utils/axios';
+import { useNotification } from '@/contexts/NotificationContext';
 
 interface BOQItem {
+  id?: number;  // NEW - item ID for editing
   item_code: string;
   dekel_code: string | null;
   description_he: string;
@@ -51,6 +57,10 @@ interface BOQItem {
   total_price: number;
   confidence: number;
   notes: string | null;
+  source_filename?: string | null;  // NEW - source file tracking
+  source_layer?: string | null;  // NEW - source layer tracking
+  user_notes?: string | null;  // NEW - user-added notes
+  is_modified?: boolean;  // NEW - modification flag
 }
 
 interface BOQChapter {
@@ -63,6 +73,7 @@ interface BOQChapter {
 
 interface BOQData {
   project_name: string;
+  project_id?: number;  // NEW - for editing BOQ items
   filename: string;
   date: string;
   chapters: BOQChapter[];
@@ -92,10 +103,16 @@ function SummaryCard({ title, value, icon, color, delay = 0 }: {
   delay?: number;
 }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay }}
+    <Box
+      sx={{
+        animation: 'fadeInUp 0.4s ease-out forwards',
+        animationDelay: `${delay}s`,
+        opacity: 0,
+        '@keyframes fadeInUp': {
+          '0%': { opacity: 0, transform: 'translateY(20px)' },
+          '100%': { opacity: 1, transform: 'translateY(0)' },
+        },
+      }}
     >
       <Card
         sx={{
@@ -129,12 +146,26 @@ function SummaryCard({ title, value, icon, color, delay = 0 }: {
           </Box>
         </CardContent>
       </Card>
-    </motion.div>
+    </Box>
   );
 }
 
-function ChapterSection({ chapter, index }: { chapter: BOQChapter; index: number }) {
+function ChapterSection({ chapter, index, projectId, onUpdate, showError, showConfirm }: {
+  chapter: BOQChapter;
+  index: number;
+  projectId: string;
+  onUpdate: () => void;
+  showError: (message: string) => void;
+  showConfirm: (message: string) => Promise<boolean>;
+}) {
   const [expanded, setExpanded] = useState(true);
+  const [editingItemId, setEditingItemId] = useState<number | null>(null);
+  const [editedValues, setEditedValues] = useState<{
+    quantity: number;
+    unit_price: number;
+    user_notes: string;
+  }>({ quantity: 0, unit_price: 0, user_notes: '' });
+  const [saving, setSaving] = useState(false);
 
   const getConfidenceColor = (confidence: number) => {
     if (confidence >= 0.8) return '#10b981';
@@ -148,11 +179,61 @@ function ChapterSection({ chapter, index }: { chapter: BOQChapter; index: number
     return <ErrorIcon sx={{ fontSize: 16 }} />;
   };
 
+  const handleEdit = (item: BOQItem) => {
+    setEditingItemId(item.id!);
+    setEditedValues({
+      quantity: item.quantity,
+      unit_price: item.unit_price,
+      user_notes: item.user_notes || '',
+    });
+  };
+
+  const handleCancel = () => {
+    setEditingItemId(null);
+    setEditedValues({ quantity: 0, unit_price: 0, user_notes: '' });
+  };
+
+  const handleSave = async (itemId: number) => {
+    setSaving(true);
+    try {
+      await api.patch(`/projects/${projectId}/boq/items/${itemId}`, editedValues);
+      setEditingItemId(null);
+      onUpdate(); // Refresh BOQ data
+    } catch (error) {
+      console.error('Failed to update BOQ item:', error);
+      showError('שגיאה בשמירת השינויים');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async (itemId: number) => {
+    const confirmed = await showConfirm('האם אתה בטוח שברצונך למחוק פריט זה?');
+    if (!confirmed) return;
+
+    setSaving(true);
+    try {
+      await api.delete(`/projects/${projectId}/boq/items/${itemId}`);
+      onUpdate(); // Refresh BOQ data
+    } catch (error) {
+      console.error('Failed to delete BOQ item:', error);
+      showError('שגיאה במחיקת הפריט');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.1 }}
+    <Box
+      sx={{
+        animation: 'fadeInUp 0.4s ease-out forwards',
+        animationDelay: `${index * 0.1}s`,
+        opacity: 0,
+        '@keyframes fadeInUp': {
+          '0%': { opacity: 0, transform: 'translateY(20px)' },
+          '100%': { opacity: 1, transform: 'translateY(0)' },
+        },
+      }}
     >
       <Card sx={{ mb: 3, overflow: 'hidden' }}>
         {/* Chapter Header */}
@@ -216,13 +297,17 @@ function ChapterSection({ chapter, index }: { chapter: BOQChapter; index: number
             <Table size="small">
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ fontWeight: 600, width: '10%' }}>קוד</TableCell>
-                  <TableCell sx={{ fontWeight: 600, width: '35%' }}>תיאור</TableCell>
-                  <TableCell align="center" sx={{ fontWeight: 600, width: '10%' }}>כמות</TableCell>
-                  <TableCell align="center" sx={{ fontWeight: 600, width: '8%' }}>יחידה</TableCell>
-                  <TableCell align="center" sx={{ fontWeight: 600, width: '12%' }}>מחיר</TableCell>
-                  <TableCell align="center" sx={{ fontWeight: 600, width: '12%' }}>סה"כ</TableCell>
-                  <TableCell align="center" sx={{ fontWeight: 600, width: '13%' }}>ביטחון</TableCell>
+                  <TableCell sx={{ fontWeight: 600, width: '7%' }}>קוד</TableCell>
+                  <TableCell sx={{ fontWeight: 600, width: '20%' }}>תיאור</TableCell>
+                  <TableCell align="center" sx={{ fontWeight: 600, width: '7%' }}>כמות</TableCell>
+                  <TableCell align="center" sx={{ fontWeight: 600, width: '5%' }}>יחידה</TableCell>
+                  <TableCell align="center" sx={{ fontWeight: 600, width: '8%' }}>מחיר</TableCell>
+                  <TableCell align="center" sx={{ fontWeight: 600, width: '8%' }}>סה"כ</TableCell>
+                  <TableCell align="center" sx={{ fontWeight: 600, width: '10%' }}>קובץ מקור</TableCell>
+                  <TableCell align="center" sx={{ fontWeight: 600, width: '8%' }}>שכבה</TableCell>
+                  <TableCell sx={{ fontWeight: 600, width: '12%' }}>הערות</TableCell>
+                  <TableCell align="center" sx={{ fontWeight: 600, width: '5%' }}>ביטחון</TableCell>
+                  <TableCell align="center" sx={{ fontWeight: 600, width: '10%' }}>פעולות</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -262,9 +347,19 @@ function ChapterSection({ chapter, index }: { chapter: BOQChapter; index: number
                       </Tooltip>
                     </TableCell>
                     <TableCell align="center">
-                      <Typography variant="body2" fontWeight={500}>
-                        {item.quantity.toLocaleString('he-IL', { maximumFractionDigits: 2 })}
-                      </Typography>
+                      {editingItemId === item.id ? (
+                        <TextField
+                          size="small"
+                          type="number"
+                          value={editedValues.quantity}
+                          onChange={(e) => setEditedValues({ ...editedValues, quantity: parseFloat(e.target.value) || 0 })}
+                          sx={{ width: 80 }}
+                        />
+                      ) : (
+                        <Typography variant="body2" fontWeight={500}>
+                          {item.quantity.toLocaleString('he-IL', { maximumFractionDigits: 2 })}
+                        </Typography>
+                      )}
                     </TableCell>
                     <TableCell align="center">
                       <Chip
@@ -278,14 +373,51 @@ function ChapterSection({ chapter, index }: { chapter: BOQChapter; index: number
                       />
                     </TableCell>
                     <TableCell align="center">
-                      <Typography variant="body2">
-                        {item.unit_price.toLocaleString('he-IL', { minimumFractionDigits: 2 })} ש"ח
-                      </Typography>
+                      {editingItemId === item.id ? (
+                        <TextField
+                          size="small"
+                          type="number"
+                          value={editedValues.unit_price}
+                          onChange={(e) => setEditedValues({ ...editedValues, unit_price: parseFloat(e.target.value) || 0 })}
+                          sx={{ width: 90 }}
+                        />
+                      ) : (
+                        <Typography variant="body2">
+                          {item.unit_price.toLocaleString('he-IL', { minimumFractionDigits: 2 })} ש"ח
+                        </Typography>
+                      )}
                     </TableCell>
                     <TableCell align="center">
                       <Typography variant="body2" fontWeight={600} color="primary">
                         {item.total_price.toLocaleString('he-IL', { minimumFractionDigits: 2 })} ש"ח
                       </Typography>
+                    </TableCell>
+                    <TableCell align="center">
+                      <Typography variant="caption" color="text.secondary">
+                        {item.source_filename || '-'}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="center">
+                      <Typography variant="caption" color="text.secondary" sx={{ fontFamily: 'monospace' }}>
+                        {item.source_layer || '-'}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      {editingItemId === item.id ? (
+                        <TextField
+                          size="small"
+                          multiline
+                          value={editedValues.user_notes}
+                          onChange={(e) => setEditedValues({ ...editedValues, user_notes: e.target.value })}
+                          placeholder="הוסף הערה..."
+                          fullWidth
+                          sx={{ minWidth: 120 }}
+                        />
+                      ) : (
+                        <Typography variant="caption" color="text.secondary">
+                          {item.user_notes || item.notes || '-'}
+                        </Typography>
+                      )}
                     </TableCell>
                     <TableCell align="center">
                       <Chip
@@ -303,6 +435,53 @@ function ChapterSection({ chapter, index }: { chapter: BOQChapter; index: number
                         }}
                       />
                     </TableCell>
+                    <TableCell align="center">
+                      {editingItemId === item.id ? (
+                        <Box sx={{ display: 'flex', gap: 0.5 }}>
+                          <Tooltip title="שמור">
+                            <IconButton
+                              size="small"
+                              color="primary"
+                              onClick={() => handleSave(item.id!)}
+                              disabled={saving}
+                            >
+                              <SaveIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title="ביטול">
+                            <IconButton
+                              size="small"
+                              onClick={handleCancel}
+                              disabled={saving}
+                            >
+                              <CancelIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
+                      ) : (
+                        <Box sx={{ display: 'flex', gap: 0.5 }}>
+                          <Tooltip title="ערוך">
+                            <IconButton
+                              size="small"
+                              onClick={() => handleEdit(item)}
+                              disabled={saving}
+                            >
+                              <EditIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title="מחק">
+                            <IconButton
+                              size="small"
+                              color="error"
+                              onClick={() => handleDelete(item.id!)}
+                              disabled={saving}
+                            >
+                              <DeleteIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
+                      )}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -310,7 +489,7 @@ function ChapterSection({ chapter, index }: { chapter: BOQChapter; index: number
           </TableContainer>
         </Collapse>
       </Card>
-    </motion.div>
+    </Box>
   );
 }
 
@@ -318,6 +497,7 @@ export default function PlanDetailPage() {
   const params = useParams();
   const router = useRouter();
   const planId = params.id;
+  const { showError, showConfirm } = useNotification();
 
   const [boqData, setBoqData] = useState<BOQData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -435,10 +615,14 @@ export default function PlanDetailPage() {
             minHeight: '60vh',
           }}
         >
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.4 }}
+          <Box
+            sx={{
+              animation: 'scaleIn 0.4s ease-out forwards',
+              '@keyframes scaleIn': {
+                '0%': { opacity: 0, transform: 'scale(0.9)' },
+                '100%': { opacity: 1, transform: 'scale(1)' },
+              },
+            }}
           >
             <Box
               sx={{
@@ -454,7 +638,7 @@ export default function PlanDetailPage() {
             >
               <CircularProgress size={60} thickness={4} />
             </Box>
-          </motion.div>
+          </Box>
 
           <Typography variant="h5" fontWeight={600} gutterBottom>
             {status.status === 'pending' ? 'ממתין לעיבוד...' : 'מעבד את הקובץ...'}
@@ -564,7 +748,7 @@ export default function PlanDetailPage() {
 
       {/* Summary Cards */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid xs={12} sm={6} md={3}>
           <SummaryCard
             title="סה״כ לפני מע״מ"
             value={`${boqData.summary.subtotal.toLocaleString('he-IL', { minimumFractionDigits: 2 })} ש"ח`}
@@ -573,7 +757,7 @@ export default function PlanDetailPage() {
             delay={0}
           />
         </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid xs={12} sm={6} md={3}>
           <SummaryCard
             title={`מע״מ (${(boqData.summary.vat_rate * 100).toFixed(0)}%)`}
             value={`${boqData.summary.vat_amount.toLocaleString('he-IL', { minimumFractionDigits: 2 })} ש"ח`}
@@ -582,7 +766,7 @@ export default function PlanDetailPage() {
             delay={0.1}
           />
         </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid xs={12} sm={6} md={3}>
           <SummaryCard
             title="סה״כ כולל מע״מ"
             value={`${boqData.summary.grand_total.toLocaleString('he-IL', { minimumFractionDigits: 2 })} ש"ח`}
@@ -591,7 +775,7 @@ export default function PlanDetailPage() {
             delay={0.2}
           />
         </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid xs={12} sm={6} md={3}>
           <SummaryCard
             title="פרקים"
             value={boqData.chapters.length.toString()}
@@ -604,15 +788,29 @@ export default function PlanDetailPage() {
 
       {/* Chapters */}
       {boqData.chapters.map((chapter, index) => (
-        <ChapterSection key={chapter.chapter_code} chapter={chapter} index={index} />
+        <ChapterSection
+          key={chapter.chapter_code}
+          chapter={chapter}
+          index={index}
+          projectId={boqData.project_id?.toString() || ''}
+          onUpdate={fetchBOQData}
+          showError={showError}
+          showConfirm={showConfirm}
+        />
       ))}
 
       {/* Notes */}
       {boqData.notes && boqData.notes.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.5 }}
+        <Box
+          sx={{
+            animation: 'fadeInUp 0.4s ease-out forwards',
+            animationDelay: '0.5s',
+            opacity: 0,
+            '@keyframes fadeInUp': {
+              '0%': { opacity: 0, transform: 'translateY(20px)' },
+              '100%': { opacity: 1, transform: 'translateY(0)' },
+            },
+          }}
         >
           <Card sx={{ mt: 3 }}>
             <CardContent sx={{ p: 3 }}>
@@ -626,7 +824,7 @@ export default function PlanDetailPage() {
               ))}
             </CardContent>
           </Card>
-        </motion.div>
+        </Box>
       )}
 
       {/* Metadata */}

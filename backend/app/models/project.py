@@ -34,3 +34,7 @@ class Project(Base):
     owner = relationship("User", backref="projects")
     plans = relationship("ProjectPlan", back_populates="project", cascade="all, delete-orphan")
     boq_items = relationship("BOQItem", back_populates="project", cascade="all, delete-orphan")
+    # Hierarchical BOQ structure
+    boq_sub_documents = relationship("BOQSubDocument", back_populates="project",
+                                     cascade="all, delete-orphan",
+                                     order_by="BOQSubDocument.display_order")

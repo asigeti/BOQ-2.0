@@ -177,67 +177,106 @@ class ProfessionalBOQPDFGenerator:
 
         canvas.restoreState()
 
-    def _create_cover_page(self, project_name: str, logo_path: Optional[str] = None) -> List:
-        """Create professional cover page"""
+    def _create_cover_page(self, project_name: str, logo_path: Optional[str] = None, boq_data: Optional[Dict] = None) -> List:
+        """
+        Create מוריה-style professional cover page.
+        Includes tender info box and project details.
+        """
         story = []
 
         # Logo
         if logo_path and os.path.exists(logo_path):
             try:
-                img = Image(logo_path, width=8*cm, height=5*cm)
-                story.append(Spacer(1, 3*cm))
-                story.append(img)
+                img = Image(logo_path, width=6*cm, height=3*cm)
                 story.append(Spacer(1, 1*cm))
+                story.append(img)
+                story.append(Spacer(1, 0.5*cm))
             except Exception as e:
                 print(f"Could not load logo: {e}")
-                story.append(Spacer(1, 5*cm))
+                story.append(Spacer(1, 2*cm))
         else:
-            story.append(Spacer(1, 5*cm))
+            story.append(Spacer(1, 2*cm))
 
-        # Main title
+        # Main title - מוריה style
         title = Paragraph(
-            self._format_hebrew("כתב כמויות מפורט"),
-            self.styles['CustomTitle']
+            self._format_hebrew("כתב כמויות למכרז"),
+            ParagraphStyle(
+                'MoriahTitle',
+                parent=self.styles['Heading1'],
+                fontSize=22,
+                textColor=self.PRIMARY_COLOR,
+                spaceAfter=20,
+                alignment=TA_CENTER,
+                fontName='HebrewFont-Bold'
+            )
         )
         story.append(title)
-        story.append(Spacer(1, 1*cm))
 
         # Project name
         project_title = Paragraph(
-            f'<font size="18" color="#059669"><b>{self._format_hebrew(project_name)}</b></font>',
-            self.styles['CustomTitle']
+            self._format_hebrew(project_name),
+            ParagraphStyle(
+                'ProjectTitle',
+                parent=self.styles['Heading2'],
+                fontSize=16,
+                textColor=self.GRAY_DARK,
+                spaceAfter=30,
+                alignment=TA_CENTER,
+                fontName='HebrewFont-Bold'
+            )
         )
         story.append(project_title)
-        story.append(Spacer(1, 2*cm))
 
-        # Professional box with project details
-        details_data = [
-            [self._format_hebrew("תאריך הצעה:"), datetime.now().strftime("%d/%m/%Y")],
-            [self._format_hebrew("מספר הצעה:"), f"BOQ-{datetime.now().strftime('%Y%m%d-%H%M')}"],
-            [self._format_hebrew("תוקף ההצעה:"), self._format_hebrew("30 יום")],
+        # מוריה-style info box - RTL table
+        # Columns: Value | Label (displayed right-to-left)
+        tender_number = f"BOQ-{datetime.now().strftime('%Y%m%d')}"
+        date_str = datetime.now().strftime("%d/%m/%Y")
+
+        # Calculate estimate if available
+        estimate = 0
+        if boq_data:
+            # Try non-hierarchical format first (summary.subtotal)
+            summary = boq_data.get('summary', {})
+            if summary and summary.get('subtotal'):
+                estimate = summary.get('subtotal', 0)
+            # Fallback to hierarchical format (sub_documents)
+            elif boq_data.get('sub_documents'):
+                for sub_doc in boq_data.get('sub_documents', []):
+                    estimate += sub_doc.get('cached_total', 0)
+            # Fallback to calculating from chapters
+            elif boq_data.get('chapters'):
+                for chapter in boq_data.get('chapters', []):
+                    estimate += chapter.get('chapter_total', 0)
+
+        info_data = [
+            [tender_number, self._format_hebrew("מכרז מספר:")],
+            [date_str, self._format_hebrew("תאריך:")],
+            [f"{estimate:,.2f}", self._format_hebrew("אומדן (ללא מע\"מ):")],
+            [self._format_hebrew("30 יום"), self._format_hebrew("תוקף ההצעה:")],
         ]
 
-        details_table = Table(details_data, colWidths=[6*cm, 8*cm])
-        details_table.setStyle(TableStyle([
+        info_table = Table(info_data, colWidths=[8*cm, 6*cm])
+        info_table.setStyle(TableStyle([
             ('FONT', (0, 0), (-1, -1), 'HebrewFont', 11),
-            ('FONTNAME', (0, 0), (0, -1), 'HebrewFont-Bold'),
+            ('FONTNAME', (1, 0), (1, -1), 'HebrewFont-Bold'),
             ('TEXTCOLOR', (0, 0), (-1, -1), self.GRAY_DARK),
-            ('ALIGN', (0, 0), (-1, -1), 'RIGHT'),
+            ('ALIGN', (0, 0), (0, -1), 'LEFT'),   # Values
+            ('ALIGN', (1, 0), (1, -1), 'RIGHT'),  # Labels
             ('BACKGROUND', (0, 0), (-1, -1), self.GRAY_LIGHT),
             ('GRID', (0, 0), (-1, -1), 1, colors.white),
-            ('PADDING', (0, 0), (-1, -1), 12),
-            ('ROWBACKGROUNDS', (0, 0), (-1, -1), [self.GRAY_LIGHT, colors.white]),
+            ('PADDING', (0, 0), (-1, -1), 10),
+            ('BOX', (0, 0), (-1, -1), 2, self.PRIMARY_COLOR),
         ]))
 
-        story.append(details_table)
-        story.append(Spacer(1, 3*cm))
+        story.append(info_table)
+        story.append(Spacer(1, 2*cm))
 
         # Professional statement
         statement = Paragraph(
             self._format_hebrew(
-                "הצעת מחיר זו הוכנה בקפידה רבה ומבוססת על תכניות ומפרטים שהתקבלו. "
-                "ההצעה כוללת את כל העבודות, החומרים והציוד הדרושים לביצוע הפרויקט. "
-                "המחירים המפורטים בכתב הכמויות מבוססים על מחירון דקל ותקן ישראלי."
+                "כתב כמויות זה הוכן בהתאם לתקן הישראלי ומחירון דקל. "
+                "הכמויות והמחירים מבוססים על תכניות ומפרטים שהתקבלו. "
+                "ההצעה כוללת את כל העבודות, החומרים והציוד הדרושים לביצוע הפרויקט."
             ),
             self.styles['HebrewBody']
         )
@@ -514,7 +553,7 @@ class ProfessionalBOQPDFGenerator:
 
         # Cover page
         project_name = boq_data.get('project_name', 'פרויקט ללא שם')
-        story.extend(self._create_cover_page(project_name, logo_path))
+        story.extend(self._create_cover_page(project_name, logo_path, boq_data))
 
         # Executive summary
         story.extend(self._create_executive_summary(boq_data))
@@ -527,6 +566,428 @@ class ProfessionalBOQPDFGenerator:
         story.extend(self._create_terms_and_conditions())
 
         # Build PDF with header/footer
+        doc.build(
+            story,
+            onFirstPage=lambda c, d: self._create_header_footer(c, d, project_name, logo_path),
+            onLaterPages=lambda c, d: self._create_header_footer(c, d, project_name, logo_path)
+        )
+
+        if not output_path:
+            buffer.seek(0)
+            return buffer
+
+        return buffer
+
+
+    def _create_sub_document_header(self, sub_doc: Dict[str, Any]) -> List:
+        """Create header for a sub-document (תת כתב)"""
+        story = []
+
+        # Sub-document heading with full-width background
+        sub_doc_title = Paragraph(
+            self._format_hebrew(f"תת כתב {sub_doc['code']}: {sub_doc['name_he']}"),
+            ParagraphStyle(
+                'SubDocumentHeading',
+                parent=self.styles['Heading1'],
+                fontSize=16,
+                textColor=colors.white,
+                backColor=self.PRIMARY_COLOR,
+                spaceAfter=12,
+                spaceBefore=12,
+                alignment=TA_RIGHT,
+                fontName='HebrewFont-Bold',
+                leftIndent=10,
+                rightIndent=10
+            )
+        )
+        story.append(sub_doc_title)
+        story.append(Spacer(1, 0.5*cm))
+
+        return story
+
+    def _create_chapter_header(self, chapter: Dict[str, Any]) -> List:
+        """Create header for a chapter (פרק)"""
+        story = []
+
+        chapter_title = Paragraph(
+            self._format_hebrew(f"פרק {chapter['code']}: {chapter['name_he']}"),
+            ParagraphStyle(
+                'ChapterHeading2',
+                parent=self.styles['Heading2'],
+                fontSize=13,
+                textColor=colors.white,
+                backColor=self.HEADER_BG,
+                spaceAfter=8,
+                spaceBefore=8,
+                alignment=TA_RIGHT,
+                fontName='HebrewFont-Bold',
+                leftIndent=20,
+                rightIndent=10
+            )
+        )
+        story.append(chapter_title)
+        story.append(Spacer(1, 0.3*cm))
+
+        return story
+
+    def _create_sub_chapter_table(self, sub_chapter: Dict[str, Any], sub_doc_code: str = "1", chapter_code: str = "1") -> List:
+        """
+        Create table for a sub-chapter (תת פרק) with its items.
+        Follows מוריה professional BOQ format.
+
+        Column order (RTL - right to left as displayed):
+        מספר סעיף | תאור הסעיף | יח' | כמות | מחיר | סה"כ
+        """
+        story = []
+
+        # Sub-chapter header - מוריה format: תת פרק: X.Y [name]
+        sc_code = sub_chapter.get('code', '1')
+        sc_title = Paragraph(
+            self._format_hebrew(f"תת פרק: {chapter_code}.{sc_code}  {sub_chapter['name_he']}"),
+            ParagraphStyle(
+                'SubChapterHeading',
+                parent=self.styles['Heading3'],
+                fontSize=10,
+                textColor=self.GRAY_DARK,
+                spaceAfter=4,
+                spaceBefore=8,
+                alignment=TA_RIGHT,
+                fontName='HebrewFont-Bold',
+            )
+        )
+        story.append(sc_title)
+
+        items = sub_chapter.get('items', [])
+        if not items:
+            story.append(Spacer(1, 0.3*cm))
+            return story
+
+        # Table header - מוריה format (RTL display order)
+        # Visual order: מספר סעיף | תאור הסעיף | יח' | כמות | מחיר | סה"כ
+        table_data = [[
+            self._format_hebrew("סה\"כ"),
+            self._format_hebrew("מחיר"),
+            self._format_hebrew("כמות"),
+            self._format_hebrew("יח'"),
+            self._format_hebrew("תאור הסעיף"),
+            self._format_hebrew("מספר סעיף"),
+        ]]
+
+        # Table rows - מוריה item numbering format: X.Y.Z.NNNN
+        for idx, item in enumerate(items, 1):
+            # Generate מוריה-style item code: תת_כתב.פרק.תת_פרק.sequence
+            item_sequence = f"{idx:04d}"  # 0010, 0020, etc.
+            moriah_item_code = f"{sub_doc_code}.{chapter_code}.{sc_code}.{item_sequence}"
+
+            desc_style = ParagraphStyle(
+                'TableCell',
+                fontName='HebrewFont',
+                fontSize=7,
+                alignment=TA_RIGHT,
+                leading=9,
+            )
+            description_para = Paragraph(
+                self._format_hebrew(item.get('description_he', '')),
+                desc_style
+            )
+
+            # מוריה format row order (for RTL display)
+            table_data.append([
+                f"{item.get('total_price', 0):,.2f}",
+                f"{item.get('unit_price', 0):,.2f}",
+                f"{item.get('quantity', 0):,.2f}",
+                self._format_hebrew(item.get('unit', '')),
+                description_para,
+                moriah_item_code,
+            ])
+
+        # Sub-chapter total row - מוריה format
+        sc_full_code = f"{chapter_code}.{sc_code}"
+        table_data.append([
+            f"{sub_chapter.get('cached_total', 0):,.2f}",
+            "",
+            "",
+            "",
+            self._format_hebrew(f"סה\"כ לתת פרק: {sc_full_code}  {sub_chapter['name_he']}"),
+            "",
+        ])
+
+        # Create table - מוריה column widths
+        # סה"כ | מחיר | כמות | יח' | תאור הסעיף | מספר סעיף
+        col_widths = [2.5*cm, 2.2*cm, 2*cm, 1.3*cm, 6*cm, 2.8*cm]
+        sc_table = Table(table_data, colWidths=col_widths, repeatRows=1)
+
+        table_style = [
+            # Header row
+            ('FONT', (0, 0), (-1, 0), 'HebrewFont-Bold', 8),
+            ('BACKGROUND', (0, 0), (-1, 0), self.GRAY_DARK),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
+
+            # Data rows
+            ('FONT', (0, 1), (-1, -2), 'HebrewFont', 7),
+            ('ALIGN', (0, 1), (2, -2), 'RIGHT'),   # סה"כ, מחיר, כמות - right align
+            ('ALIGN', (3, 1), (3, -2), 'CENTER'),  # יח' - center
+            ('ALIGN', (4, 1), (4, -2), 'RIGHT'),   # תאור - right align
+            ('ALIGN', (5, 1), (5, -2), 'LEFT'),    # מספר סעיף - left (appears right in RTL)
+
+            # Total row
+            ('FONT', (0, -1), (-1, -1), 'HebrewFont-Bold', 8),
+            ('BACKGROUND', (0, -1), (-1, -1), self.GRAY_LIGHT),
+            ('TEXTCOLOR', (0, -1), (-1, -1), self.GRAY_DARK),
+            ('ALIGN', (0, -1), (-1, -1), 'RIGHT'),
+
+            # General styling
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+            ('PADDING', (0, 0), (-1, -1), 4),
+            ('ROWBACKGROUNDS', (0, 1), (-1, -2), [colors.white, self.GRAY_LIGHT]),
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ]
+
+        sc_table.setStyle(TableStyle(table_style))
+        story.append(sc_table)
+        story.append(Spacer(1, 0.3*cm))
+
+        return story
+
+    def _create_hierarchical_summary(self, boq_data: Dict[str, Any]) -> List:
+        """
+        Create מוריה-style "ריכוז למכרז" summary page.
+        Shows complete hierarchy with subtotals at each level.
+        """
+        story = []
+
+        # Title - מוריה style
+        title = Paragraph(
+            self._format_hebrew("ריכוז למכרז"),
+            ParagraphStyle(
+                'SummaryTitle',
+                parent=self.styles['Heading1'],
+                fontSize=16,
+                textColor=self.GRAY_DARK,
+                spaceAfter=15,
+                alignment=TA_CENTER,
+                fontName='HebrewFont-Bold'
+            )
+        )
+        story.append(title)
+
+        # Build hierarchy summary table - מוריה format
+        # Columns: סה"כ | נושא
+        summary_data = []
+
+        grand_total = 0
+
+        for sub_doc in boq_data.get('sub_documents', []):
+            sub_doc_code = sub_doc.get('code', '1')
+            sub_doc_name = sub_doc.get('name_he', '')
+            sub_doc_total = 0
+
+            # תת כתב header row
+            summary_data.append([
+                "",
+                self._format_hebrew(f"תת כתב: {sub_doc_code}  {sub_doc_name}")
+            ])
+
+            for chapter in sub_doc.get('chapters', []):
+                ch_code = chapter.get('code', '1')
+                ch_name = chapter.get('name_he', '')
+                chapter_total = 0
+
+                for sub_chapter in chapter.get('sub_chapters', []):
+                    sc_code = sub_chapter.get('code', '1')
+                    sc_name = sub_chapter.get('name_he', '')
+                    sc_total = sub_chapter.get('cached_total', 0)
+                    chapter_total += sc_total
+
+                    # תת פרק row
+                    summary_data.append([
+                        f"{sc_total:,.2f}",
+                        self._format_hebrew(f"תת פרק: {ch_code}.{sc_code}  {sc_name}")
+                    ])
+
+                # סה"כ לפרק row
+                sub_doc_total += chapter_total
+                summary_data.append([
+                    f"{chapter_total:,.2f}",
+                    self._format_hebrew(f"סה\"כ לפרק: {ch_code}  {ch_name}")
+                ])
+
+            # סה"כ לתת כתב row
+            grand_total += sub_doc_total
+            summary_data.append([
+                f"{sub_doc_total:,.2f}",
+                self._format_hebrew(f"סה\"כ לתת כתב: {sub_doc_code}  {sub_doc_name}")
+            ])
+
+        # סה"כ לכל כתב הכמויות row
+        summary_data.append([
+            f"{grand_total:,.2f}",
+            self._format_hebrew("סה\"כ לכל כתב הכמויות:")
+        ])
+
+        # Create summary table
+        col_widths = [4*cm, 12.8*cm]
+        summary_table = Table(summary_data, colWidths=col_widths)
+
+        # Style the table - identify special rows
+        table_style = [
+            ('FONT', (0, 0), (-1, -1), 'HebrewFont', 9),
+            ('ALIGN', (0, 0), (0, -1), 'RIGHT'),  # Amount column
+            ('ALIGN', (1, 0), (1, -1), 'RIGHT'),  # Description column
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+            ('PADDING', (0, 0), (-1, -1), 6),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ]
+
+        # Style specific rows based on content
+        for i, row in enumerate(summary_data):
+            row_text = row[1] if len(row) > 1 else ""
+            if isinstance(row_text, str):
+                if "תת כתב:" in row_text and "סה\"כ" not in row_text:
+                    # תת כתב header - bold, blue background
+                    table_style.append(('BACKGROUND', (0, i), (-1, i), self.PRIMARY_COLOR))
+                    table_style.append(('TEXTCOLOR', (0, i), (-1, i), colors.white))
+                    table_style.append(('FONTNAME', (0, i), (-1, i), 'HebrewFont-Bold'))
+                elif "סה\"כ לפרק:" in row_text:
+                    # Chapter total - bold
+                    table_style.append(('FONTNAME', (0, i), (-1, i), 'HebrewFont-Bold'))
+                    table_style.append(('BACKGROUND', (0, i), (-1, i), self.GRAY_LIGHT))
+                elif "סה\"כ לתת כתב:" in row_text:
+                    # Sub-document total - bold, darker
+                    table_style.append(('FONTNAME', (0, i), (-1, i), 'HebrewFont-Bold'))
+                    table_style.append(('BACKGROUND', (0, i), (-1, i), self.HEADER_BG))
+                    table_style.append(('TEXTCOLOR', (0, i), (-1, i), colors.white))
+                elif "סה\"כ לכל כתב הכמויות" in row_text:
+                    # Grand total - bold, green
+                    table_style.append(('FONTNAME', (0, i), (-1, i), 'HebrewFont-Bold'))
+                    table_style.append(('FONTSIZE', (0, i), (-1, i), 11))
+                    table_style.append(('BACKGROUND', (0, i), (-1, i), self.SECONDARY_COLOR))
+                    table_style.append(('TEXTCOLOR', (0, i), (-1, i), colors.white))
+
+        summary_table.setStyle(TableStyle(table_style))
+        story.append(summary_table)
+        story.append(PageBreak())
+
+        return story
+
+    def generate_hierarchical_pdf(
+        self,
+        boq_data: Dict[str, Any],
+        output_path: Optional[str] = None,
+        logo_path: Optional[str] = None,
+        company_name: Optional[str] = None
+    ) -> io.BytesIO:
+        """
+        Generate professional hierarchical BOQ PDF with 4-level structure.
+
+        Args:
+            boq_data: Hierarchical BOQ data from build_hierarchy_response
+            output_path: Optional file path to save PDF
+            logo_path: Optional path to company logo image
+            company_name: Optional company name
+
+        Returns:
+            BytesIO buffer containing the PDF
+        """
+        buffer = io.BytesIO()
+
+        if output_path:
+            doc = SimpleDocTemplate(
+                output_path,
+                pagesize=A4,
+                rightMargin=2*cm,
+                leftMargin=2*cm,
+                topMargin=4*cm,
+                bottomMargin=2.5*cm
+            )
+        else:
+            doc = SimpleDocTemplate(
+                buffer,
+                pagesize=A4,
+                rightMargin=2*cm,
+                leftMargin=2*cm,
+                topMargin=4*cm,
+                bottomMargin=2.5*cm
+            )
+
+        story = []
+
+        # Cover page - מוריה style with estimate
+        project_name = boq_data.get('project_name', 'פרויקט ללא שם')
+        story.extend(self._create_cover_page(project_name, logo_path, boq_data))
+
+        # ריכוז למכרז - Hierarchical summary (מוריה style)
+        story.extend(self._create_hierarchical_summary(boq_data))
+
+        # Hierarchical content: Sub-Documents -> Chapters -> Sub-Chapters -> Items
+        # מוריה format with proper codes at each level
+        for sub_doc in boq_data.get('sub_documents', []):
+            sub_doc_code = sub_doc.get('code', '1')
+            story.extend(self._create_sub_document_header(sub_doc))
+
+            sub_doc_total = 0
+
+            for chapter in sub_doc.get('chapters', []):
+                chapter_code = chapter.get('code', '1')
+                story.extend(self._create_chapter_header(chapter))
+
+                # Chapter total tracker
+                chapter_total = 0
+
+                for sub_chapter in chapter.get('sub_chapters', []):
+                    # Pass codes for מוריה-style item numbering
+                    story.extend(self._create_sub_chapter_table(
+                        sub_chapter,
+                        sub_doc_code=sub_doc_code,
+                        chapter_code=chapter_code
+                    ))
+                    chapter_total += sub_chapter.get('cached_total', 0)
+
+                # Chapter total row - מוריה format
+                ch_total = Paragraph(
+                    self._format_hebrew(f"סה\"כ לפרק: {chapter_code}  {chapter.get('name_he', '')}  {chapter_total:,.2f}"),
+                    ParagraphStyle(
+                        'ChapterTotal',
+                        fontName='HebrewFont-Bold',
+                        fontSize=10,
+                        textColor=self.GRAY_DARK,
+                        backColor=self.GRAY_LIGHT,
+                        alignment=TA_RIGHT,
+                        spaceAfter=10,
+                        spaceBefore=5,
+                        leftIndent=5,
+                        rightIndent=5
+                    )
+                )
+                story.append(ch_total)
+                story.append(Spacer(1, 0.5*cm))
+
+                sub_doc_total += chapter_total
+
+            # Sub-document total - מוריה format
+            sd_total = Paragraph(
+                self._format_hebrew(f"סה\"כ לתת כתב: {sub_doc_code}  {sub_doc.get('name_he', '')}  {sub_doc_total:,.2f}"),
+                ParagraphStyle(
+                    'SubDocTotal',
+                    fontName='HebrewFont-Bold',
+                    fontSize=11,
+                    textColor=colors.white,
+                    backColor=self.PRIMARY_COLOR,
+                    alignment=TA_RIGHT,
+                    spaceAfter=15,
+                    spaceBefore=5,
+                    leftIndent=5,
+                    rightIndent=5
+                )
+            )
+            story.append(sd_total)
+            story.append(PageBreak())
+
+        # Terms and conditions
+        story.extend(self._create_terms_and_conditions())
+
+        # Build PDF
         doc.build(
             story,
             onFirstPage=lambda c, d: self._create_header_footer(c, d, project_name, logo_path),
@@ -558,3 +1019,23 @@ def generate_boq_pdf(
     """
     generator = ProfessionalBOQPDFGenerator()
     return generator.generate_pdf(boq_data, logo_path=logo_path, company_name=company_name)
+
+
+def generate_hierarchical_boq_pdf(
+    boq_data: Dict[str, Any],
+    logo_path: Optional[str] = None,
+    company_name: Optional[str] = None
+) -> io.BytesIO:
+    """
+    Generate professional hierarchical BOQ PDF with 4-level structure.
+
+    Args:
+        boq_data: Hierarchical BOQ data from build_hierarchy_response
+        logo_path: Optional path to company logo
+        company_name: Optional company name
+
+    Returns:
+        BytesIO buffer with PDF content
+    """
+    generator = ProfessionalBOQPDFGenerator()
+    return generator.generate_hierarchical_pdf(boq_data, logo_path=logo_path, company_name=company_name)
