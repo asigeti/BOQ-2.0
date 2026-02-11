@@ -1,13 +1,10 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import { Providers } from './providers';
 
-const inter = Inter({ subsets: ['latin'] });
-
 export const metadata: Metadata = {
-  title: 'ConstructionAI Pro',
-  description: 'AI-powered construction optimization platform',
+  title: 'BOQ Pro | כתב כמויות חכם',
+  description: 'פלטפורמת AI לניהול כתבי כמויות בבנייה - מהפכה בתכנון וניהול פרויקטים',
 };
 
 export default function RootLayout({
@@ -17,7 +14,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="he" dir="rtl">
-      <body className={inter.className} suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
+      <body suppressHydrationWarning>
         <Providers>{children}</Providers>
       </body>
     </html>

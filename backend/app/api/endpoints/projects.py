@@ -1940,3 +1940,135 @@ def confirm_extraction_selection(
     }
 
 
+@router.delete("/projects/{project_id}/plans/{plan_id}")
+def delete_plan(
+    project_id: int,
+    plan_id: int,
+    db: Session = Depends(deps.get_db)
+):
+    """
+    Delete a plan file before processing starts.
+    Only allowed if project status is 'pending'.
+    """
+    import logging
+    logger = logging.getLogger(__name__)
+    
+    # Get project
+    project = db.query(models.Project).filter(models.Project.id == project_id).first()
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    
+    # Validate project status - only allow deletion if pending
+    if project.processing_status != "pending":
+        raise HTTPException(
+            status_code=400,
+            detail="Cannot delete files after processing has started"
+        )
+    
+    # Get plan
+    plan = db.query(models.Plan).filter(
+        models.Plan.id == plan_id,
+        models.Plan.project_id == project_id
+    ).first()
+    
+    if not plan:
+        raise HTTPException(status_code=404, detail="Plan not found")
+    
+    # Delete file from filesystem
+    if plan.file_path and os.path.exists(plan.file_path):
+        try:
+            os.remove(plan.file_path)
+            logger.info(f"Deleted file: {plan.file_path}")
+        except Exception as e:
+            logger.error(f"Failed to delete file {plan.file_path}: {e}")
+            # Continue anyway - DB record will be deleted
+    
+    # Delete plan record from database
+    db.delete(plan)
+    
+    # Update project file counts
+    project.total_files = len(project.plans) - 1  # -1 because we're about to commit the deletion
+    
+    db.commit()
+    
+    logger.info(f"Deleted plan {plan_id} from project {project_id}")
+    
+    return {
+        "message": "Plan deleted successfully",
+        "plan_id": plan_id,
+        "remaining_files": project.total_files
+    }
+
+
+@router.post("/projects/{project_id}/reset-to-extraction")
+def reset_to_extraction(
+    project_id: int,
+    db: Session = Depends(deps.get_db)
+):
+    """
+    Reset a completed project back to 'extracted' status to allow re-running BOQ generation.
+    Preserves extraction data but deletes existing BOQ items.
+    """
+    import logging
+    logger = logging.getLogger(__name__)
+    
+    # Get project
+    project = db.query(models.Project).filter(models.Project.id == project_id).first()
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    
+    # Validate project status - only allow reset if completed
+    if project.processing_status != "completed":
+        raise HTTPException(
+            status_code=400,
+            detail=f"Can only reset completed projects. Current status: {project.processing_status}"
+        )
+    
+    # Delete all BOQ items for this project
+    deleted_items = db.query(models.BOQItem).filter(
+        models.BOQItem.project_id == project_id
+    ).delete()
+    
+    logger.info(f"Deleted {deleted_items} BOQ items from project {project_id}")
+    
+    # Delete BOQ hierarchy (sub-documents, chapters, sub-chapters)
+    from app.models.boq_hierarchy import BOQSubDocument, BOQChapter, BOQSubChapter
+    
+    # Get all sub-documents for this project
+    sub_docs = db.query(BOQSubDocument).filter(
+        BOQSubDocument.project_id == project_id
+    ).all()
+    
+    for sub_doc in sub_docs:
+        # Delete sub-chapters first (foreign key constraint)
+        chapters = db.query(BOQChapter).filter(BOQChapter.sub_document_id == sub_doc.id).all()
+        for chapter in chapters:
+            db.query(BOQSubChapter).filter(BOQSubChapter.chapter_id == chapter.id).delete()
+        
+        # Delete chapters
+        db.query(BOQChapter).filter(BOQChapter.sub_document_id == sub_doc.id).delete()
+    
+    # Delete sub-documents
+    db.query(BOQSubDocument).filter(BOQSubDocument.project_id == project_id).delete()
+    
+    # Reset layer selections (optional - allows user to select different layers)
+    from app.models.layer_selection import LayerSelection
+    db.query(LayerSelection).filter(
+        LayerSelection.plan_id.in_([p.id for p in project.plans])
+    ).update({"user_selected": False})
+    
+    # Reset project status to 'extracted'
+    project.processing_status = "extracted"
+    project.processing_progress = 100  # Extraction is still complete
+    
+    db.commit()
+    
+    logger.info(f"Reset project {project_id} to extraction stage")
+    
+    return {
+        "message": "Project reset to layer selection stage",
+        "project_id": project_id,
+        "status": "extracted",
+        "deleted_items": deleted_items
+    }
+

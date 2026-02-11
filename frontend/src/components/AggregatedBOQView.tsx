@@ -195,8 +195,21 @@ export default function AggregatedBOQView({ projectId }: AggregatedBOQViewProps)
   if (loading) {
     return (
       <Box>
-        <Skeleton variant="rounded" height={60} sx={{ mb: 2 }} />
-        <Skeleton variant="rounded" height={200} />
+        <Skeleton
+          variant="rounded"
+          height={60}
+          sx={{
+            mb: 2,
+            backgroundColor: 'rgba(148, 163, 184, 0.1)',
+          }}
+        />
+        <Skeleton
+          variant="rounded"
+          height={200}
+          sx={{
+            backgroundColor: 'rgba(148, 163, 184, 0.1)',
+          }}
+        />
       </Box>
     );
   }
@@ -205,7 +218,13 @@ export default function AggregatedBOQView({ projectId }: AggregatedBOQViewProps)
     <Box>
       {/* View Mode Toggle */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h6" fontWeight={600}>
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: 700,
+            color: '#f1f5f9',
+          }}
+        >
           תצוגת כתב כמויות
         </Typography>
         <ToggleButtonGroup
@@ -213,13 +232,36 @@ export default function AggregatedBOQView({ projectId }: AggregatedBOQViewProps)
           exclusive
           onChange={handleViewModeChange}
           size="small"
+          sx={{
+            backgroundColor: 'rgba(148, 163, 184, 0.08)',
+            borderRadius: '12px',
+            border: '1px solid rgba(148, 163, 184, 0.1)',
+            '& .MuiToggleButton-root': {
+              border: 'none',
+              color: '#64748b',
+              px: 2,
+              py: 1,
+              borderRadius: '10px !important',
+              transition: 'all 0.2s ease',
+              '&:hover': {
+                backgroundColor: 'rgba(14, 165, 233, 0.1)',
+              },
+              '&.Mui-selected': {
+                backgroundColor: 'rgba(14, 165, 233, 0.2)',
+                color: '#0ea5e9',
+                '&:hover': {
+                  backgroundColor: 'rgba(14, 165, 233, 0.25)',
+                },
+              },
+            },
+          }}
         >
-          <ToggleButton value="aggregated" sx={{ px: 2 }}>
-            <AggregateIcon sx={{ mr: 1 }} />
+          <ToggleButton value="aggregated">
+            <AggregateIcon sx={{ mr: 1, fontSize: 18 }} />
             מאוחד
           </ToggleButton>
-          <ToggleButton value="by-plan" sx={{ px: 2 }}>
-            <ViewListIcon sx={{ mr: 1 }} />
+          <ToggleButton value="by-plan">
+            <ViewListIcon sx={{ mr: 1, fontSize: 18 }} />
             לפי קובץ
           </ToggleButton>
         </ToggleButtonGroup>
@@ -235,38 +277,54 @@ export default function AggregatedBOQView({ projectId }: AggregatedBOQViewProps)
               gap: 2,
               mb: 3,
               p: 2,
-              backgroundColor: alpha('#6366f1', 0.05),
-              borderRadius: 2,
+              backgroundColor: 'rgba(14, 165, 233, 0.08)',
+              borderRadius: '14px',
+              border: '1px solid rgba(14, 165, 233, 0.2)',
               flexWrap: 'wrap',
             }}
           >
             <Tooltip title="מספר קבצי מקור">
               <Chip
-                icon={<FileIcon />}
+                icon={<FileIcon sx={{ color: '#64748b !important' }} />}
                 label={`${aggregatedData.summary.source_file_count} קבצים`}
                 variant="outlined"
+                sx={{
+                  borderColor: 'rgba(148, 163, 184, 0.3)',
+                  color: '#94a3b8',
+                }}
               />
             </Tooltip>
             <Tooltip title="פריטים מקוריים לפני מיזוג">
               <Chip
-                icon={<LayersIcon />}
+                icon={<LayersIcon sx={{ color: '#64748b !important' }} />}
                 label={`${aggregatedData.summary.aggregation_stats.original_items} פריטים מקוריים`}
                 variant="outlined"
+                sx={{
+                  borderColor: 'rgba(148, 163, 184, 0.3)',
+                  color: '#94a3b8',
+                }}
               />
             </Tooltip>
             <Tooltip title="פריטים אחרי מיזוג">
               <Chip
-                icon={<MergeIcon />}
+                icon={<MergeIcon sx={{ color: '#0ea5e9 !important' }} />}
                 label={`${aggregatedData.summary.total_items} פריטים מאוחדים`}
-                color="primary"
+                sx={{
+                  backgroundColor: 'rgba(14, 165, 233, 0.2)',
+                  color: '#0ea5e9',
+                  border: '1px solid rgba(14, 165, 233, 0.3)',
+                  fontWeight: 600,
+                }}
               />
             </Tooltip>
             <Tooltip title="פריטים שמוזגו">
               <Chip
                 label={`${aggregatedData.summary.aggregation_stats.items_merged} מוזגו`}
                 sx={{
-                  backgroundColor: alpha('#10b981', 0.1),
+                  backgroundColor: 'rgba(16, 185, 129, 0.15)',
                   color: '#10b981',
+                  border: '1px solid rgba(16, 185, 129, 0.3)',
+                  fontWeight: 600,
                 }}
               />
             </Tooltip>
@@ -282,45 +340,86 @@ export default function AggregatedBOQView({ projectId }: AggregatedBOQViewProps)
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   p: 2,
-                  backgroundColor: alpha('#6366f1', 0.05),
-                  borderRadius: 2,
+                  backgroundColor: 'rgba(14, 165, 233, 0.08)',
+                  borderRadius: '14px',
+                  border: '1px solid rgba(14, 165, 233, 0.15)',
                   cursor: 'pointer',
+                  transition: 'all 0.2s ease',
                   '&:hover': {
-                    backgroundColor: alpha('#6366f1', 0.1),
+                    backgroundColor: 'rgba(14, 165, 233, 0.12)',
+                    borderColor: 'rgba(14, 165, 233, 0.3)',
                   },
                 }}
               >
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <Typography variant="h6" fontWeight={600}>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: 700,
+                      color: '#f1f5f9',
+                      fontSize: '1rem',
+                    }}
+                  >
                     פרק {chapter.chapter_code}: {chapter.chapter_name_he}
                   </Typography>
-                  <Chip label={`${chapter.item_count} פריטים`} size="small" variant="outlined" />
+                  <Chip
+                    label={`${chapter.item_count} פריטים`}
+                    size="small"
+                    sx={{
+                      backgroundColor: 'rgba(148, 163, 184, 0.1)',
+                      color: '#94a3b8',
+                      border: '1px solid rgba(148, 163, 184, 0.2)',
+                    }}
+                  />
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <Typography variant="h6" fontWeight={600} color="primary">
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: 700,
+                      color: '#0ea5e9',
+                      fontSize: '1rem',
+                    }}
+                  >
                     {chapter.chapter_total.toLocaleString('he-IL')} ₪
                   </Typography>
                   {expandedChapters.includes(chapter.chapter_code) ? (
-                    <CollapseIcon />
+                    <CollapseIcon sx={{ color: '#64748b' }} />
                   ) : (
-                    <ExpandIcon />
+                    <ExpandIcon sx={{ color: '#64748b' }} />
                   )}
                 </Box>
               </Box>
 
               <Collapse in={expandedChapters.includes(chapter.chapter_code)}>
-                <TableContainer component={Paper} variant="outlined" sx={{ mt: 1 }}>
+                <TableContainer
+                  component={Paper}
+                  sx={{
+                    mt: 1,
+                    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                    borderRadius: '12px',
+                    border: '1px solid rgba(148, 163, 184, 0.1)',
+                    boxShadow: 'none',
+                  }}
+                >
                   <Table size="small">
                     <TableHead>
-                      <TableRow sx={{ backgroundColor: alpha('#6366f1', 0.02) }}>
-                        <TableCell>קוד</TableCell>
-                        <TableCell>תיאור</TableCell>
-                        <TableCell align="right">כמות מאוחדת</TableCell>
-                        <TableCell>יחידה</TableCell>
-                        <TableCell align="right">מחיר יח׳</TableCell>
-                        <TableCell align="right">סה״כ</TableCell>
-                        <TableCell align="center">מקורות</TableCell>
-                        <TableCell align="center">אמינות ממוצעת</TableCell>
+                      <TableRow>
+                        {['קוד', 'תיאור', 'כמות מאוחדת', 'יחידה', 'מחיר יח׳', 'סה״כ', 'מקורות', 'אמינות ממוצעת'].map((header, idx) => (
+                          <TableCell
+                            key={header}
+                            align={[2, 4, 5].includes(idx) ? 'right' : idx >= 6 ? 'center' : 'inherit'}
+                            sx={{
+                              borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+                              color: '#64748b',
+                              fontWeight: 600,
+                              fontSize: '0.75rem',
+                              backgroundColor: 'rgba(14, 165, 233, 0.03)',
+                            }}
+                          >
+                            {header}
+                          </TableCell>
+                        ))}
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -330,30 +429,85 @@ export default function AggregatedBOQView({ projectId }: AggregatedBOQViewProps)
                             key={item.item_code}
                             sx={{
                               backgroundColor:
-                                item.source_count > 1 ? alpha('#10b981', 0.03) : 'transparent',
+                                item.source_count > 1 ? 'rgba(16, 185, 129, 0.05)' : 'transparent',
+                              '&:hover': {
+                                backgroundColor: 'rgba(14, 165, 233, 0.05)',
+                              },
                             }}
                           >
-                            <TableCell sx={{ fontWeight: 600 }}>{item.item_code}</TableCell>
-                            <TableCell sx={{ maxWidth: 250 }}>{item.description_he}</TableCell>
-                            <TableCell align="right" sx={{ fontWeight: 600 }}>
+                            <TableCell
+                              sx={{
+                                fontWeight: 600,
+                                color: '#f1f5f9',
+                                borderBottom: '1px solid rgba(148, 163, 184, 0.05)',
+                              }}
+                            >
+                              {item.item_code}
+                            </TableCell>
+                            <TableCell
+                              sx={{
+                                maxWidth: 250,
+                                color: '#94a3b8',
+                                borderBottom: '1px solid rgba(148, 163, 184, 0.05)',
+                              }}
+                            >
+                              {item.description_he}
+                            </TableCell>
+                            <TableCell
+                              align="right"
+                              sx={{
+                                fontWeight: 600,
+                                color: '#f1f5f9',
+                                borderBottom: '1px solid rgba(148, 163, 184, 0.05)',
+                              }}
+                            >
                               {item.total_quantity.toLocaleString('he-IL')}
                             </TableCell>
-                            <TableCell>{item.unit}</TableCell>
-                            <TableCell align="right">
+                            <TableCell
+                              sx={{
+                                color: '#94a3b8',
+                                borderBottom: '1px solid rgba(148, 163, 184, 0.05)',
+                              }}
+                            >
+                              {item.unit}
+                            </TableCell>
+                            <TableCell
+                              align="right"
+                              sx={{
+                                color: '#94a3b8',
+                                borderBottom: '1px solid rgba(148, 163, 184, 0.05)',
+                              }}
+                            >
                               {item.unit_price.toLocaleString('he-IL')} ₪
                             </TableCell>
-                            <TableCell align="right" sx={{ fontWeight: 600 }}>
+                            <TableCell
+                              align="right"
+                              sx={{
+                                fontWeight: 600,
+                                color: '#0ea5e9',
+                                borderBottom: '1px solid rgba(148, 163, 184, 0.05)',
+                              }}
+                            >
                               {item.total_price.toLocaleString('he-IL')} ₪
                             </TableCell>
-                            <TableCell align="center">
+                            <TableCell
+                              align="center"
+                              sx={{
+                                borderBottom: '1px solid rgba(148, 163, 184, 0.05)',
+                              }}
+                            >
                               <Tooltip title={item.source_count > 1 ? 'לחץ לפרטי מקורות' : ''}>
                                 <Badge
                                   badgeContent={item.source_count > 1 ? item.source_count : 0}
-                                  color="success"
+                                  sx={{
+                                    '& .MuiBadge-badge': {
+                                      backgroundColor: '#10b981',
+                                      color: 'white',
+                                    },
+                                  }}
                                   onClick={() =>
                                     item.source_count > 1 && toggleSources(item.item_code)
                                   }
-                                  sx={{ cursor: item.source_count > 1 ? 'pointer' : 'default' }}
                                 >
                                   <Chip
                                     label={
@@ -363,26 +517,35 @@ export default function AggregatedBOQView({ projectId }: AggregatedBOQViewProps)
                                     }
                                     size="small"
                                     sx={{
+                                      cursor: item.source_count > 1 ? 'pointer' : 'default',
                                       backgroundColor:
                                         item.source_count > 1
-                                          ? alpha('#10b981', 0.1)
-                                          : alpha('#64748b', 0.1),
+                                          ? 'rgba(16, 185, 129, 0.15)'
+                                          : 'rgba(148, 163, 184, 0.1)',
                                       color: item.source_count > 1 ? '#10b981' : '#64748b',
+                                      border: `1px solid ${item.source_count > 1 ? 'rgba(16, 185, 129, 0.3)' : 'rgba(148, 163, 184, 0.2)'}`,
+                                      fontSize: '0.7rem',
                                     }}
                                   />
                                 </Badge>
                               </Tooltip>
                             </TableCell>
-                            <TableCell align="center">
+                            <TableCell
+                              align="center"
+                              sx={{
+                                borderBottom: '1px solid rgba(148, 163, 184, 0.05)',
+                              }}
+                            >
                               <Chip
                                 label={`${Math.round(item.avg_confidence * 100)}%`}
                                 size="small"
                                 sx={{
                                   backgroundColor: alpha(
                                     getConfidenceColor(item.avg_confidence),
-                                    0.1
+                                    0.15
                                   ),
                                   color: getConfidenceColor(item.avg_confidence),
+                                  border: `1px solid ${alpha(getConfidenceColor(item.avg_confidence), 0.3)}`,
                                   fontWeight: 600,
                                   fontSize: '0.7rem',
                                 }}
@@ -392,18 +555,27 @@ export default function AggregatedBOQView({ projectId }: AggregatedBOQViewProps)
                           {/* Sources expansion row */}
                           {item.source_count > 1 && expandedSources.includes(item.item_code) && (
                             <TableRow>
-                              <TableCell colSpan={8} sx={{ p: 0 }}>
+                              <TableCell
+                                colSpan={8}
+                                sx={{
+                                  p: 0,
+                                  borderBottom: '1px solid rgba(148, 163, 184, 0.05)',
+                                }}
+                              >
                                 <Box
                                   sx={{
                                     p: 2,
-                                    backgroundColor: alpha('#6366f1', 0.02),
-                                    borderTop: `1px dashed ${alpha('#6366f1', 0.2)}`,
+                                    backgroundColor: 'rgba(14, 165, 233, 0.03)',
+                                    borderTop: '1px dashed rgba(14, 165, 233, 0.2)',
                                   }}
                                 >
                                   <Typography
                                     variant="subtitle2"
-                                    fontWeight={600}
-                                    sx={{ mb: 1, color: 'text.secondary' }}
+                                    sx={{
+                                      mb: 1,
+                                      color: '#64748b',
+                                      fontWeight: 600,
+                                    }}
                                   >
                                     פירוט מקורות:
                                   </Typography>
@@ -421,12 +593,15 @@ export default function AggregatedBOQView({ projectId }: AggregatedBOQViewProps)
                                         }}
                                       >
                                         <FileIcon
-                                          sx={{ fontSize: 16, color: 'text.secondary' }}
+                                          sx={{ fontSize: 16, color: '#64748b' }}
                                         />
-                                        <Typography variant="body2" sx={{ flex: 1 }}>
+                                        <Typography
+                                          variant="body2"
+                                          sx={{ flex: 1, color: '#94a3b8' }}
+                                        >
                                           {source.filename}
                                         </Typography>
-                                        <Typography variant="body2" color="text.secondary">
+                                        <Typography variant="body2" sx={{ color: '#64748b' }}>
                                           כמות: {source.quantity}
                                         </Typography>
                                         <Chip
@@ -437,9 +612,10 @@ export default function AggregatedBOQView({ projectId }: AggregatedBOQViewProps)
                                             fontSize: '0.7rem',
                                             backgroundColor: alpha(
                                               getConfidenceColor(source.confidence),
-                                              0.1
+                                              0.15
                                             ),
                                             color: getConfidenceColor(source.confidence),
+                                            border: `1px solid ${alpha(getConfidenceColor(source.confidence), 0.3)}`,
                                           }}
                                         />
                                       </Box>
@@ -460,20 +636,39 @@ export default function AggregatedBOQView({ projectId }: AggregatedBOQViewProps)
 
           {/* Summary */}
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
-            <Box sx={{ width: 300, p: 2, backgroundColor: alpha('#6366f1', 0.05), borderRadius: 2 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                <Typography>סה״כ פרקים:</Typography>
-                <Typography fontWeight={600}>{aggregatedData.summary.total_chapters}</Typography>
+            <Box
+              sx={{
+                width: 300,
+                p: 3,
+                backgroundColor: 'rgba(14, 165, 233, 0.08)',
+                borderRadius: '16px',
+                border: '1px solid rgba(14, 165, 233, 0.2)',
+              }}
+            >
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1.5 }}>
+                <Typography sx={{ color: '#94a3b8' }}>סה״כ פרקים:</Typography>
+                <Typography sx={{ fontWeight: 600, color: '#f1f5f9' }}>
+                  {aggregatedData.summary.total_chapters}
+                </Typography>
               </Box>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                <Typography>סה״כ פריטים:</Typography>
-                <Typography fontWeight={600}>{aggregatedData.summary.total_items}</Typography>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1.5 }}>
+                <Typography sx={{ color: '#94a3b8' }}>סה״כ פריטים:</Typography>
+                <Typography sx={{ fontWeight: 600, color: '#f1f5f9' }}>
+                  {aggregatedData.summary.total_items}
+                </Typography>
               </Box>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Typography variant="h6" fontWeight={700}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  pt: 2,
+                  borderTop: '1px solid rgba(148, 163, 184, 0.1)',
+                }}
+              >
+                <Typography variant="h6" sx={{ fontWeight: 700, color: '#f1f5f9' }}>
                   סה״כ:
                 </Typography>
-                <Typography variant="h6" fontWeight={700} color="primary">
+                <Typography variant="h6" sx={{ fontWeight: 700, color: '#0ea5e9' }}>
                   {aggregatedData.summary.total_price.toLocaleString('he-IL')} ₪
                 </Typography>
               </Box>
@@ -487,7 +682,17 @@ export default function AggregatedBOQView({ projectId }: AggregatedBOQViewProps)
         <>
           {/* Plans */}
           {byPlanData.plans.map((plan) => (
-            <Card key={plan.plan_id} sx={{ mb: 2 }}>
+            <Card
+              key={plan.plan_id}
+              sx={{
+                mb: 2,
+                backgroundColor: 'rgba(15, 23, 42, 0.8)',
+                backdropFilter: 'blur(20px)',
+                border: '1px solid rgba(148, 163, 184, 0.1)',
+                borderRadius: '16px',
+                boxShadow: 'none',
+              }}
+            >
               <Box
                 onClick={() => togglePlan(plan.plan_id)}
                 sx={{
@@ -495,73 +700,187 @@ export default function AggregatedBOQView({ projectId }: AggregatedBOQViewProps)
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   p: 2,
-                  backgroundColor: alpha('#f59e0b', 0.05),
+                  backgroundColor: 'rgba(245, 158, 11, 0.08)',
+                  borderRadius: '16px 16px 0 0',
                   cursor: 'pointer',
+                  transition: 'all 0.2s ease',
                   '&:hover': {
-                    backgroundColor: alpha('#f59e0b', 0.1),
+                    backgroundColor: 'rgba(245, 158, 11, 0.12)',
                   },
                 }}
               >
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                   <FileIcon sx={{ color: '#f59e0b' }} />
-                  <Typography variant="h6" fontWeight={600}>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: 700,
+                      color: '#f1f5f9',
+                      fontSize: '1rem',
+                    }}
+                  >
                     {plan.filename}
                   </Typography>
-                  <Chip label={plan.file_type.toUpperCase()} size="small" variant="outlined" />
-                  <Chip label={`${plan.item_count} פריטים`} size="small" />
+                  <Chip
+                    label={plan.file_type.toUpperCase()}
+                    size="small"
+                    sx={{
+                      backgroundColor: 'rgba(148, 163, 184, 0.1)',
+                      color: '#94a3b8',
+                      border: '1px solid rgba(148, 163, 184, 0.2)',
+                    }}
+                  />
+                  <Chip
+                    label={`${plan.item_count} פריטים`}
+                    size="small"
+                    sx={{
+                      backgroundColor: 'rgba(245, 158, 11, 0.15)',
+                      color: '#f59e0b',
+                      border: '1px solid rgba(245, 158, 11, 0.3)',
+                    }}
+                  />
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <Typography variant="h6" fontWeight={600} sx={{ color: '#f59e0b' }}>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: 700,
+                      color: '#f59e0b',
+                      fontSize: '1rem',
+                    }}
+                  >
                     {plan.total_price.toLocaleString('he-IL')} ₪
                   </Typography>
-                  {expandedPlans.includes(plan.plan_id) ? <CollapseIcon /> : <ExpandIcon />}
+                  {expandedPlans.includes(plan.plan_id) ? (
+                    <CollapseIcon sx={{ color: '#64748b' }} />
+                  ) : (
+                    <ExpandIcon sx={{ color: '#64748b' }} />
+                  )}
                 </Box>
               </Box>
 
               <Collapse in={expandedPlans.includes(plan.plan_id)}>
-                <CardContent>
+                <CardContent sx={{ p: 2 }}>
                   {plan.chapters.map((chapter) => (
                     <Box key={chapter.chapter_code} sx={{ mb: 2 }}>
-                      <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>
+                      <Typography
+                        variant="subtitle1"
+                        sx={{
+                          fontWeight: 600,
+                          color: '#f1f5f9',
+                          mb: 1,
+                        }}
+                      >
                         פרק {chapter.chapter_code}: {chapter.chapter_name_he}
                         <Typography
                           component="span"
-                          sx={{ ml: 1, color: 'text.secondary', fontSize: '0.9rem' }}
+                          sx={{ ml: 1, color: '#64748b', fontSize: '0.9rem' }}
                         >
                           ({chapter.chapter_total.toLocaleString('he-IL')} ₪)
                         </Typography>
                       </Typography>
-                      <TableContainer component={Paper} variant="outlined" sx={{ mb: 2 }}>
+                      <TableContainer
+                        component={Paper}
+                        sx={{
+                          mb: 2,
+                          backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                          borderRadius: '12px',
+                          border: '1px solid rgba(148, 163, 184, 0.1)',
+                          boxShadow: 'none',
+                        }}
+                      >
                         <Table size="small">
                           <TableHead>
-                            <TableRow sx={{ backgroundColor: alpha('#f59e0b', 0.02) }}>
-                              <TableCell>קוד</TableCell>
-                              <TableCell>תיאור</TableCell>
-                              <TableCell align="right">כמות</TableCell>
-                              <TableCell>יחידה</TableCell>
-                              <TableCell align="right">מחיר יח׳</TableCell>
-                              <TableCell align="right">סה״כ</TableCell>
-                              <TableCell>שכבה</TableCell>
-                              <TableCell align="center">אמינות</TableCell>
+                            <TableRow>
+                              {['קוד', 'תיאור', 'כמות', 'יחידה', 'מחיר יח׳', 'סה״כ', 'שכבה', 'אמינות'].map((header, idx) => (
+                                <TableCell
+                                  key={header}
+                                  align={[2, 4, 5].includes(idx) ? 'right' : idx >= 6 ? 'center' : 'inherit'}
+                                  sx={{
+                                    borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+                                    color: '#64748b',
+                                    fontWeight: 600,
+                                    fontSize: '0.75rem',
+                                    backgroundColor: 'rgba(245, 158, 11, 0.03)',
+                                  }}
+                                >
+                                  {header}
+                                </TableCell>
+                              ))}
                             </TableRow>
                           </TableHead>
                           <TableBody>
                             {chapter.items.map((item) => (
-                              <TableRow key={item.id}>
-                                <TableCell sx={{ fontWeight: 600 }}>{item.item_code}</TableCell>
-                                <TableCell sx={{ maxWidth: 200 }}>{item.description_he}</TableCell>
-                                <TableCell align="right">
+                              <TableRow
+                                key={item.id}
+                                sx={{
+                                  '&:hover': {
+                                    backgroundColor: 'rgba(245, 158, 11, 0.05)',
+                                  },
+                                }}
+                              >
+                                <TableCell
+                                  sx={{
+                                    fontWeight: 600,
+                                    color: '#f1f5f9',
+                                    borderBottom: '1px solid rgba(148, 163, 184, 0.05)',
+                                  }}
+                                >
+                                  {item.item_code}
+                                </TableCell>
+                                <TableCell
+                                  sx={{
+                                    maxWidth: 200,
+                                    color: '#94a3b8',
+                                    borderBottom: '1px solid rgba(148, 163, 184, 0.05)',
+                                  }}
+                                >
+                                  {item.description_he}
+                                </TableCell>
+                                <TableCell
+                                  align="right"
+                                  sx={{
+                                    color: '#f1f5f9',
+                                    borderBottom: '1px solid rgba(148, 163, 184, 0.05)',
+                                  }}
+                                >
                                   {item.quantity.toLocaleString('he-IL')}
                                 </TableCell>
-                                <TableCell>{item.unit}</TableCell>
-                                <TableCell align="right">
+                                <TableCell
+                                  sx={{
+                                    color: '#94a3b8',
+                                    borderBottom: '1px solid rgba(148, 163, 184, 0.05)',
+                                  }}
+                                >
+                                  {item.unit}
+                                </TableCell>
+                                <TableCell
+                                  align="right"
+                                  sx={{
+                                    color: '#94a3b8',
+                                    borderBottom: '1px solid rgba(148, 163, 184, 0.05)',
+                                  }}
+                                >
                                   {item.unit_price.toLocaleString('he-IL')} ₪
                                 </TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 600 }}>
+                                <TableCell
+                                  align="right"
+                                  sx={{
+                                    fontWeight: 600,
+                                    color: '#f59e0b',
+                                    borderBottom: '1px solid rgba(148, 163, 184, 0.05)',
+                                  }}
+                                >
                                   {item.total_price.toLocaleString('he-IL')} ₪
                                 </TableCell>
                                 <TableCell
-                                  sx={{ fontFamily: 'monospace', fontSize: '0.8rem', maxWidth: 120 }}
+                                  sx={{
+                                    fontFamily: 'monospace',
+                                    fontSize: '0.75rem',
+                                    maxWidth: 120,
+                                    color: '#64748b',
+                                    borderBottom: '1px solid rgba(148, 163, 184, 0.05)',
+                                  }}
                                 >
                                   <Tooltip title={item.source_layer || '-'}>
                                     <span>
@@ -573,16 +892,22 @@ export default function AggregatedBOQView({ projectId }: AggregatedBOQViewProps)
                                     </span>
                                   </Tooltip>
                                 </TableCell>
-                                <TableCell align="center">
+                                <TableCell
+                                  align="center"
+                                  sx={{
+                                    borderBottom: '1px solid rgba(148, 163, 184, 0.05)',
+                                  }}
+                                >
                                   <Chip
                                     label={`${Math.round((item.confidence || 0.5) * 100)}%`}
                                     size="small"
                                     sx={{
                                       backgroundColor: alpha(
                                         getConfidenceColor(item.confidence || 0.5),
-                                        0.1
+                                        0.15
                                       ),
                                       color: getConfidenceColor(item.confidence || 0.5),
+                                      border: `1px solid ${alpha(getConfidenceColor(item.confidence || 0.5), 0.3)}`,
                                       fontWeight: 600,
                                       fontSize: '0.7rem',
                                     }}
@@ -602,16 +927,33 @@ export default function AggregatedBOQView({ projectId }: AggregatedBOQViewProps)
 
           {/* Summary */}
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
-            <Box sx={{ width: 300, p: 2, backgroundColor: alpha('#f59e0b', 0.05), borderRadius: 2 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                <Typography>סה״כ קבצים:</Typography>
-                <Typography fontWeight={600}>{byPlanData.summary.total_plans}</Typography>
+            <Box
+              sx={{
+                width: 300,
+                p: 3,
+                backgroundColor: 'rgba(245, 158, 11, 0.08)',
+                borderRadius: '16px',
+                border: '1px solid rgba(245, 158, 11, 0.2)',
+              }}
+            >
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1.5 }}>
+                <Typography sx={{ color: '#94a3b8' }}>סה״כ קבצים:</Typography>
+                <Typography sx={{ fontWeight: 600, color: '#f1f5f9' }}>
+                  {byPlanData.summary.total_plans}
+                </Typography>
               </Box>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Typography variant="h6" fontWeight={700}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  pt: 2,
+                  borderTop: '1px solid rgba(148, 163, 184, 0.1)',
+                }}
+              >
+                <Typography variant="h6" sx={{ fontWeight: 700, color: '#f1f5f9' }}>
                   סה״כ:
                 </Typography>
-                <Typography variant="h6" fontWeight={700} sx={{ color: '#f59e0b' }}>
+                <Typography variant="h6" sx={{ fontWeight: 700, color: '#f59e0b' }}>
                   {byPlanData.summary.total_price.toLocaleString('he-IL')} ₪
                 </Typography>
               </Box>

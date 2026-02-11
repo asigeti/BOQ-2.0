@@ -99,6 +99,23 @@ def categorize_layer(
 
     # Rule 3: Pattern matching with confidence scoring
     scores = {}
+    
+    # BLACKLIST: Explicitly reject annotation layers even if they contain valid keywords
+    # e.g. "S-COLUMN-TEXT" should NOT be structural.
+    BLACKLIST_KEYWORDS = [
+        "TEXT", "DIM", "DIMENSION", "NOTE", "TAG", "LABEL", "LEGEND", 
+        "TITLE", "SHEET", "GRID", "AXIS", "HATCH", "PATTERN", "SYMB"
+    ]
+    
+    is_blacklisted = False
+    for bad_word in BLACKLIST_KEYWORDS:
+        if bad_word in layer_name.upper():
+            # If it's a blacklist word, we force it to ANNOTATIONS or ignore
+            # But let's just penalize other scores or return ANNO immediately?
+            # User wants to "drop" them or categorize as NON-structural.
+            # Best is to return ANNOTATIONS with high confidence.
+            return LayerGroup.ANNOTATIONS, 0.99
+
     for group, patterns in LAYER_PATTERNS.items():
         for pattern in patterns:
             if re.search(pattern, layer_lower, re.IGNORECASE):

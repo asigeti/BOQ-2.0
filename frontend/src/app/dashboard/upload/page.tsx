@@ -40,9 +40,11 @@ export default function UploadPage() {
         {/* Upload Card */}
         <Card
           sx={{
-            background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.02) 0%, rgba(6, 182, 212, 0.02) 100%)',
-            border: '1px solid',
-            borderColor: 'divider',
+            backgroundColor: 'rgba(15, 23, 42, 0.8)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(148, 163, 184, 0.1)',
+            borderRadius: '24px',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
           }}
         >
           <CardContent sx={{ p: 4 }}>
@@ -57,16 +59,28 @@ export default function UploadPage() {
             icon={<CheckCircleIcon />}
             sx={{
               mt: 3,
-              borderRadius: 2,
+              borderRadius: '16px',
+              backgroundColor: 'rgba(16, 185, 129, 0.1)',
+              border: '1px solid rgba(16, 185, 129, 0.3)',
+              '& .MuiAlert-icon': {
+                color: '#10b981',
+              },
               '& .MuiAlert-message': {
                 width: '100%',
+                color: '#f1f5f9',
               },
             }}
           >
-            <Typography variant="subtitle1" fontWeight={600}>
+            <Typography
+              variant="subtitle1"
+              sx={{
+                fontWeight: 600,
+                color: '#f1f5f9',
+              }}
+            >
               הקובץ הועלה בהצלחה!
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{ color: '#94a3b8' }}>
               מעבר אוטומטי לדף כתב הכמויות...
             </Typography>
           </Alert>
@@ -74,7 +88,14 @@ export default function UploadPage() {
 
         {/* Instructions */}
         <Box sx={{ mt: 4 }}>
-          <Typography variant="h6" fontWeight={600} sx={{ mb: 2 }}>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 700,
+              color: '#f1f5f9',
+              mb: 2,
+            }}
+          >
             סוגי קבצים נתמכים
           </Typography>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -83,32 +104,45 @@ export default function UploadPage() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: 2,
-                p: 2,
-                borderRadius: 2,
-                backgroundColor: alpha('#6366f1', 0.05),
-                border: `1px solid ${alpha('#6366f1', 0.1)}`,
+                p: 3,
+                borderRadius: '16px',
+                backgroundColor: 'rgba(14, 165, 233, 0.08)',
+                border: '1px solid rgba(14, 165, 233, 0.2)',
+                transition: 'all 0.2s ease',
+                '&:hover': {
+                  backgroundColor: 'rgba(14, 165, 233, 0.12)',
+                  borderColor: 'rgba(14, 165, 233, 0.3)',
+                },
               }}
             >
               <Box
                 sx={{
-                  width: 48,
-                  height: 48,
-                  borderRadius: 2,
+                  width: 52,
+                  height: 52,
+                  borderRadius: '14px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  backgroundColor: alpha('#6366f1', 0.1),
-                  fontWeight: 700,
-                  color: '#6366f1',
+                  background: 'linear-gradient(135deg, rgba(14, 165, 233, 0.2) 0%, rgba(14, 165, 233, 0.1) 100%)',
+                  border: '1px solid rgba(14, 165, 233, 0.3)',
+                  fontWeight: 800,
+                  color: '#0ea5e9',
+                  fontSize: '0.9rem',
                 }}
               >
                 DWG
               </Box>
               <Box>
-                <Typography variant="subtitle2" fontWeight={600}>
+                <Typography
+                  variant="subtitle2"
+                  sx={{
+                    fontWeight: 600,
+                    color: '#f1f5f9',
+                  }}
+                >
                   קבצי AutoCAD
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" sx={{ color: '#64748b' }}>
                   תוכניות DWG עם בלוקים וטקסט
                 </Typography>
               </Box>
@@ -119,32 +153,45 @@ export default function UploadPage() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: 2,
-                p: 2,
-                borderRadius: 2,
-                backgroundColor: alpha('#ef4444', 0.05),
-                border: `1px solid ${alpha('#ef4444', 0.1)}`,
+                p: 3,
+                borderRadius: '16px',
+                backgroundColor: 'rgba(239, 68, 68, 0.08)',
+                border: '1px solid rgba(239, 68, 68, 0.2)',
+                transition: 'all 0.2s ease',
+                '&:hover': {
+                  backgroundColor: 'rgba(239, 68, 68, 0.12)',
+                  borderColor: 'rgba(239, 68, 68, 0.3)',
+                },
               }}
             >
               <Box
                 sx={{
-                  width: 48,
-                  height: 48,
-                  borderRadius: 2,
+                  width: 52,
+                  height: 52,
+                  borderRadius: '14px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  backgroundColor: alpha('#ef4444', 0.1),
-                  fontWeight: 700,
+                  background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(239, 68, 68, 0.1) 100%)',
+                  border: '1px solid rgba(239, 68, 68, 0.3)',
+                  fontWeight: 800,
                   color: '#ef4444',
+                  fontSize: '0.9rem',
                 }}
               >
                 PDF
               </Box>
               <Box>
-                <Typography variant="subtitle2" fontWeight={600}>
+                <Typography
+                  variant="subtitle2"
+                  sx={{
+                    fontWeight: 600,
+                    color: '#f1f5f9',
+                  }}
+                >
                   קבצי PDF
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" sx={{ color: '#64748b' }}>
                   תוכניות סרוקות או מיוצאות
                 </Typography>
               </Box>

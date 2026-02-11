@@ -5,6 +5,7 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "ConstructionAI Pro"
     VERSION: str = "1.0.0"
     API_V1_STR: str = ""
+    ENVIRONMENT: str = "development"  # "development" or "production"
 
     SECRET_KEY: str = "your-secret-key-change-in-production"
     ALGORITHM: str = "HS256"
@@ -33,16 +34,26 @@ class Settings(BaseSettings):
     @field_validator('OLLAMA_BASE_URL')
     @classmethod
     def validate_ollama_url(cls, v: str) -> str:
-        # Ensure Ollama URL doesn't have /v1 suffix (that's for OpenAI compat)
         if v.endswith('/v1'):
             return v[:-3]
         return v
 
-    # Database - Docker exposes PostgreSQL on localhost:7432
+    # Database - Supabase PostgreSQL in production, local Docker in dev
     DATABASE_URL: str = "postgresql://boq_user:boq_password@localhost:7432/boq_db"
 
-    # CORS
-    BACKEND_CORS_ORIGINS: list = ["http://localhost:7001", "http://localhost:7000", "http://localhost:7777"]
+    # CORS - add your Netlify domain to BACKEND_CORS_ORIGINS env var
+    BACKEND_CORS_ORIGINS: list = [
+        "http://localhost:7001",
+        "http://localhost:7000",
+        "http://localhost:7777",
+    ]
+
+    @field_validator('BACKEND_CORS_ORIGINS', mode='before')
+    @classmethod
+    def assemble_cors_origins(cls, v):
+        if isinstance(v, str):
+            return [origin.strip() for origin in v.split(",")]
+        return v
 
     class Config:
         case_sensitive = True

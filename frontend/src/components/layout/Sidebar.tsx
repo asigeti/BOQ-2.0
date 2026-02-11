@@ -10,28 +10,31 @@ import {
   ListItemText,
   Typography,
   IconButton,
-  Divider,
   alpha,
   Tooltip,
+  useTheme,
 } from '@mui/material';
 import {
   Dashboard as DashboardIcon,
   FolderOpen as FolderIcon,
-  CloudUpload as UploadIcon,
   Assessment as AssessmentIcon,
+  Settings as SettingsIcon,
   ChevronRight as ChevronRightIcon,
   ChevronLeft as ChevronLeftIcon,
-  Layers as LayersIcon,
+  Architecture as LogoIcon,
+  AutoAwesome as AIIcon,
 } from '@mui/icons-material';
+import { useThemeMode } from '@/contexts/ThemeContext';
 
-export const DRAWER_WIDTH = 260;
-export const COLLAPSED_WIDTH = 72;
+export const DRAWER_WIDTH = 280;
+export const COLLAPSED_WIDTH = 80;
 
 interface NavItem {
   title: string;
   titleEn: string;
   path: string;
   icon: React.ReactNode;
+  color: string;
 }
 
 const navItems: NavItem[] = [
@@ -40,24 +43,28 @@ const navItems: NavItem[] = [
     titleEn: 'Dashboard',
     path: '/dashboard',
     icon: <DashboardIcon />,
+    color: '#0ea5e9',
   },
   {
-    title: 'העלאת קובץ',
-    titleEn: 'Upload',
-    path: '/dashboard/upload',
-    icon: <UploadIcon />,
-  },
-  {
-    title: 'הפרויקטים שלי',
-    titleEn: 'My Projects',
+    title: 'פרויקטים',
+    titleEn: 'Projects',
     path: '/dashboard/projects',
     icon: <FolderIcon />,
+    color: '#f59e0b',
   },
   {
     title: 'דוחות',
     titleEn: 'Reports',
     path: '/dashboard/reports',
     icon: <AssessmentIcon />,
+    color: '#10b981',
+  },
+  {
+    title: 'הגדרות',
+    titleEn: 'Settings',
+    path: '/dashboard/settings',
+    icon: <SettingsIcon />,
+    color: '#8b5cf6',
   },
 ];
 
@@ -69,8 +76,23 @@ interface SidebarProps {
 export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
+  const theme = useTheme();
+  const { isDark } = useThemeMode();
 
   const drawerWidth = collapsed ? COLLAPSED_WIDTH : DRAWER_WIDTH;
+
+  // Theme-aware colors
+  const colors = {
+    bg: isDark ? 'rgba(15, 23, 42, 0.95)' : '#ffffff',
+    border: isDark ? 'rgba(148, 163, 184, 0.08)' : 'rgba(15, 23, 42, 0.1)',
+    borderAccent: isDark ? 'rgba(14, 165, 233, 0.5)' : 'rgba(3, 105, 161, 0.5)',
+    textPrimary: isDark ? '#f1f5f9' : '#0f172a',
+    textSecondary: isDark ? '#94a3b8' : '#334155',
+    textMuted: isDark ? '#64748b' : '#475569',
+    iconInactive: isDark ? '#64748b' : '#64748b',
+    hoverBg: isDark ? 'rgba(14, 165, 233, 0.15)' : 'rgba(3, 105, 161, 0.12)',
+    buttonBg: isDark ? 'rgba(148, 163, 184, 0.08)' : 'rgba(15, 23, 42, 0.05)',
+  };
 
   return (
     <Box
@@ -81,42 +103,67 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
         height: '100vh',
         position: 'sticky',
         top: 0,
-        borderLeft: '1px solid',
-        borderColor: 'divider',
-        background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)',
-        transition: 'width 0.3s ease-in-out',
-        overflowX: 'hidden',
-        overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column',
+        background: colors.bg,
+        backdropFilter: 'blur(20px) saturate(180%)',
+        borderLeft: `1px solid ${colors.border}`,
+        transition: 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease',
+        overflowX: 'hidden',
+        overflowY: 'auto',
+        zIndex: 1200,
       }}
     >
       {/* Logo Section */}
       <Box
         sx={{
-          p: 2,
+          p: collapsed ? 2 : 3,
           display: 'flex',
           alignItems: 'center',
           justifyContent: collapsed ? 'center' : 'flex-start',
           gap: 2,
-          minHeight: 72,
+          minHeight: 80,
+          borderBottom: `1px solid ${colors.border}`,
+          position: 'relative',
+          '&::after': {
+            content: '""',
+            position: 'absolute',
+            bottom: -1,
+            left: '10%',
+            right: '10%',
+            height: '1px',
+            background: `linear-gradient(90deg, transparent, ${colors.borderAccent}, transparent)`,
+          },
         }}
       >
         <Box
           sx={{
-            width: 40,
-            height: 40,
-            borderRadius: 2,
-            background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+            width: 44,
+            height: 44,
+            borderRadius: '14px',
+            background: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 4px 14px 0 rgba(99, 102, 241, 0.4)',
+            boxShadow: isDark
+              ? '0 8px 32px rgba(14, 165, 233, 0.3)'
+              : '0 4px 16px rgba(2, 132, 199, 0.2)',
+            position: 'relative',
             flexShrink: 0,
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              inset: -2,
+              borderRadius: '16px',
+              background: 'linear-gradient(135deg, rgba(14, 165, 233, 0.5), rgba(245, 158, 11, 0.3))',
+              zIndex: -1,
+              opacity: isDark ? 0.5 : 0.3,
+            },
           }}
         >
-          <LayersIcon sx={{ color: 'white', fontSize: 22 }} />
+          <LogoIcon sx={{ color: 'white', fontSize: 26 }} />
         </Box>
+
         <Box
           sx={{
             overflow: 'hidden',
@@ -129,32 +176,40 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
           <Typography
             variant="h6"
             sx={{
-              fontWeight: 700,
-              background: 'linear-gradient(135deg, #6366f1 0%, #06b6d4 100%)',
-              backgroundClip: 'text',
+              fontWeight: 800,
+              fontSize: '1.25rem',
+              letterSpacing: '-0.02em',
+              background: isDark
+                ? 'linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 100%)'
+                : 'linear-gradient(135deg, #1e293b 0%, #475569 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               whiteSpace: 'nowrap',
-              fontSize: '1.1rem',
             }}
           >
             BOQ Pro
           </Typography>
-          <Typography
-            variant="caption"
-            sx={{ color: 'text.secondary', display: 'block', mt: -0.5 }}
-          >
-            כתב כמויות חכם
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: -0.5 }}>
+            <AIIcon sx={{ fontSize: 12, color: isDark ? '#0ea5e9' : '#0284c7' }} />
+            <Typography
+              variant="caption"
+              sx={{
+                color: colors.textMuted,
+                fontSize: '0.7rem',
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                fontWeight: 500,
+              }}
+            >
+              AI-Powered
+            </Typography>
+          </Box>
         </Box>
       </Box>
 
-      <Divider sx={{ mx: 2 }} />
-
       {/* Navigation Items */}
-      <List sx={{ px: 1.5, py: 2, flex: 1 }}>
+      <List sx={{ px: collapsed ? 1 : 2, py: 3, flex: 1 }}>
         {navItems.map((item, index) => {
-          // For dashboard, only exact match. For others, also match sub-paths
           const isActive = item.path === '/dashboard'
             ? pathname === '/dashboard'
             : pathname === item.path || pathname?.startsWith(item.path + '/');
@@ -163,8 +218,8 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
             <Box
               key={item.path}
               sx={{
-                animation: 'fadeInRight 0.3s ease-out forwards',
-                animationDelay: `${index * 0.05}s`,
+                animation: 'fadeInRight 0.4s ease-out forwards',
+                animationDelay: `${index * 0.08}s`,
                 opacity: 0,
                 '@keyframes fadeInRight': {
                   '0%': { opacity: 0, transform: 'translateX(20px)' },
@@ -177,30 +232,54 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
                 placement="left"
                 arrow
               >
-                <ListItem disablePadding sx={{ mb: 0.5 }}>
+                <ListItem disablePadding sx={{ mb: 1 }}>
                   <ListItemButton
                     onClick={() => router.push(item.path)}
                     sx={{
-                      borderRadius: 2,
-                      minHeight: 44,
+                      borderRadius: '14px',
+                      minHeight: 50,
                       justifyContent: collapsed ? 'center' : 'flex-start',
                       px: collapsed ? 1.5 : 2,
+                      position: 'relative',
+                      overflow: 'hidden',
+                      transition: 'all 0.3s ease',
                       backgroundColor: isActive
-                        ? alpha('#6366f1', 0.1)
+                        ? alpha(item.color, 0.15)
                         : 'transparent',
-                      borderRight: isActive ? '3px solid #6366f1' : '3px solid transparent',
+                      border: isActive
+                        ? `1px solid ${alpha(item.color, 0.3)}`
+                        : '1px solid transparent',
+                      '&::before': isActive ? {
+                        content: '""',
+                        position: 'absolute',
+                        right: 0,
+                        top: '20%',
+                        bottom: '20%',
+                        width: '3px',
+                        background: item.color,
+                        borderRadius: '3px 0 0 3px',
+                        boxShadow: `0 0 12px ${item.color}`,
+                      } : {},
                       '&:hover': {
-                        backgroundColor: alpha('#6366f1', 0.08),
+                        backgroundColor: isActive
+                          ? alpha(item.color, 0.2)
+                          : alpha(item.color, 0.08),
+                        transform: 'translateX(-4px)',
                       },
-                      transition: 'all 0.2s ease-in-out',
                     }}
                   >
                     <ListItemIcon
                       sx={{
                         minWidth: 0,
-                        ml: collapsed ? 0 : 2,
+                        ml: collapsed ? 0 : 1,
+                        mr: collapsed ? 0 : 2,
                         justifyContent: 'center',
-                        color: isActive ? 'primary.main' : 'text.secondary',
+                        color: isActive ? item.color : colors.iconInactive,
+                        transition: 'color 0.2s ease',
+                        '& svg': {
+                          fontSize: 24,
+                          filter: isActive && isDark ? `drop-shadow(0 0 8px ${item.color})` : 'none',
+                        },
                       }}
                     >
                       {item.icon}
@@ -216,9 +295,9 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
                       <ListItemText
                         primary={item.title}
                         primaryTypographyProps={{
-                          fontSize: '0.875rem',
+                          fontSize: '0.95rem',
                           fontWeight: isActive ? 600 : 500,
-                          color: isActive ? 'primary.main' : 'text.primary',
+                          color: isActive ? colors.textPrimary : colors.textSecondary,
                           whiteSpace: 'nowrap',
                         }}
                       />
@@ -231,28 +310,50 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
         })}
       </List>
 
-      {/* Collapse Button */}
-      <Box sx={{ p: 1.5 }}>
-        <Divider sx={{ mb: 1.5 }} />
+      {/* Collapse Button & Version */}
+      <Box sx={{ p: 2, borderTop: `1px solid ${colors.border}` }}>
         <Box
           sx={{
             display: 'flex',
-            justifyContent: 'center',
+            justifyContent: collapsed ? 'center' : 'flex-end',
+            mb: collapsed ? 0 : 2,
           }}
         >
-          <IconButton
-            onClick={onToggle}
-            size="small"
+          <Tooltip title={collapsed ? 'הרחב' : 'צמצם'} placement="left">
+            <IconButton
+              onClick={onToggle}
+              sx={{
+                width: 36,
+                height: 36,
+                backgroundColor: colors.buttonBg,
+                color: colors.iconInactive,
+                transition: 'all 0.2s ease',
+                '&:hover': {
+                  backgroundColor: colors.hoverBg,
+                  color: isDark ? '#0ea5e9' : '#0284c7',
+                  transform: 'scale(1.1)',
+                },
+              }}
+            >
+              {collapsed ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+            </IconButton>
+          </Tooltip>
+        </Box>
+
+        {!collapsed && (
+          <Typography
+            variant="caption"
             sx={{
-              backgroundColor: alpha('#6366f1', 0.1),
-              '&:hover': {
-                backgroundColor: alpha('#6366f1', 0.2),
-              },
+              color: colors.textSecondary,
+              fontSize: '0.65rem',
+              letterSpacing: '0.05em',
+              display: 'block',
+              textAlign: 'center',
             }}
           >
-            {collapsed ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-          </IconButton>
-        </Box>
+            גרסה 2.0 • מופעל ע״י AI
+          </Typography>
+        )}
       </Box>
     </Box>
   );

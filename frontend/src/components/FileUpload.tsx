@@ -40,7 +40,7 @@ const getFileIcon = (filename: string) => {
       return <PdfIcon sx={{ fontSize: 40, color: '#ef4444' }} />;
     case 'dwg':
     case 'dxf':
-      return <CadIcon sx={{ fontSize: 40, color: '#6366f1' }} />;
+      return <CadIcon sx={{ fontSize: 40, color: '#0ea5e9' }} />;
     case 'png':
     case 'jpg':
     case 'jpeg':
@@ -177,22 +177,23 @@ export default function FileUpload({ onUploadSuccess }: FileUploadProps) {
             position: 'relative',
             border: '2px dashed',
             borderColor: isDragActive
-              ? 'primary.main'
+              ? '#0ea5e9'
               : isDragAccept
-              ? 'success.main'
-              : 'grey.300',
-            borderRadius: 3,
+              ? '#10b981'
+              : 'rgba(148, 163, 184, 0.3)',
+            borderRadius: '20px',
             p: 6,
             textAlign: 'center',
             cursor: uploading ? 'not-allowed' : 'pointer',
             backgroundColor: isDragActive
-              ? alpha('#6366f1', 0.08)
-              : 'background.paper',
+              ? 'rgba(14, 165, 233, 0.1)'
+              : 'rgba(15, 23, 42, 0.5)',
             transition: 'all 0.3s ease-in-out',
             overflow: 'hidden',
+            backdropFilter: 'blur(10px)',
             '&:hover': {
-              borderColor: 'primary.main',
-              backgroundColor: alpha('#6366f1', 0.04),
+              borderColor: '#0ea5e9',
+              backgroundColor: 'rgba(14, 165, 233, 0.08)',
             },
           }}
         >
@@ -206,8 +207,8 @@ export default function FileUpload({ onUploadSuccess }: FileUploadProps) {
               left: 0,
               right: 0,
               bottom: 0,
-              opacity: isDragActive ? 0.1 : 0,
-              background: 'linear-gradient(135deg, #6366f1 0%, #06b6d4 100%)',
+              opacity: isDragActive ? 0.15 : 0,
+              background: 'linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%)',
               transition: 'opacity 0.3s ease-in-out',
               pointerEvents: 'none',
             }}
@@ -229,22 +230,32 @@ export default function FileUpload({ onUploadSuccess }: FileUploadProps) {
                       mx: 'auto',
                       mb: 3,
                       borderRadius: '50%',
-                      background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+                      background: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      boxShadow: '0 10px 40px -10px rgba(99, 102, 241, 0.5)',
+                      boxShadow: '0 10px 40px -10px rgba(14, 165, 233, 0.5)',
                     }}
                   >
                     <CloudUploadIcon sx={{ fontSize: 40, color: 'white' }} />
                   </Box>
                 </Box>
 
-                <Typography variant="h5" fontWeight={600} gutterBottom>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontWeight: 700,
+                    color: '#f1f5f9',
+                    mb: 1,
+                  }}
+                >
                   {isDragActive ? 'שחרר את הקובץ כאן' : 'גרור ושחרר קובץ תכנית'}
                 </Typography>
 
-                <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+                <Typography
+                  variant="body1"
+                  sx={{ color: '#64748b', mb: 3 }}
+                >
                   או לחץ לבחירת קובץ מהמחשב
                 </Typography>
 
@@ -252,22 +263,42 @@ export default function FileUpload({ onUploadSuccess }: FileUploadProps) {
                   <Chip
                     label="DWG"
                     size="small"
-                    sx={{ backgroundColor: alpha('#6366f1', 0.1), color: '#6366f1' }}
+                    sx={{
+                      backgroundColor: 'rgba(14, 165, 233, 0.15)',
+                      color: '#0ea5e9',
+                      border: '1px solid rgba(14, 165, 233, 0.3)',
+                      fontWeight: 600,
+                    }}
                   />
                   <Chip
                     label="DXF"
                     size="small"
-                    sx={{ backgroundColor: alpha('#6366f1', 0.1), color: '#6366f1' }}
+                    sx={{
+                      backgroundColor: 'rgba(14, 165, 233, 0.15)',
+                      color: '#0ea5e9',
+                      border: '1px solid rgba(14, 165, 233, 0.3)',
+                      fontWeight: 600,
+                    }}
                   />
                   <Chip
                     label="PDF"
                     size="small"
-                    sx={{ backgroundColor: alpha('#ef4444', 0.1), color: '#ef4444' }}
+                    sx={{
+                      backgroundColor: 'rgba(239, 68, 68, 0.15)',
+                      color: '#ef4444',
+                      border: '1px solid rgba(239, 68, 68, 0.3)',
+                      fontWeight: 600,
+                    }}
                   />
                   <Chip
                     label="Images"
                     size="small"
-                    sx={{ backgroundColor: alpha('#10b981', 0.1), color: '#10b981' }}
+                    sx={{
+                      backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                      color: '#10b981',
+                      border: '1px solid rgba(16, 185, 129, 0.3)',
+                      fontWeight: 600,
+                    }}
                   />
                 </Box>
               </Box>
@@ -286,8 +317,9 @@ export default function FileUpload({ onUploadSuccess }: FileUploadProps) {
                   sx={{
                     width: 70,
                     height: 70,
-                    borderRadius: 2,
-                    backgroundColor: alpha('#64748b', 0.08),
+                    borderRadius: '16px',
+                    backgroundColor: 'rgba(148, 163, 184, 0.1)',
+                    border: '1px solid rgba(148, 163, 184, 0.2)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -297,10 +329,13 @@ export default function FileUpload({ onUploadSuccess }: FileUploadProps) {
                 </Box>
 
                 <Box sx={{ textAlign: 'right', flex: 1 }}>
-                  <Typography variant="h6" fontWeight={600}>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: 600, color: '#f1f5f9' }}
+                  >
                     {selectedFile.name}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="body2" sx={{ color: '#64748b' }}>
                     {formatFileSize(selectedFile.size)}
                   </Typography>
                 </Box>
@@ -311,9 +346,14 @@ export default function FileUpload({ onUploadSuccess }: FileUploadProps) {
                     clearFile();
                   }}
                   sx={{
-                    backgroundColor: alpha('#ef4444', 0.1),
+                    width: 40,
+                    height: 40,
+                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                    border: '1px solid rgba(239, 68, 68, 0.3)',
+                    transition: 'all 0.2s ease',
                     '&:hover': {
-                      backgroundColor: alpha('#ef4444', 0.2),
+                      backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                      transform: 'scale(1.1)',
                     },
                   }}
                 >
@@ -331,40 +371,85 @@ export default function FileUpload({ onUploadSuccess }: FileUploadProps) {
           sx={{
             mt: 3,
             p: 3,
-            borderRadius: 2,
-            backgroundColor: alpha('#6366f1', 0.04),
-            border: '1px solid',
-            borderColor: alpha('#6366f1', 0.2),
+            borderRadius: '16px',
+            backgroundColor: 'rgba(14, 165, 233, 0.08)',
+            border: '1px solid rgba(14, 165, 233, 0.2)',
           }}
         >
-          <Typography variant="subtitle1" fontWeight={600} gutterBottom sx={{ color: '#6366f1' }}>
+          <Typography
+            variant="subtitle1"
+            sx={{
+              fontWeight: 700,
+              color: '#0ea5e9',
+              mb: 1,
+            }}
+          >
             📋 בחר סוג תכנית
           </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          <Typography variant="body2" sx={{ color: '#94a3b8', mb: 2 }}>
             בחירת סוג התכנית תעזור לחילוץ מדויק יותר של כמויות מקובץ ה-PDF
           </Typography>
           <FormControl fullWidth size="small">
-            <InputLabel id="plan-type-label">סוג תכנית</InputLabel>
+            <InputLabel
+              id="plan-type-label"
+              sx={{
+                color: '#64748b',
+                '&.Mui-focused': {
+                  color: '#0ea5e9',
+                },
+              }}
+            >
+              סוג תכנית
+            </InputLabel>
             <Select
               labelId="plan-type-label"
               value={planType}
               label="סוג תכנית"
               onChange={handlePlanTypeChange}
               sx={{
-                backgroundColor: 'white',
+                backgroundColor: 'rgba(15, 23, 42, 0.8)',
+                color: '#f1f5f9',
                 '& .MuiOutlinedInput-notchedOutline': {
-                  borderColor: alpha('#6366f1', 0.3),
+                  borderColor: 'rgba(14, 165, 233, 0.3)',
                 },
                 '&:hover .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#6366f1',
+                  borderColor: '#0ea5e9',
+                },
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                  borderColor: '#0ea5e9',
+                },
+                '& .MuiSelect-icon': {
+                  color: '#64748b',
+                },
+              }}
+              MenuProps={{
+                PaperProps: {
+                  sx: {
+                    backgroundColor: '#0f172a',
+                    border: '1px solid rgba(148, 163, 184, 0.1)',
+                    borderRadius: '12px',
+                    boxShadow: '0 20px 40px -12px rgba(0, 0, 0, 0.5)',
+                    '& .MuiMenuItem-root': {
+                      color: '#f1f5f9',
+                      '&:hover': {
+                        backgroundColor: 'rgba(14, 165, 233, 0.1)',
+                      },
+                      '&.Mui-selected': {
+                        backgroundColor: 'rgba(14, 165, 233, 0.2)',
+                        '&:hover': {
+                          backgroundColor: 'rgba(14, 165, 233, 0.25)',
+                        },
+                      },
+                    },
+                  },
                 },
               }}
             >
               {PLAN_TYPES.map((type) => (
                 <MenuItem key={type.value} value={type.value}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-                    <Typography>{type.label}</Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ ml: 2 }}>
+                    <Typography sx={{ color: '#f1f5f9' }}>{type.label}</Typography>
+                    <Typography variant="body2" sx={{ color: '#64748b', ml: 2 }}>
                       {type.label_en}
                     </Typography>
                   </Box>
@@ -379,10 +464,16 @@ export default function FileUpload({ onUploadSuccess }: FileUploadProps) {
       <Collapse in={uploading}>
         <Box sx={{ mt: 3 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{ color: '#94a3b8' }}>
               מעלה קובץ...
             </Typography>
-            <Typography variant="body2" fontWeight={600} color="primary">
+            <Typography
+              variant="body2"
+              sx={{
+                fontWeight: 700,
+                color: '#0ea5e9',
+              }}
+            >
               {progress}%
             </Typography>
           </Box>
@@ -392,6 +483,11 @@ export default function FileUpload({ onUploadSuccess }: FileUploadProps) {
             sx={{
               height: 10,
               borderRadius: 5,
+              backgroundColor: 'rgba(14, 165, 233, 0.1)',
+              '& .MuiLinearProgress-bar': {
+                borderRadius: 5,
+                background: 'linear-gradient(90deg, #0ea5e9, #06b6d4)',
+              },
             }}
           />
         </Box>
@@ -408,17 +504,17 @@ export default function FileUpload({ onUploadSuccess }: FileUploadProps) {
             py: 2,
             px: 4,
             border: 'none',
-            borderRadius: 2,
-            background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+            borderRadius: '14px',
+            background: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)',
             color: 'white',
             fontSize: '1.1rem',
-            fontWeight: 600,
+            fontWeight: 700,
             cursor: 'pointer',
             transition: 'all 0.3s ease-in-out',
-            boxShadow: '0 4px 14px 0 rgba(99, 102, 241, 0.4)',
+            boxShadow: '0 8px 32px rgba(14, 165, 233, 0.4)',
             '&:hover': {
               transform: 'translateY(-2px)',
-              boxShadow: '0 6px 20px 0 rgba(99, 102, 241, 0.5)',
+              boxShadow: '0 12px 40px rgba(14, 165, 233, 0.5)',
             },
             '&:active': {
               transform: 'translateY(0)',
@@ -433,7 +529,18 @@ export default function FileUpload({ onUploadSuccess }: FileUploadProps) {
       <Collapse in={!!error}>
         <Alert
           severity="error"
-          sx={{ mt: 3, borderRadius: 2 }}
+          sx={{
+            mt: 3,
+            borderRadius: '12px',
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+            border: '1px solid rgba(239, 68, 68, 0.3)',
+            '& .MuiAlert-icon': {
+              color: '#ef4444',
+            },
+            '& .MuiAlert-message': {
+              color: '#f1f5f9',
+            },
+          }}
           onClose={() => setError(null)}
         >
           {error}
@@ -445,7 +552,18 @@ export default function FileUpload({ onUploadSuccess }: FileUploadProps) {
         <Alert
           severity="success"
           icon={<CheckCircleIcon />}
-          sx={{ mt: 3, borderRadius: 2 }}
+          sx={{
+            mt: 3,
+            borderRadius: '12px',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            border: '1px solid rgba(16, 185, 129, 0.3)',
+            '& .MuiAlert-icon': {
+              color: '#10b981',
+            },
+            '& .MuiAlert-message': {
+              color: '#f1f5f9',
+            },
+          }}
           onClose={() => setSuccess(null)}
         >
           {success}

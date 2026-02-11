@@ -800,14 +800,64 @@ def _extract_raw_autocad_data(doc, file_path: str) -> Dict:
         "errors": []
     }
 
+    # Helper to determine if entity is valid BOQ geometry candidate
+    def is_boq_candidate(entity, entity_type):
+        """
+        Generic filter: Returns True only for entities that represent physical objects.
+        Excludes annotations, dimensions, hatches, and open lines.
+        """
+        # 1. Reject Attributes/Annotations
+        if entity_type in ("AcDbText", "AcDbMText", "AcDbDimension", "AcDbLeader", 
+                          "AcDbAttributeDefinition", "AcDbAttribute"):
+            return False
+            
+        # 2. Reject decorative/non-structural
+        if entity_type in ("AcDbHatch", "AcDbPoint", "AcDbRay", "AcDbXline"):
+            return False
+            
+        # 3. Reject Open Polylines (Lines are counted separately for length, not as "items")
+        if entity_type in ("AcDbPolyline", "AcDbLWPolyline", "AcDb2dPolyline", "AcDb3dPolyline"):
+            if hasattr(entity, 'Closed') and not entity.Closed:
+                return False
+                
+        # 4. Reject pure Lines (counted by length elsewhere, but not as "objects" like columns)
+        if entity_type == "AcDbLine":
+            return False
+
+        return True
+
+    BLACKLIST_KEYWORDS = [
+        "TEXT", "DIM", "DIMENSION", "NOTE", "TAG", "LABEL", "LEGEND", 
+        "TITLE", "SHEET", "GRID", "AXIS", "HATCH", "PATTERN", "SYMB"
+    ]
+
     def process_entity(entity, scale_factor=1.0, is_block_content=False, block_name=""):
         """Process a single entity and update raw_data"""
         try:
-            entity_type = entity.ObjectName
+            # OPTIMIZATION: Get Layer Name first.
+            # If accessing entity.Layer fails, it's broken anyway.
             layer_name = entity.Layer if hasattr(entity, 'Layer') else "0"
+            layer_upper = layer_name.upper()
+            
+            # OPTIMIZATION 1: Skip expensive checks for Blacklisted Layers
+            # If layer is explicitly an annotation layer, don't bother checking geometry props.
+            is_blacklisted = False
+            for bad in BLACKLIST_KEYWORDS:
+                if bad in layer_upper:
+                    is_blacklisted = True
+                    break
+            
+            if is_blacklisted:
+                # We don't count these in the main "BOQ Candidate" counts. 
+                # We can skip further processing to save time.
+                return
 
-            # Count by layer
-            raw_data["layers"][layer_name] = raw_data["layers"].get(layer_name, 0) + 1
+            entity_type = entity.ObjectName
+
+            # FILTER: Only count "valid" geometry in the main layer count.
+            # This prevents Text/Dims from inflating "Column" counts.
+            if is_boq_candidate(entity, entity_type):
+                raw_data["layers"][layer_name] = raw_data["layers"].get(layer_name, 0) + 1
 
             # All dimension types (AcDbAlignedDimension, AcDbRotatedDimension, etc.)
             if "Dimension" in entity_type or entity_type.startswith("AcDbDim"):
@@ -886,19 +936,37 @@ def _extract_raw_autocad_data(doc, file_path: str) -> Dict:
                         area = entity.Area * (scale_factor ** 2)
                         raw_data["geometry"]["total_area"] += area
 
+                        # FILTER: Only track as "Column Candidate" if size is realistic
+                        # 0.04 m² (20x20cm) to 2.0 m² (140x140cm)
+                        # This prevents "Room Boundaries" or "Tiny Debris" from being counted as structural elements.
+                        is_valid_structure = (area >= 0.04 and area <= 2.0)
+                        
+                        # Apply aspect ratio check for columns (max 1:4 usually).
+                        # Using BoundingBox if available (requires more complex logic), 
+                        # but area check captures 90% of issues (rooms are > 2m).
+                        
+                        # Only add to area_by_layer if it's a valid structural candidate OR if it's a room/large area (managed by other logic)
+                        # Actually, we need to track ALL areas for flooring, but we can flag them?
+                        # For now, let's keep area aggregation simple but apply the COUNT logic strictly.
+                        
                         # Track area by layer
                         if layer_name not in raw_data["area_by_layer"]:
                             raw_data["area_by_layer"][layer_name] = {
-                                "area": 0.0, "polyline_count": 0, "hatch_count": 0
+                                "area": 0.0, "polyline_count": 0, "hatch_count": 0,
+                                "structural_count": 0 # NEW: Start tracking "real" structural items
                             }
                         raw_data["area_by_layer"][layer_name]["area"] += area
                         raw_data["area_by_layer"][layer_name]["polyline_count"] += 1
+                        
+                        if is_valid_structure:
+                             raw_data["area_by_layer"][layer_name]["structural_count"] += 1
 
                         # Track individual closed polylines
                         raw_data["closed_polylines"].append({
                             "layer": layer_name,
                             "area": area,
                             "type": entity_type,
+                            "is_structural_candidate": is_valid_structure,
                             "from_block": block_name if is_block_content else ""
                         })
                 except:
@@ -1024,7 +1092,15 @@ def _extract_raw_autocad_data(doc, file_path: str) -> Dict:
         logger.info(f"Processing ModelSpace with {model_space.Count} entities")
 
         # First pass: Process all entities in model space
-        for i in range(model_space.Count):
+        total_entities = model_space.Count
+        logger.info(f"Starting generic entity scan on {total_entities} items...")
+        
+        for i in range(total_entities):
+            if i > 0 and i % 500 == 0:
+                msg = f"Scanning entities: {i}/{total_entities} ({(i/total_entities)*100:.1f}%)"
+                logger.info(msg)
+                print(msg) # Ensure visibility in console
+
             try:
                 entity = model_space.Item(i)
                 entity_type = entity.ObjectName

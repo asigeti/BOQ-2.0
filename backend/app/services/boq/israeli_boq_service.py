@@ -26,6 +26,7 @@ from dataclasses import dataclass, asdict
 from datetime import datetime
 
 from app.services.pricing.dekel_pricing import DekelPricing
+from app.services.layer_categorizer import categorize_layer as smart_categorize, LayerGroup
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
@@ -201,18 +202,83 @@ CONFIDENCE_LEVELS = {
 }
 
 
-# Israeli BOQ Expert System Prompt - Based on Blue Book (הספר הכחול) & Dekel Standards
-ISRAELI_BOQ_SYSTEM_PROMPT = """אתה כתב כמויות (Quantity Surveyor) מקצועי ישראלי עם 25 שנות ניסיון.
+
+# ══════════════════════════════════════════════════════════════════════════════
+# DYNAMIC ESTIMATION FORMULAS
+# ══════════════════════════════════════════════════════════════════════════════
+
+ESTIMATION_FORMULAS = {
+    "residential_high": {
+        "foundations": "A_build × 0.15 (נפח ממוצע כולל כלונסאות/רפסודה)",
+        "columns": "ספירת עמודים × (0.4×0.4 או מידה בשרטוט) × 3.0 מ' גובה",
+        "ceilings": "A_build × 0.22 (תקרה מקשית עבה יותר)",
+        "concrete_grade": "חפש טקסט B-40, C-50. ברירת מחדל: B-40",
+        "steel_density": "110", # kg/m3
+    },
+    "residential_low": {
+        "foundations": "A_build × 0.12",
+        "columns": "ספירת עמודים × (0.25×0.25 או מידה בשרטוט) × 2.8 מ' גובה",
+        "ceilings": "A_build × 0.20",
+        "concrete_grade": "חפש טקסט B-30. ברירת מחדל: B-30",
+        "steel_density": "100",
+    },
+    "public": {  # Schools, Country Clubs, Community Centers
+        # Earthworks: Use Building Footprint + Margin (1.2) * Depth (0.5 for foundation trench)
+        # Instead of full site scrape which overestimates by 3x.
+        "earthworks_excavation": "A_build × 1.2 × 0.5 (חפירה ממוקדת ליסודות)", 
+        
+        "foundations": "A_build × 0.15 (רפסודות/יסודות בודדים)",
+        "columns": "ספירת עמודים (מסוננת) × גאומטריה משרטוט. אם אין: (0.3×0.3) × 3.5 מ'",
+        "ceilings": "A_build × 0.20",
+        "concrete_grade": "חפש טקסט B-40, B-50. ברירת מחדל: B-30",
+        "steel_density": "110",
+    },
+    "industrial": {
+        "foundations": "A_build × 0.18 (רצפות תעשייתיות עבות)",
+        "columns": "ספירת עמודים × גאומטריה משרטוט. אם אין: (0.5×0.5) × 5.0 מ'",
+        "ceilings": "A_build × 0.15 (בד\"כ קונסטרוקציית פלדה, בטון רק ברצפה/גלריה)",
+        "concrete_grade": "חפש טקסט B-40+. ברירת מחדל: B-30",
+        "steel_density": "90",
+    },
+    "default": {
+        "earthworks_excavation": "A_build × 1.2 × 0.4",
+        "foundations": "A_build × 0.15 (ערך ברירת מחדל זהיר)",
+        "columns": "ספירת עמודים × גאומטריה משרטוט (עדיפות עליונה). אומדן חסר: 0.3×0.3×3.0",
+        "ceilings": "A_build × 0.20",
+        "concrete_grade": "חפש טקסט המציין סוג בטון (ב-30, ב-40 וכו'). ברירת מחדל: B-30",
+        "steel_density": "100",
+    }
+}
+
+
+def get_system_prompt(construction_type: str = "default") -> str:
+    """
+    Generate a dynamic system prompt based on construction type.
+    """
+    # Map 'school', 'kindergarten' -> 'public' for formulas
+    formula_type = "default"
+    if construction_type in ["residential_high"]:
+        formula_type = "residential_high"
+    elif construction_type in ["residential_low", "renovation"]:
+        formula_type = "residential_low"
+    elif construction_type in ["school", "kindergarten", "hotel", "office", "public"]:
+        formula_type = "public"
+    elif construction_type in ["industrial", "infrastructure"]:
+        formula_type = "industrial"
+    
+    formulas = ESTIMATION_FORMULAS.get(formula_type, ESTIMATION_FORMULAS["default"])
+
+    return f"""אתה כתב כמויות (Quantity Surveyor) מקצועי ישראלי עם 25 שנות ניסיון.
 אתה מומחה במפרט הכללי לעבודות בנייה ("הספר הכחול") ובמחירון דקל.
 
 ══════════════════════════════════════════════════════════════════════════════
-המומחיות שלך כוללת:
+תפקידך ומטרתך (CRITICAL):
 ══════════════════════════════════════════════════════════════════════════════
-• ניתוח תוכניות אדריכליות והנדסיות מקבצי DWG
-• הכנת כתבי כמויות לפי המפרט הכללי לעבודות בנייה (הספר הכחול)
-• תמחור לפי מחירון דקל (46 פרקים, ~26,000 סעיפים)
-• תקני מכון התקנים הישראלי (ת"י)
-• חישוב כמויות לפי כללי המדידה הבין-משרדיים
+עליך לחלץ כמויות **מדויקות** מתוך הטקסט והנתונים הגאומטריים.
+אל תנפח כמויות "ליתר ביטחון" מעבר ל-5% פחת מקובל. 
+חפש תמיד **מידות ספציפיות** בטקסטים (למשל "עמוד 40/40", "בטון ב-40") ותן להן עדיפות על פני הנוסחאות.
+
+סוג המבנה שזוהה: {construction_type}
 
 ══════════════════════════════════════════════════════════════════════════════
 יחידות מידה - נתונים מומרים:
@@ -221,231 +287,81 @@ ISRAELI_BOQ_SYSTEM_PROMPT = """אתה כתב כמויות (Quantity Surveyor) מ
 השדות total_area ו-total_line_length כבר מוצגים במ"ר ומטרים בהתאמה.
 
 ══════════════════════════════════════════════════════════════════════════════
-נוסחאות לחישוב כמויות מגיאומטריה:
+נוסחאות לחישוב כמויות (מותאמות לסוג מבנה זה):
 ══════════════════════════════════════════════════════════════════════════════
 
-נתון: total_area = שטח רצפה/תקרה כולל במ"ר (A)
+נתונים:
+1. building_area_m2 = שטח מבנה בנוי במ"ר (A_build) - לשימוש בבטון, שלד, גמרים
+2. site_area_m2 = שטח פיתוח חוץ במ"ר (A_site) - לשימוש בעבודות עפר, פיתוח, גינון
 
 【פרק 01 - עבודות עפר】
-• שטח חפירה = A × 1.25 (תוספת לחפירה ויסודות)
-• נפח חפירה כללית = A × 1.25 × עומק (1.5-2.0 מ') = מ"ק
-• נפח חפירה ליסודות רצועה = היקף × 0.6 רוחב × 1.0 עומק
-• מילוי והידוק = נפח חפירה × 0.7 (30% נשאר לבטון)
-• פינוי עודפי עפר = נפח חפירה × 0.35
+• חפירה ליסודות = {formulas.get('earthworks_excavation', 'A_build × 1.2 × 0.5')}
+• יישור ופילוס מגרש = A_site × 0.1 (רק יישור עליון, לא חפירה מלאה)
+• מילוי חוזר = נפח חפירה יסודות × 0.4
+• פינוי עודפי עפר = נפח חפירה יסודות × 0.6 + יישור מגרש קטן (פילוס בלבד)
 
-【פרק 02 - עבודות בטון】כללי אצבע לזיון: 80-120 ק"ג ברזל לכל מ"ק בטון
-• בטון רזה B-10: A × 1.1 × 0.10 עובי = מ"ק
-• בטון יסודות רצועה B-30: היקף × 0.5 × 0.5 = מ"ק
-• בטון רפסודה/רצפה B-30: A × 0.20 עובי = מ"ק
-• בטון עמודים B-30: מס' עמודים × 0.3 × 0.3 × 3.0 גובה = מ"ק (כ-12-16 עמודים לכל 100 מ"ר)
-• בטון קורות B-30: אורך קורות × 0.25 × 0.50 = מ"ק
-• בטון תקרה B-30: A × 0.15 עובי = מ"ק
-• ברזל זיון כללי: סה"כ בטון × 100 ק"ג למ"ק = טון
-• תבניות (טפסות): שטח בטון × 2.5 (יחס טפסות לבטון) = מ"ר
+【פרק 02 - עבודות בטון】
+★ סוג בטון (חוזק): {formulas['concrete_grade']}
+• בטון רזה B-10: A_build × 0.10 עובי
+• בטון יסודות: {formulas['foundations']}
+• בטון עמודים: {formulas['columns']}
+  -> חשוב: השתמש אך ורק בעמודים שעברו סינון גודל (0.04-2.0 מ"ר). אל תספור טקסטים כעמודים.
+• בטון תקרה/גג: {formulas['ceilings']}
+• ברזל זיון: נפח בטון משוקלל × {formulas.get('steel_density', '100')} ק"ג/מ"ק
+  (אם ניתן: יסודות 100 ק"ג/מ"ק, עמודים 120 ק"ג/מ"ק, תקרות 90 ק"ג/מ"ק)
+• טפסות: שטח בטון × 2.0 (או לפי מעטפת האלמנטים)
 
 【פרק 03 - עבודות בנייה】
-• אורך קירות חיצוניים = √A × 4 (היקף משוער)
-• אורך קירות פנימיים = √A × 6 (חלוקת חדרים)
-• שטח קירות חוץ = היקף × גובה (3.0-3.2 מ')
-• שטח קירות פנים = אורך פנימי × גובה × 2 צדדים
-• בלוקים 20 ס"מ (חוץ): שטח קירות חוץ במ"ר
-• בלוקים 10 ס"מ (פנים): שטח קירות פנים במ"ר
-• קורות/משקופים פלדה: מס' פתחים × 1.5 מ' ממוצע
+• אורך קירות משוער = √A_build × 8 (פנים+חוץ)
+• שטח קירות (ללא פתחים) = אורך קירות × הגובה בקומה (2.8 - 3.5 מ')
 
-【פרק 04 - עבודות איטום】
-• איטום גגות: A × 1.0 (שטח גג = שטח רצפה)
-• איטום קירות מרתף: היקף × עומק מרתף × 2 (פנים וחוץ)
-• איטום רצפה: A × 0.9 (שטחים רטובים)
-• איטום מרפסות: A × 0.15 (15% שטח למרפסות)
-
-【פרק 05 - עבודות טיח】יחס: שטח רצפה × 6 = שטח טיח כולל
-• טיח חוץ (שפריץ + גמר): שטח קירות חיצוניים × 1.0
-• טיח פנים: (קירות פנים + קירות חוץ מבפנים) × 2 צדדים
-• משטחי טיח פנים = A × 2.5 עד A × 3.0 (יחס מקובל)
-• טיח תקרות: A × 0.95
-
-【פרק 06 - ריצוף וחיפוי】
-• ריצוף פנים (קרמיקה/פורצלן): A × 0.85 (פחות קירות)
-• ריצוף חוץ/מרפסות: A × 0.20
-• חיפוי קירות (חדרים רטובים): A × 0.25 × גובה 2.1 מ'
-• אבן משתמרת/מדרגות: אורך מדרגות × רוחב
-• סף אלומיניום/פרופילים: מס' דלתות × 1.0 מ'
-
-【פרק 07 - אלומיניום וזכוכית】
-• חלונות: מס' = A / 12 (חלון לכל 12 מ"ר), שטח = מס' × 1.5 מ"ר ממוצע
-• דלתות אלומיניום חוץ: 2-4 יח' לכל 200 מ"ר
-• מעקות אלומיניום: אורך מרפסות/גג = היקף × 0.3
-• תריסים חשמליים: מס' חלונות × 1.2 מ"ר
-
-【פרק 08 - נגרות】
-• דלתות פנים: מס' = A / 20 (דלת לכל 20 מ"ר)
-• דלתות כניסה: 1-2 יח' לכל יח' דיור
-• משקופי עץ: מס' דלתות × 1 יח'
-• ארונות מטבח: 4-6 מ"א לכל יח' דיור
-• ארונות קיר: A × 0.05 (5% שטח)
-
-【פרק 09 - צבע】
-• צבע קירות פנים: שטח טיח פנים = A × 2.5 עד A × 3.0
-• צבע תקרות: A × 0.95
-• צבע חוץ: שטח טיח חוץ
-• אנטי-רוסט פרופילי פלדה: אורך × 0.5 מ"ר
-
-【פרק 10 - אינסטלציה】
-• נקודות מים קרים: A / 10 = מס' נקודות
-• נקודות מים חמים: A / 15 = מס' נקודות
-• נקודות ביוב: A / 12 = מס' נקודות
-• כלים סניטריים: 1 שירותים + 1 מקלחת + 2 כיורים לכל 50 מ"ר
-• דוד שמש/חשמל: 1 יח' לכל יח' דיור
-
-【פרק 11 - חשמל】
-• נקודות תאורה: A / 8 = מס' נקודות (נקודה לכל 8 מ"ר)
-• נקודות שקע: A / 5 = מס' נקודות
-• מפסקים: A / 10 = מס'
-• לוח חשמל: 1 יח' ליח' דיור
-• חיווט כללי: A × 3 מ"א (3 מטר לכל מ"ר בנוי)
-
-【פרק 12 - מיזוג אוויר】
-• יח' מיזוג מיני-מרכזי: A / 35 = מס' טון קירור (1 טון ל-35 מ"ר)
-• יח' עילית (מפוצל): A / 25 = מס' יחידות
-• תעלות מיזוג: A × 0.5 מ"א
+(שאר הפרקים לחישוב לפי שטח רצפה A_build כמקובל)
 
 ══════════════════════════════════════════════════════════════════════════════
-גורמי עלות למ"ר לפי סוג מבנה (2024-2025):
+דרישות לתיאורים (חשוב מאוד):
 ══════════════════════════════════════════════════════════════════════════════
-מבנה מגורים רגיל:        5,000-6,500 ₪/מ"ר
-מבנה מגורים יוקרתי:      8,000-12,000 ₪/מ"ר
-מבנה ציבורי (גן/מעון):    5,500-7,500 ₪/מ"ר
-מבנה משרדים:             6,000-8,000 ₪/מ"ר
-מבנה תעשייתי:            3,500-5,000 ₪/מ"ר
-שלד בלבד:               1,500-2,500 ₪/מ"ר
-
-【התפלגות עלויות אופיינית】
-• עבודות עפר ויסודות: 8-12%
-• שלד בטון: 20-25%
-• בנייה (בלוקים): 5-8%
-• איטום: 3-5%
-• טיח: 5-7%
-• ריצוף וחיפוי: 8-12%
-• אלומיניום: 8-12%
-• נגרות: 5-8%
-• צבע: 2-4%
-• אינסטלציה: 6-10%
-• חשמל: 8-12%
-• מיזוג: 5-10%
-
-══════════════════════════════════════════════════════════════════════════════
-מבנה פרקי הספר הכחול (המפרט הכללי):
-══════════════════════════════════════════════════════════════════════════════
-פרק 00: מוקדמות (Preliminaries)
-פרק 01: עבודות עפר (Earthworks)
-פרק 02: עבודות בטון יצוק באתר (Cast-in-place Concrete)
-פרק 03: מוצרי בטון טרום (Precast Concrete)
-פרק 04: עבודות בנייה - בלוקים/לבנים (Masonry)
-פרק 05: עבודות איטום (Waterproofing)
-פרק 06: נגרות אומן ומסגרות פלדה (Carpentry & Steel)
-פרק 07: מתקני תברואה (Plumbing)
-פרק 08: מתקני חשמל (Electrical)
-פרק 09: עבודות טיח (Plastering)
-פרק 10: ריצוף וחיפוי (Flooring & Cladding)
-פרק 11: עבודות צביעה (Painting)
-פרק 12: עבודות אלומיניום (Aluminum)
-פרק 15: מתקני מיזוג אוויר (HVAC)
-פרק 34: מערכות גילוי וכיבוי אש (Fire Systems)
-פרק 58: מקלטים/ממ"ד (Shelters)
-
-══════════════════════════════════════════════════════════════════════════════
-כללי מדידה (לפי הספר הכחול):
-══════════════════════════════════════════════════════════════════════════════
-• עבודות עפר: נמדדות בנפח (מ"ק)
-• עבודות בטון: נמדדות בנפח (מ"ק) + ברזל בק"ג
-• קירות: נמדדים בשטח (מ"ר)
-• טיח: נמדד בשטח (מ"ר) עם ציון עובי
-• ריצוף: נמדד בשטח (מ"ר)
-• חשמל/אינסטלציה: נמדדים ביחידות (נקודות)
-• אלומיניום: נמדד בשטח (מ"ר) או יחידות
-
-══════════════════════════════════════════════════════════════════════════════
-כללי עבודה חשובים:
-══════════════════════════════════════════════════════════════════════════════
-1. אם total_area > 500 מ"ר - זה בניין משמעותי, צפה לסה"כ של 2.5-5 מיליון ₪
-2. אם total_area > 1,000 מ"ר - צפה לסה"כ של 5-10 מיליון ₪
-3. אם total_area > 2,000 מ"ר - צפה לסה"כ של 10-20 מיליון ₪
-4. תמיד הוסף 5% פחת לכמויות חומרים
-5. מחירי דקל כוללים: חומר + עבודה + רווח קבלן (ללא מע"מ)
-6. וודא התאמה בין סה"כ פרקים לעלות צפויה למ"ר
-
-══════════════════════════════════════════════════════════════════════════════
-דרישות לתיאורים מפורטים (CRITICAL - MUST FOLLOW):
-══════════════════════════════════════════════════════════════════════════════
-כל תיאור פריט חייב להיות מפורט ומקצועי בסגנון מחירון דקל. כלול:
-
-✓ פרטים טכניים: עובי, מידות, חוזק (B-25, B-30, וכו')
-✓ תקנים ישראליים: ת"י + מספר (לפי הרלוונטי)
-✓ שיטת ביצוע: יציקה, התקנה, הרכבה, וכו'
-✓ רכיבים כלולים: "כולל אספקה", "כולל עבודה", וכו'
-
-דוגמאות לתיאורים מקצועיים:
-
-【עבודות עפר - לא טוב】
-❌ "חפירה"
-✓ "חפירה כללית בכל סוג קרקע לעומק ממוצע 1.5 מ', כולל הידוק קרקע תחתית לפי ת\"י 1211, פינוי עודפי עפר מחוץ לאתר למרחק עד 20 ק\"מ"
-
-【עבודות בטון - לא טוב】
-❌ "בטון ליסודות"
-✓ "יציקת בטון מזוין B-30 ליסודות רצועה, כולל אספקת בטון, יציקה, ריטוט ואחזקה לפי ת\"י 466, עובי 50 ס\"מ, רוחב 80 ס\"מ"
-
-【עבודות בנייה - לא טוב】
-❌ "קירות בלוקים"
-✓ "קיר בלוקי בטון חלולים 20 ס\"מ, מבנה נושא, ביצוע לפי ת\"י 5, כולל מילוי בטון B-20 ואבטוח לעמודים"
-
-【איטום - לא טוב】
-❌ "איטום גג"
-✓ "איטום גג שטוח בממברנה ביטומנית דו-שכבתית APP 4 מ\"מ, כולל יריעת ניקוז (מסנן), לפי ת\"י 1203, כולל עליות לקירות היקפיים"
-
-【טיח - לא טוב】
-❌ "טיח"
-✓ "טיח צמנט בהתזה (שפריץ) על קירות חוץ, עובי 2.5 ס\"מ, תערובת 1:4, גמר מוחלק ומשויף לפי ת\"י 1920"
-
-【ריצוף - לא טוב】
-❌ "ריצוף קרמיקה"
-✓ "ריצוף קרמיקה פורצלן מיוצרת 60×60 ס\"מ, דרגה A, התקנה על מצע מיישר מוכן, כולל פוגות סיליקון, ניקוי וליטוש סופי"
+1. אם זיהית בטון ב-40 או ב-50 בטקסט - ציין זאת בתיאור! (אל תכתוב סתם B-30).
+2. אם זיהית מידות עמודים (למשל 20/50), חשב לפי המידות והשתמש בהן בתיאור.
+3. אל תבצע "כפל ספירה" (Double Counting): אם חישבת בטון ברצפה, אל תחשיב אותו שוב ביסודות אלא אם אלו אלמנטים נפרדים בבירור.
 
 ══════════════════════════════════════════════════════════════════════════════
 פורמט התשובה (JSON):
 ══════════════════════════════════════════════════════════════════════════════
-{
+{{
   "project_name": "שם הפרויקט",
+  "construction_type_detected": "{construction_type}",
   "date": "תאריך",
   "chapters": [
-    {
+    {{
       "chapter_code": "01",
       "chapter_name_he": "עבודות עפר",
       "chapter_name_en": "Earthworks",
       "items": [
-        {
+        {{
           "item_code": "01.01.01",
           "dekel_code": "01.01.01",
-          "description_he": "חפירה כללית בכל סוג קרקע לעומק ממוצע 1.5 מ', כולל הידוק קרקע תחתית לפי ת\"י 1211, פינוי עודפי עפר מחוץ לאתר למרחק עד 20 ק\"מ",
-          "description_en": "General excavation in all soil types to average depth 1.5m, including bottom compaction per SI 1211, disposal of excess soil off-site up to 20km",
+          "description_he": "תיאור מפורט...",
+          "description_en": "English description...",
           "quantity": 100.0,
           "unit": "מ\"ק",
           "unit_price": 45.0,
           "total_price": 4500.0,
           "confidence": 0.95,
-          "notes": "מבוסס על שטח כולל וחפירה סטנדרטית ליסודות"
-        }
+          "notes": "הערה"
+        }}
       ],
       "chapter_total": 4500.0
-    }
+    }}
   ],
-  "summary": {
+  "summary": {{
     "subtotal": 0.0,
     "vat_rate": 0.17,
     "vat_amount": 0.0,
     "grand_total": 0.0
-  },
+  }},
   "notes": ["הערות כלליות"]
-}"""
+}}"""
+
 
 
 @dataclass
@@ -791,6 +707,36 @@ class IsraeliBOQService:
                 geometry["total_area"] = geometry["total_area_m2"]
                 logger.info(f"Area conversion: {original_area:,.0f} {drawing_unit}² → {geometry['total_area_m2']:,.2f} m²")
 
+            # --- NEW: Breakdown area by layer category ---
+            raw_area_by_layer = raw_data.get("area_by_layer", {})
+            building_area_m2 = 0.0
+            site_area_m2 = 0.0
+            
+            for layer_name, layer_data in raw_area_by_layer.items():
+                # Convert this layer's area to m² using the SAME divisor
+                raw_layer_area = layer_data.get("area", 0.0)
+                layer_area_m2 = raw_layer_area / area_divisor
+                
+                # Smart categorize
+                cat_group, _ = smart_categorize(layer_name, layer_area_m2, layer_data.get("polyline_count", 0))
+                
+                if cat_group in [LayerGroup.BUILDING, LayerGroup.STRUCTURAL, LayerGroup.UTILITIES]:
+                    building_area_m2 += layer_area_m2
+                elif cat_group in [LayerGroup.SITE_BOUNDARY, LayerGroup.INFRASTRUCTURE, LayerGroup.LANDSCAPE]:
+                    site_area_m2 += layer_area_m2
+            
+            # Store split areas in geometry
+            geometry["building_area_m2"] = building_area_m2
+            geometry["site_area_m2"] = site_area_m2
+            
+            # Sanity check: If building area is 0 but we have total area, use fallback
+            if building_area_m2 < 1.0 and geometry.get("total_area_m2", 0) > 10:
+                logger.warning("No building layers detected. Falling back to 50% of total area for building.")
+                geometry["building_area_m2"] = geometry["total_area_m2"] * 0.5
+                geometry["site_area_m2"] = geometry["total_area_m2"] * 0.5
+            
+            logger.info(f"Area Split: Building={geometry['building_area_m2']:.2f} m², Site={geometry['site_area_m2']:.2f} m²")
+
             # Convert length
             if "total_line_length" in geometry and geometry["total_line_length"] > 0:
                 original_length = geometry["total_line_length"]
@@ -799,6 +745,22 @@ class IsraeliBOQService:
                 geometry["total_line_length"] = geometry["total_line_length_m"]
                 logger.info(f"Length conversion: {original_length:,.0f} {drawing_unit} → {geometry['total_line_length_m']:,.2f} m")
 
+        # CRITICAL FIX: Replace raw layer counts with filtered structural counts
+        # This prevents the AI from using inflated counts (which include text/dims/hatches)
+        if "area_by_layer" in processed and processed["area_by_layer"]:
+            filtered_layers = {}
+            for layer_name, layer_info in processed["area_by_layer"].items():
+                # Use structural_count if available (filtered valid geometry only)
+                # Otherwise fall back to polyline_count (still better than raw count)
+                filtered_count = layer_info.get("structural_count", layer_info.get("polyline_count", 0))
+                if filtered_count > 0:
+                    filtered_layers[layer_name] = filtered_count
+            
+            # Replace the inflated raw counts with filtered counts
+            if filtered_layers:
+                processed["layers"] = filtered_layers
+                logger.info(f"Replaced raw layer counts with filtered structural counts: {len(filtered_layers)} layers")
+        
         return processed
 
     def _detect_drawing_units(self, raw_data: Dict[str, Any]) -> str:
@@ -1236,10 +1198,17 @@ class IsraeliBOQService:
 
         try:
             # Call GPT-4 for intelligent BOQ generation
+            
+            # Detect construction type to select correct formulas
+            construction_type = self.detect_construction_type(project_name=project_name, filename=filename, raw_data=raw_data)
+            logger.info(f"Generating dynamic system prompt for type: {construction_type}")
+            
+            system_prompt = get_system_prompt(construction_type)
+
             response = self.openai_client.chat.completions.create(
                 model="gpt-4o",
                 messages=[
-                    {"role": "system", "content": ISRAELI_BOQ_SYSTEM_PROMPT},
+                    {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
                 ],
                 response_format={"type": "json_object"},

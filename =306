@@ -1,0 +1,9 @@
+Collecting pywin32
+  Downloading pywin32-311-cp312-cp312-win_amd64.whl.metadata (10 kB)
+Downloading pywin32-311-cp312-cp312-win_amd64.whl (9.5 MB)
+   ---------------------------------------- 9.5/9.5 MB 24.6 MB/s  0:00:00
+Installing collected packages: pywin32
+Successfully installed pywin32-311
+
+[notice] A new release of pip is available: 25.2 -> 25.3
+[notice] To update, run: python.exe -m pip install --upgrade pip
