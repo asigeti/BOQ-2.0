@@ -110,7 +110,7 @@ def create_project(
         name=project_in.name,
         description=project_in.description,
         folder_path=project_in.folder_path,
-        user_id=1,  # Default user for MVP
+        user_id=None,  # No auth for MVP
     )
     db.add(project)
     db.commit()

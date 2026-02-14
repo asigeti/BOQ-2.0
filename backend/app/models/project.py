@@ -14,7 +14,7 @@ class Project(Base):
     name = Column(String, index=True, nullable=False)
     description = Column(Text, nullable=True)
     folder_path = Column(String, nullable=True)  # Source folder for DWG scanning
-    user_id = Column(Integer, ForeignKey("user.id"), default=1)
+    user_id = Column(Integer, ForeignKey("user.id"), nullable=True)
 
     # Building parameters for BOQ calculation
     building_area = Column(Float, nullable=True)  # User-specified building area in m²

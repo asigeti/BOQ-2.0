@@ -64,12 +64,12 @@ def upload_plan(
     # Determine file type
     file_ext = os.path.splitext(file.filename)[1].lower()
     
-    # Use default user_id = 1 (no auth required)
+    # No auth required for MVP
     plan = models.ProjectPlan(
         filename=file.filename,
         file_path=file_location,
         file_type=file_ext,
-        user_id=1,
+        user_id=None,
         processing_status="pending",
         processing_progress=0
     )

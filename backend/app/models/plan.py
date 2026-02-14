@@ -8,7 +8,7 @@ class ProjectPlan(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     project_id = Column(Integer, ForeignKey("project.id", ondelete="CASCADE"), nullable=True, index=True)
-    user_id = Column(Integer, ForeignKey("user.id"))
+    user_id = Column(Integer, ForeignKey("user.id"), nullable=True)
     filename = Column(String, index=True)
     file_path = Column(String)
     file_type = Column(String)

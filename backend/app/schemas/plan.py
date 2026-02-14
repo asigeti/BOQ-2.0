@@ -11,7 +11,7 @@ class PlanCreate(PlanBase):
 
 class Plan(PlanBase):
     id: int
-    user_id: int
+    user_id: Optional[int] = None
     file_path: str
     processing_status: str = "pending"
     processing_progress: int = 0
