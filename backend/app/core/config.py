@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str = "postgresql://boq_user:boq_password@localhost:7432/boq_db"
 
     # CORS
-    BACKEND_CORS_ORIGINS: list = ["http://localhost:7001", "http://localhost:7000"]
+    BACKEND_CORS_ORIGINS: list = ["http://localhost:7001", "http://localhost:7000", "https://asigeti.github.io"]
     
     class Config:
         case_sensitive = True
