@@ -142,7 +142,7 @@ function RecentProjectCard({ plan, index }: { plan: Plan; index: number }) {
       transition={{ duration: 0.3, delay: index * 0.1 }}
     >
       <Box
-        onClick={() => router.push(`/dashboard/plans/${plan.id}`)}
+        onClick={() => window.location.href = `/BOQ-2.0/dashboard/plans/${plan.id}/`}
         sx={{
           display: 'flex',
           alignItems: 'center',
@@ -239,9 +239,6 @@ export default function Dashboard() {
 
   const handleUploadSuccess = (data: any) => {
     fetchPlans();
-    if (data?.id) {
-      router.push(`/dashboard/plans/${data.id}`);
-    }
   };
 
   return (
@@ -396,7 +393,7 @@ export default function Dashboard() {
 
                 {plans.length > 5 && (
                   <Box
-                    onClick={() => router.push('/dashboard/projects')}
+                    onClick={() => window.location.href = '/BOQ-2.0/dashboard/projects/'}
                     sx={{
                       display: 'flex',
                       alignItems: 'center',

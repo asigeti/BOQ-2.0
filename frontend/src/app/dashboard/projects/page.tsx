@@ -191,7 +191,7 @@ export default function ProjectsPage() {
       setScanResult(null);
 
       // Navigate to project
-      router.push(`/dashboard/projects/${projectId}`);
+      window.location.href = `/BOQ-2.0/dashboard/projects/${projectId}/`;
     } catch (error: any) {
       showError(error.response?.data?.detail || 'שגיאה ביצירת הפרויקט');
     } finally {
@@ -331,7 +331,7 @@ export default function ProjectsPage() {
                       boxShadow: '0 12px 24px -8px rgba(99, 102, 241, 0.3)',
                     },
                   }}
-                  onClick={() => router.push(`/dashboard/projects/${project.id}`)}
+                  onClick={() => window.location.href = `/BOQ-2.0/dashboard/projects/${project.id}/`}
                 >
                   <CardContent sx={{ p: 3 }}>
                     <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, mb: 2 }}>
