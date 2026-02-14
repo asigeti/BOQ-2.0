@@ -1,12 +1,17 @@
-from fastapi import FastAPI
+import traceback
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from app.api.api import api_router
 from app.core.config import settings
 from app.db.base import Base
 from app.db.session import engine
 
 # Create tables on startup (for MVP)
-Base.metadata.create_all(bind=engine)
+try:
+    Base.metadata.create_all(bind=engine)
+except Exception as e:
+    print(f"WARNING: Failed to create tables: {e}")
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -22,6 +27,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Global exception handler so errors return JSON with CORS headers
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=500,
+        content={"detail": str(exc), "type": type(exc).__name__},
+    )
+
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
 @app.get("/")
@@ -31,3 +44,20 @@ async def root():
 @app.get("/health")
 async def health_check():
     return {"status": "healthy"}
+
+@app.get("/debug/db")
+async def debug_db():
+    """Check database connection and tables."""
+    from app.db.session import SessionLocal
+    from sqlalchemy import text
+    try:
+        db = SessionLocal()
+        result = db.execute(text("SELECT tablename FROM pg_tables WHERE schemaname = 'public'"))
+        tables = [row[0] for row in result]
+        db.close()
+        return {"status": "connected", "tables": tables}
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"status": "error", "detail": str(e), "type": type(e).__name__},
+        )
