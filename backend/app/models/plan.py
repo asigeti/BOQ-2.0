@@ -7,6 +7,7 @@ class ProjectPlan(Base):
     __tablename__ = "project_plan"
 
     id = Column(Integer, primary_key=True, index=True)
+    project_id = Column(Integer, ForeignKey("project.id", ondelete="CASCADE"), nullable=True, index=True)
     user_id = Column(Integer, ForeignKey("user.id"))
     filename = Column(String, index=True)
     file_path = Column(String)
@@ -15,4 +16,7 @@ class ProjectPlan(Base):
     processing_progress = Column(Integer, default=0)  # 0-100
     uploaded_at = Column(DateTime, default=datetime.utcnow)
 
+    # Relationships
     owner = relationship("User", backref="plans")
+    project = relationship("Project", back_populates="plans")
+    boq_items = relationship("BOQItem", back_populates="plan")

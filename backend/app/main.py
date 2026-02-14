@@ -7,11 +7,20 @@ from app.core.config import settings
 from app.db.base import Base
 from app.db.session import engine
 
-# Create tables on startup (for MVP)
+# Create tables and run migrations on startup (for MVP)
 try:
+    from sqlalchemy import text, inspect
     Base.metadata.create_all(bind=engine)
+    # Add missing columns to existing tables (lightweight migration)
+    inspector = inspect(engine)
+    if "project_plan" in inspector.get_table_names():
+        columns = [c["name"] for c in inspector.get_columns("project_plan")]
+        if "project_id" not in columns:
+            with engine.begin() as conn:
+                conn.execute(text("ALTER TABLE project_plan ADD COLUMN project_id INTEGER REFERENCES project(id) ON DELETE CASCADE"))
+                print("Added project_id column to project_plan table")
 except Exception as e:
-    print(f"WARNING: Failed to create tables: {e}")
+    print(f"WARNING: Failed to create/migrate tables: {e}")
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
