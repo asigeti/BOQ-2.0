@@ -20,3 +20,4 @@ class ProjectPlan(Base):
     owner = relationship("User", backref="plans")
     project = relationship("Project", back_populates="plans")
     boq_items = relationship("BOQItem", back_populates="plan")
+    extraction_layers = relationship("ProjectExtractionLayer", back_populates="plan", cascade="all, delete-orphan")
