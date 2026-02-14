@@ -19,6 +19,15 @@ try:
             with engine.begin() as conn:
                 conn.execute(text("ALTER TABLE project_plan ADD COLUMN project_id INTEGER REFERENCES project(id) ON DELETE CASCADE"))
                 print("Added project_id column to project_plan table")
+    # Create default user for MVP (no auth)
+    with engine.begin() as conn:
+        result = conn.execute(text("SELECT id FROM \"user\" WHERE id = 1"))
+        if result.fetchone() is None:
+            conn.execute(text(
+                "INSERT INTO \"user\" (id, full_name, email, hashed_password, is_active, is_superuser) "
+                "VALUES (1, 'Default User', 'admin@boq.local', 'not-a-real-hash', true, true)"
+            ))
+            print("Created default user (id=1)")
 except Exception as e:
     print(f"WARNING: Failed to create/migrate tables: {e}")
 
