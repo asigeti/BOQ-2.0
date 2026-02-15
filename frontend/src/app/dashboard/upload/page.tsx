@@ -22,6 +22,7 @@ import { motion } from 'framer-motion';
 import { MainLayout, Header } from '@/components/layout';
 import FileUpload from '@/components/FileUpload';
 import api from '@/utils/axios';
+import { navigateTo } from '@/utils/navigation';
 
 interface Plan {
   id: number;
@@ -133,7 +134,7 @@ export default function UploadPage() {
                         transition={{ delay: index * 0.05 }}
                       >
                         <Box
-                          onClick={() => window.location.href = `/BOQ-2.0/dashboard/plans/${plan.id}/`}
+                          onClick={() => navigateTo(`/dashboard/plans/${plan.id}/`)}
                           sx={{
                             display: 'flex',
                             alignItems: 'center',

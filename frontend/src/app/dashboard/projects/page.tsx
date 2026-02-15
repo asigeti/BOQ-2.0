@@ -44,6 +44,7 @@ import {
 import { MainLayout } from '@/components/layout';
 import api from '@/utils/axios';
 import { useNotification } from '@/contexts/NotificationContext';
+import { navigateTo } from '@/utils/navigation';
 
 // Lazy load Header to avoid SSR issues
 const Header = dynamic(() => import('@/components/layout/Header'), { ssr: false });
@@ -191,7 +192,7 @@ export default function ProjectsPage() {
       setScanResult(null);
 
       // Navigate to project
-      window.location.href = `/BOQ-2.0/dashboard/projects/${projectId}/`;
+      navigateTo(`/dashboard/projects/${projectId}/`);
     } catch (error: any) {
       showError(error.response?.data?.detail || 'שגיאה ביצירת הפרויקט');
     } finally {
@@ -331,7 +332,7 @@ export default function ProjectsPage() {
                       boxShadow: '0 12px 24px -8px rgba(99, 102, 241, 0.3)',
                     },
                   }}
-                  onClick={() => window.location.href = `/BOQ-2.0/dashboard/projects/${project.id}/`}
+                  onClick={() => navigateTo(`/dashboard/projects/${project.id}/`)}
                 >
                   <CardContent sx={{ p: 3 }}>
                     <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, mb: 2 }}>
