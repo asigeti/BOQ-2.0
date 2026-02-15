@@ -4,19 +4,21 @@ DWG Extractor for ConstructionAI Pro
 Extracts material quantities from AutoCAD DWG files using multiple strategies:
 1. AutoCAD COM interface (most accurate - requires AutoCAD installed)
 2. ODA File Converter (DWG -> DXF conversion)
-3. Fallback to basic DXF extraction
+3. libredwg dwg2dxf (free, works on Linux/Docker)
+4. Direct ezdxf fallback
+5. Placeholder
 
 Based on Easy-MCP-AutoCAD patterns for accurate BOQ extraction.
 """
 
 import os
 import logging
-import sqlite3
+import shutil
 import subprocess
 import tempfile
-import json
 import time
-from typing import List, Dict, Optional, Tuple
+import re
+from typing import List, Dict, Optional
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
@@ -30,12 +32,50 @@ except ImportError:
     HAS_WIN32COM = False
     logger.info("win32com not available - AutoCAD COM interface disabled")
 
-# ODA File Converter paths (common installation locations)
+# ODA File Converter paths (common installation locations - Windows and Linux)
 ODA_CONVERTER_PATHS = [
+    # Windows
     r"C:\Program Files\ODA\ODAFileConverter\ODAFileConverter.exe",
     r"C:\Program Files (x86)\ODA\ODAFileConverter\ODAFileConverter.exe",
+    # Linux
+    "/usr/bin/ODAFileConverter",
+    "/opt/ODAFileConverter/ODAFileConverter",
+    "/usr/local/bin/ODAFileConverter",
+    # Environment override
     os.environ.get("ODA_CONVERTER_PATH", ""),
 ]
+
+
+def _log_dwg_capabilities():
+    """Log available DWG extraction tools at module load time"""
+    capabilities = []
+
+    if HAS_WIN32COM:
+        capabilities.append("AutoCAD COM")
+
+    for path in ODA_CONVERTER_PATHS:
+        if path and os.path.exists(path):
+            capabilities.append(f"ODA FileConverter ({path})")
+            break
+
+    dwg2dxf_path = shutil.which("dwg2dxf")
+    if dwg2dxf_path:
+        capabilities.append(f"libredwg dwg2dxf ({dwg2dxf_path})")
+
+    try:
+        import ezdxf
+        capabilities.append("ezdxf (direct DXF read)")
+    except ImportError:
+        pass
+
+    if capabilities:
+        logger.info(f"DWG extraction capabilities: {', '.join(capabilities)}")
+    else:
+        logger.warning("DWG extraction: NO tools available - uploads will return placeholder")
+
+
+# Log capabilities at import time
+_log_dwg_capabilities()
 
 
 class AutoCADExtractor:
@@ -312,7 +352,6 @@ class AutoCADExtractor:
             'גבס': 'Gypsum (גבס)',
         }
 
-        import re
         quantity_pattern = re.compile(r'(\d+(?:\.\d+)?)\s*(m²|m2|sqm|m³|m3|cum|m|mm|kg|ton|units?|pcs?|יח\'?)', re.IGNORECASE)
 
         for item in text_items:
@@ -353,14 +392,14 @@ def find_oda_converter() -> Optional[str]:
     return None
 
 
-def convert_dwg_to_dxf(dwg_path: str, output_dir: Optional[str] = None) -> Optional[str]:
+def convert_dwg_to_dxf_oda(dwg_path: str, output_dir: Optional[str] = None) -> Optional[str]:
     """
     Convert DWG to DXF using ODA File Converter.
     Returns path to converted DXF file or None if conversion failed.
     """
     converter = find_oda_converter()
     if not converter:
-        logger.warning("ODA File Converter not found")
+        logger.debug("ODA File Converter not found")
         return None
 
     if output_dir is None:
@@ -372,8 +411,6 @@ def convert_dwg_to_dxf(dwg_path: str, output_dir: Optional[str] = None) -> Optio
     try:
         # ODA File Converter command line:
         # ODAFileConverter <input_dir> <output_dir> <output_version> <output_type> <recurse> <audit> [filter]
-        # Output version: ACAD2018 for maximum compatibility
-        # Output type: 0 = DWG, 1 = DXF, 2 = Binary DXF
         cmd = [
             converter,
             input_dir,
@@ -396,7 +433,7 @@ def convert_dwg_to_dxf(dwg_path: str, output_dir: Optional[str] = None) -> Optio
         dxf_path = os.path.join(output_dir, f"{base_name}.dxf")
 
         if os.path.exists(dxf_path):
-            logger.info(f"Converted {dwg_path} to {dxf_path}")
+            logger.info(f"ODA converted {dwg_path} to {dxf_path}")
             return dxf_path
         else:
             logger.error(f"Expected output file not found: {dxf_path}")
@@ -410,14 +447,102 @@ def convert_dwg_to_dxf(dwg_path: str, output_dir: Optional[str] = None) -> Optio
         return None
 
 
+def convert_dwg_to_dxf_libredwg(dwg_path: str, output_dir: Optional[str] = None) -> Optional[str]:
+    """
+    Convert DWG to DXF using libredwg's dwg2dxf command.
+    Available on Linux/Docker via apt-get install libredwg-tools.
+    Returns path to converted DXF file or None if conversion failed.
+    """
+    dwg2dxf = shutil.which("dwg2dxf")
+    if not dwg2dxf:
+        logger.debug("dwg2dxf (libredwg-tools) not found on PATH")
+        return None
+
+    if output_dir is None:
+        output_dir = tempfile.mkdtemp(prefix="dwg_libredwg_")
+
+    base_name = os.path.splitext(os.path.basename(dwg_path))[0]
+    dxf_output = os.path.join(output_dir, f"{base_name}.dxf")
+
+    try:
+        cmd = [dwg2dxf, "-o", dxf_output, dwg_path]
+        logger.info(f"Running libredwg: {' '.join(cmd)}")
+
+        result = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
+
+        # libredwg sometimes returns non-zero but still produces usable output
+        if result.returncode != 0:
+            logger.warning(
+                f"dwg2dxf exited with code {result.returncode}: "
+                f"{result.stderr[:500] if result.stderr else 'no stderr'}"
+            )
+
+        # Check if output file was created regardless of exit code
+        if os.path.exists(dxf_output) and os.path.getsize(dxf_output) > 0:
+            logger.info(
+                f"libredwg converted {dwg_path} -> {dxf_output} "
+                f"({os.path.getsize(dxf_output)} bytes)"
+            )
+            return dxf_output
+
+        logger.warning(f"dwg2dxf produced no output file at {dxf_output}")
+        return None
+
+    except subprocess.TimeoutExpired:
+        logger.error("dwg2dxf conversion timed out (120s)")
+        return None
+    except Exception as e:
+        logger.error(f"dwg2dxf conversion error: {e}")
+        return None
+
+
+def _extract_dxf_and_cleanup(dxf_path: str, source_label: str) -> List[Dict]:
+    """
+    Extract materials from a converted DXF file and clean up temp files.
+    Shared by ODA and libredwg conversion strategies.
+    """
+    try:
+        from .dxf_extractor import extract_from_dxf
+        materials = extract_from_dxf(dxf_path)
+
+        # Tag source
+        for mat in materials:
+            mat['source'] = f'{source_label}_converted_dxf'
+            # Boost confidence slightly since conversion succeeded
+            mat['confidence_score'] = min(mat.get('confidence_score', 0.7) + 0.05, 1.0)
+
+        return materials
+
+    except Exception as e:
+        logger.error(f"DXF extraction after {source_label} conversion failed: {e}")
+        return []
+
+    finally:
+        # Clean up temp files
+        try:
+            os.remove(dxf_path)
+            parent = os.path.dirname(dxf_path)
+            if parent and os.path.isdir(parent) and parent.startswith(tempfile.gettempdir()):
+                os.rmdir(parent)
+        except Exception:
+            pass
+
+
 def extract_from_dwg(file_path: str) -> List[Dict]:
     """
     Extract material quantities from a DWG file.
 
     Uses multiple strategies in order of accuracy:
-    1. AutoCAD COM interface (most accurate)
+    1. AutoCAD COM interface (most accurate, Windows only)
     2. ODA File Converter -> DXF -> ezdxf
-    3. Basic fallback
+    3. libredwg dwg2dxf -> DXF -> ezdxf (primary Docker/Linux strategy)
+    4. Direct ezdxf (works for some DWG versions)
+    5. Placeholder fallback
 
     Args:
         file_path: Path to the DWG file
@@ -425,9 +550,6 @@ def extract_from_dwg(file_path: str) -> List[Dict]:
     Returns:
         List of extracted materials with quantities
     """
-    materials = []
-    extraction_method = None
-
     # Strategy 1: Try AutoCAD COM interface (most accurate)
     if HAS_WIN32COM:
         logger.info("Attempting AutoCAD COM extraction...")
@@ -436,7 +558,6 @@ def extract_from_dwg(file_path: str) -> List[Dict]:
         if extractor.connect():
             if extractor.open_drawing(file_path):
                 materials = extractor.scan_elements()
-                extraction_method = "autocad_com"
                 extractor.close()
 
                 if materials:
@@ -446,34 +567,25 @@ def extract_from_dwg(file_path: str) -> List[Dict]:
 
     # Strategy 2: Try ODA File Converter -> DXF
     logger.info("Attempting ODA File Converter extraction...")
-    dxf_path = convert_dwg_to_dxf(file_path)
+    dxf_path = convert_dwg_to_dxf_oda(file_path)
 
     if dxf_path:
-        try:
-            from .dxf_extractor import extract_from_dxf
-            materials = extract_from_dxf(dxf_path)
-            extraction_method = "oda_converter"
+        materials = _extract_dxf_and_cleanup(dxf_path, "oda")
+        if materials:
+            logger.info(f"ODA converter extracted {len(materials)} materials")
+            return materials
 
-            # Boost confidence since we converted properly
-            for mat in materials:
-                mat['confidence_score'] = min(mat.get('confidence_score', 0.7) + 0.1, 1.0)
-                mat['source'] = 'oda_converted_dxf'
+    # Strategy 3: Try libredwg dwg2dxf -> DXF (primary Docker/Linux strategy)
+    logger.info("Attempting libredwg dwg2dxf extraction...")
+    dxf_path = convert_dwg_to_dxf_libredwg(file_path)
 
-            # Clean up temp file
-            try:
-                os.remove(dxf_path)
-                os.rmdir(os.path.dirname(dxf_path))
-            except:
-                pass
+    if dxf_path:
+        materials = _extract_dxf_and_cleanup(dxf_path, "libredwg")
+        if materials:
+            logger.info(f"libredwg extracted {len(materials)} materials")
+            return materials
 
-            if materials:
-                logger.info(f"ODA converter extracted {len(materials)} materials")
-                return materials
-
-        except Exception as e:
-            logger.error(f"DXF extraction after conversion failed: {e}")
-
-    # Strategy 3: Fallback - try direct ezdxf (works for some DWG versions)
+    # Strategy 4: Fallback - try direct ezdxf (works for some DWG versions)
     logger.info("Attempting direct ezdxf extraction (fallback)...")
     try:
         from .dxf_extractor import extract_from_dxf
@@ -491,7 +603,7 @@ def extract_from_dwg(file_path: str) -> List[Dict]:
     except Exception as e:
         logger.warning(f"Direct ezdxf read failed: {e}")
 
-    # Strategy 4: Last resort - return placeholder
+    # Strategy 5: Last resort - return placeholder
     logger.warning(f"All extraction methods failed for {file_path}")
     return [{
         'material_name': 'DWG File - Manual Review Required',
@@ -499,7 +611,7 @@ def extract_from_dwg(file_path: str) -> List[Dict]:
         'unit': 'file',
         'confidence_score': 0.1,
         'source': 'no_extraction',
-        'note': 'Install AutoCAD or ODA File Converter for accurate extraction'
+        'note': 'Install libredwg-tools, AutoCAD, or ODA File Converter for accurate extraction'
     }]
 
 
@@ -565,7 +677,7 @@ def extract_raw_data_from_dwg(file_path: str) -> Dict:
 
     # Strategy 2: ODA + ezdxf
     logger.info("Extracting raw data via ODA/ezdxf...")
-    dxf_path = convert_dwg_to_dxf(file_path)
+    dxf_path = convert_dwg_to_dxf_oda(file_path)
 
     if dxf_path:
         try:
@@ -586,7 +698,32 @@ def extract_raw_data_from_dwg(file_path: str) -> Dict:
         except Exception as e:
             raw_data["errors"].append(f"ODA/DXF extraction error: {e}")
 
-    # Strategy 3: Direct ezdxf (last resort)
+    # Strategy 3: libredwg dwg2dxf + ezdxf
+    logger.info("Extracting raw data via libredwg/ezdxf...")
+    dxf_path = convert_dwg_to_dxf_libredwg(file_path)
+
+    if dxf_path:
+        try:
+            raw_data = _extract_raw_dxf_data(dxf_path)
+            raw_data["extraction_method"] = "libredwg"
+            raw_data["extraction_success"] = True
+            raw_data["file_path"] = file_path
+            raw_data["filename"] = os.path.basename(file_path)
+
+            # Cleanup
+            try:
+                os.remove(dxf_path)
+                parent = os.path.dirname(dxf_path)
+                if parent and os.path.isdir(parent) and parent.startswith(tempfile.gettempdir()):
+                    os.rmdir(parent)
+            except:
+                pass
+
+            return raw_data
+        except Exception as e:
+            raw_data["errors"].append(f"libredwg/DXF extraction error: {e}")
+
+    # Strategy 4: Direct ezdxf (last resort)
     try:
         raw_data = _extract_raw_dxf_data(file_path)
         raw_data["extraction_method"] = "ezdxf_direct"
@@ -747,6 +884,7 @@ def _extract_raw_autocad_data(doc, file_path: str) -> Dict:
 def _extract_raw_dxf_data(file_path: str) -> Dict:
     """Extract raw data from DXF file using ezdxf"""
     import ezdxf
+    import math
 
     raw_data = {
         "file_path": file_path,
@@ -854,7 +992,6 @@ def _extract_raw_dxf_data(file_path: str) -> Dict:
             elif entity_type == "CIRCLE":
                 raw_data["geometry"]["circle_count"] += 1
                 try:
-                    import math
                     raw_data["geometry"]["total_area"] += math.pi * entity.dxf.radius**2
                 except:
                     pass
