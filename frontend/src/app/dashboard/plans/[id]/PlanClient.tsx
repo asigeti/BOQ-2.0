@@ -312,10 +312,18 @@ function ChapterSection({ chapter, index }: { chapter: BOQChapter; index: number
   );
 }
 
+function getIdFromPath(): string {
+  if (typeof window === 'undefined') return '';
+  // Extract ID from URL path: /BOQ-2.0/dashboard/plans/16/ → '16'
+  const parts = window.location.pathname.replace(/\/+$/, '').split('/');
+  return parts[parts.length - 1] || '';
+}
+
 export default function PlanDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const planId = params.id as string;
+  const paramId = params.id as string;
+  const planId = paramId && paramId !== '_' ? paramId : getIdFromPath();
 
   const [boqData, setBoqData] = useState<BOQData | null>(null);
   const [loading, setLoading] = useState(true);

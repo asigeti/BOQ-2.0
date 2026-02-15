@@ -147,9 +147,17 @@ interface ExtractionData {
   files: ExtractionFileData[];
 }
 
+function getIdFromPath(): string {
+  if (typeof window === 'undefined') return '';
+  // Extract ID from URL path: /BOQ-2.0/dashboard/projects/3/ → '3'
+  const parts = window.location.pathname.replace(/\/+$/, '').split('/');
+  return parts[parts.length - 1] || '';
+}
+
 export default function ProjectDetailPage() {
   const params = useParams();
-  const projectId = params.id as string;
+  const paramId = params.id as string;
+  const projectId = paramId && paramId !== '_' ? paramId : getIdFromPath();
   const [project, setProject] = useState<Project | null>(null);
   const [boqData, setBoqData] = useState<BOQData | null>(null);
   const [extractionData, setExtractionData] = useState<ExtractionData | null>(null);
