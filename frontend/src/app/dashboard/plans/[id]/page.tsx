@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import PlanClient from './PlanClient';
 
 export async function generateStaticParams() {
@@ -5,5 +6,9 @@ export async function generateStaticParams() {
 }
 
 export default function Page() {
-  return <PlanClient />;
+  return (
+    <Suspense>
+      <PlanClient />
+    </Suspense>
+  );
 }

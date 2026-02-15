@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import {
   Box,
   Typography,
@@ -322,8 +322,18 @@ function getIdFromPath(): string {
 export default function PlanDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const paramId = params.id as string;
-  const planId = paramId && paramId !== '_' ? paramId : getIdFromPath();
+  const queryId = searchParams.get('id');
+  const planId = paramId && paramId !== '_' ? paramId : queryId || getIdFromPath();
+
+  // Clean up URL: replace /_/?id=18 with /18/ for a clean browser URL
+  useEffect(() => {
+    if (queryId && planId) {
+      const cleanPath = window.location.pathname.replace(/\/_\/$/, `/${planId}/`);
+      window.history.replaceState(null, '', cleanPath);
+    }
+  }, [queryId, planId]);
 
   const [boqData, setBoqData] = useState<BOQData | null>(null);
   const [loading, setLoading] = useState(true);

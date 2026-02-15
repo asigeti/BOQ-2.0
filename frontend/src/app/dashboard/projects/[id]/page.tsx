@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import ProjectClient from './ProjectClient';
 
 export async function generateStaticParams() {
@@ -5,5 +6,9 @@ export async function generateStaticParams() {
 }
 
 export default function Page() {
-  return <ProjectClient />;
+  return (
+    <Suspense>
+      <ProjectClient />
+    </Suspense>
+  );
 }

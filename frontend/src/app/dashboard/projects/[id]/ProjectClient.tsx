@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import {
   Box,
   Typography,
@@ -156,8 +156,18 @@ function getIdFromPath(): string {
 
 export default function ProjectDetailPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const paramId = params.id as string;
-  const projectId = paramId && paramId !== '_' ? paramId : getIdFromPath();
+  const queryId = searchParams.get('id');
+  const projectId = paramId && paramId !== '_' ? paramId : queryId || getIdFromPath();
+
+  // Clean up URL: replace /_/?id=4 with /4/ for a clean browser URL
+  useEffect(() => {
+    if (queryId && projectId) {
+      const cleanPath = window.location.pathname.replace(/\/_\/$/, `/${projectId}/`);
+      window.history.replaceState(null, '', cleanPath);
+    }
+  }, [queryId, projectId]);
   const [project, setProject] = useState<Project | null>(null);
   const [boqData, setBoqData] = useState<BOQData | null>(null);
   const [extractionData, setExtractionData] = useState<ExtractionData | null>(null);
